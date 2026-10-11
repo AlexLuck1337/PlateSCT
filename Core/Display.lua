@@ -242,8 +242,7 @@ function BD:GetOptionsPreviewBounds(sampleKind)
     local fontSize = baseFontSize * preset.fontScale
     local fontPath = BD.ResolveFontPath(self.db.fontFace)
     local spacingScale = baseFontSize / math.max(1, self.DEFAULTS.fontSize or 14)
-    -- Include the mock nameplate as well as the full animation envelope.
-    local left, right, bottom, top = -70, 70, -9, 9
+    local left, right, bottom, top = 0, 0, 0, 0
     for _, sample in ipairs(PREVIEW_SAMPLES) do
         if MatchesPreviewKind(sample, sampleKind) then
             local isCrit = sample.hitKind == "crit"
@@ -438,31 +437,53 @@ local function SpawnMotionPreviewFrame(anchor, sample)
     end
 end
 
-function BD:ShowMotionPreview(anchor, sampleKind)
-    if not anchor or not anchor:IsShown() then
+function BD:ShowMotionPreview(columns)
+    if type(columns) ~= "table" then
         return
     end
 
     previewGeneration = previewGeneration + 1
     local generation = previewGeneration
 
-    BD.Pool.ReleasePreviewFrames(anchor)
-
-    local index = 0
-    for _, sample in ipairs(PREVIEW_SAMPLES) do
-        if MatchesPreviewKind(sample, sampleKind) then
-            local previewSample = sample
-            C_Timer.After(index * PREVIEW_STAGGER, function()
-                if generation ~= previewGeneration then
-                    return
-                end
-                if not anchor or not anchor:IsShown() then
-                    return
-                end
-                SpawnMotionPreviewFrame(anchor, previewSample)
-            end)
-            index = index + 1
+    local function PlayColumn(column)
+        local anchor = column.stage or column.anchor
+        if not anchor or not anchor:IsShown() then
+            return
         end
+        local index = 0
+        for _, sample in ipairs(PREVIEW_SAMPLES) do
+            if MatchesPreviewKind(sample, column.kind) then
+                local previewSample, previewAnchor = sample, anchor
+                local delay = index * PREVIEW_STAGGER
+                index = index + 1
+                C_Timer.After(delay, function()
+                    if generation ~= previewGeneration then
+                        return
+                    end
+                    if not previewAnchor:IsShown() then
+                        return
+                    end
+                    SpawnMotionPreviewFrame(previewAnchor, previewSample)
+                end)
+            end
+        end
+        if index == 0 then
+            return
+        end
+        C_Timer.After(index * PREVIEW_STAGGER, function()
+            if generation ~= previewGeneration then
+                return
+            end
+            PlayColumn(column)
+        end)
+    end
+
+    for _, column in ipairs(columns) do
+        local anchor = column.stage or column.anchor
+        if anchor then
+            BD.Pool.ReleasePreviewFrames(anchor)
+        end
+        PlayColumn(column)
     end
 end
 
@@ -514,7 +535,7 @@ function BD:RequestOptionsPreview()
         if pane.FitStage then
             pane:FitStage()
         end
-        BD:ShowMotionPreview(stage, pane.sampleKind)
+        BD:ShowMotionPreview(pane.columns)
     end)
 end
 

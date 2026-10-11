@@ -4,7 +4,7 @@ local L, W = BD.L, BD.OptionsWidgets
 local WINDOW_WIDTH, WINDOW_HEIGHT = 840, 640
 local SIDEBAR_WIDTH, DRAWER_HEIGHT = 176, 220
 local GOLD = { 0.92, 0.76, 0.42 }
-local session = { page = "combat", tabs = {}, scroll = {}, sampleKind = "mixed" }
+local session = { page = "combat", tabs = {}, scroll = {} }
 
 -- Lua 5.1's lower() only folds ASCII. Keep search usable in the supported locales.
 local searchCase = {}
@@ -45,47 +45,80 @@ local function StopMotion(frame)
     frame.highlightGeneration = (frame.highlightGeneration or 0) + 1
     for _, group in ipairs(frame.motionGroups) do group:Stop() end
     for _, target in ipairs(frame.motionTargets) do target:SetAlpha(1) end
+    if frame.views then
+        for _, view in pairs(frame.views) do
+            if view.motionActive then view:ResetMotion() end
+        end
+    end
     frame:SetAlpha(1)
     if frame.searchHighlight then frame.searchHighlight:Hide() end
 end
 
-local function Reveal(frame, view)
+local function EaseOut(t)
+    return 1 - (1 - t) * (1 - t) * (1 - t)
+end
+
+-- Slight overshoot so the page settles instead of stopping dead.
+local function EaseOutBack(t)
+    local u, c1, c3 = t - 1, 1.35, 2.35
+    return 1 + c3 * u * u * u + c1 * u * u
+end
+
+local function PlaceView(view, x, y)
+    view:ClearAllPoints()
+    view:SetPoint("TOPLEFT", x, y)
+    view:SetPoint("BOTTOMRIGHT", x, y)
+end
+
+local function ResetViewMotion(view)
+    view.motionActive = nil
+    view:SetScript("OnUpdate", nil)
+    view:ClearAllPoints()
+    view:SetAllPoints()
+    view:SetAlpha(1)
+end
+
+local function Reveal(frame, view, ox, oy)
     if not BD.db.settingsAnimations then return end
-    local index, top = 0, view.scroll:GetVerticalScroll()
-    for _, row in ipairs(view.child.rows or {}) do
-        local _, _, _, _, y = row:GetPoint(1)
-        y = -(y or 0)
-        if y + row:GetHeight() >= top and y <= top + view.scroll:GetHeight() then
-            if not row.reveal then
-                local group = row:CreateAnimationGroup()
-                local alpha = group:CreateAnimation("Alpha")
-                alpha:SetFromAlpha(0.25); alpha:SetToAlpha(1); alpha:SetDuration(0.16)
-                local rise = group:CreateAnimation("Translation")
-                rise:SetOffset(0, 4); rise:SetDuration(0.16); rise:SetSmoothing("OUT")
-                local function Restore()
-                    if row.revealPoint then
-                        row:SetPoint(unpack(row.revealPoint))
-                        row.revealPoint = nil
-                    end
-                    row:SetAlpha(1)
-                end
-                group:SetScript("OnPlay", function()
-                    local point, relative, relativePoint, x, originalY = row:GetPoint(1)
-                    row.revealPoint = { point, relative, relativePoint, x, originalY }
-                    row:SetPoint(point, relative, relativePoint, x, originalY - 4)
-                end)
-                group:SetScript("OnFinished", Restore)
-                group:SetScript("OnStop", Restore)
-                row.reveal, row.revealAlpha, row.revealRise = group, alpha, rise
-                frame.motionGroups[#frame.motionGroups + 1] = group
-                frame.motionTargets[#frame.motionTargets + 1] = row
-            end
-            local delay = math.min(index * 0.012, 0.072)
-            row.revealAlpha:SetStartDelay(delay); row.revealRise:SetStartDelay(delay)
-            row.reveal:Play()
-            index = index + 1
+    ox, oy = ox or 0, oy or -28
+    view.motionActive = true
+    view.ResetMotion = ResetViewMotion
+    local elapsedTotal, duration = 0, 0.28
+    view:SetAlpha(0)
+    PlaceView(view, ox, oy)
+    view:SetScript("OnUpdate", function(self, elapsed)
+        if not self.motionActive then return end
+        elapsedTotal = elapsedTotal + elapsed
+        local t = elapsedTotal / duration
+        if t >= 1 then
+            self:ResetMotion()
+            return
         end
-    end
+        local e = EaseOutBack(math.min(1, t))
+        self:SetAlpha(math.min(1, EaseOut(t)))
+        PlaceView(self, ox * (1 - e), oy * (1 - e))
+    end)
+end
+
+local function Dismiss(view, ox, oy)
+    view.motionActive = true
+    view.ResetMotion = ResetViewMotion
+    local elapsedTotal, duration = 0, 0.2
+    view:SetAlpha(1)
+    PlaceView(view, 0, 0)
+    view:SetScript("OnUpdate", function(self, elapsed)
+        if not self.motionActive then return end
+        elapsedTotal = elapsedTotal + elapsed
+        local t = elapsedTotal / duration
+        if t >= 1 then
+            self:ResetMotion()
+            self:Hide()
+            return
+        end
+        local e = EaseOut(math.min(1, t))
+        self:SetAlpha(1 - e)
+        PlaceView(self, ox * e, oy * e)
+    end)
 end
 
 local function CreateScrollView(parent, root)
@@ -161,23 +194,8 @@ local function CreatePreview(root, content)
     local pane = CreateFrame("Frame", nil, content, "BackdropTemplate")
     pane:SetPoint("BOTTOMLEFT"); pane:SetPoint("BOTTOMRIGHT"); pane:SetHeight(DRAWER_HEIGHT)
     W.Backdrop(pane, "inset")
-    pane.sampleKind = session.sampleKind
     W.Text(pane, L["Appearance preview"], 14, -12, 200, "GameFontNormal", GOLD)
-    local viewport = CreateFrame("Frame", nil, pane)
-    viewport:SetPoint("TOPLEFT", 12, -42); viewport:SetPoint("BOTTOMRIGHT", -12, 44)
-    viewport:SetClipsChildren(true)
-    local stage = CreateFrame("Frame", nil, viewport)
-    stage:SetSize(1, 1)
-    pane.stage, pane.viewport = stage, viewport
-    local plate = CreateFrame("Frame", nil, stage, "BackdropTemplate")
-    plate:SetSize(140, 18); plate:SetPoint("CENTER")
-    W.Backdrop(plate, "button")
-    local health = plate:CreateTexture(nil, "ARTWORK")
-    health:SetPoint("TOPLEFT", 2, -2); health:SetPoint("BOTTOMRIGHT", -2, 2)
-    health:SetColorTexture(0.52, 0.13, 0.10, 0.9)
-    local name = plate:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    name:SetPoint("CENTER"); name:SetText(L["Training dummy"])
-    local scaleLabel = W.Text(pane, string.format(L["Preview scale: %d%%"], 100), 0, 0, nil, "GameFontDisableSmall")
+    local scaleLabel = W.Text(pane, string.format(L["Preview scale: %d%%"], 70), 0, 0, nil, "GameFontDisableSmall")
     scaleLabel:ClearAllPoints()
     scaleLabel:SetPoint("TOPLEFT", root.previewToggle, "TOPRIGHT", 12, 12)
     scaleLabel:SetPoint("TOPRIGHT", pane, "BOTTOMRIGHT", -12, 38)
@@ -185,28 +203,63 @@ local function CreatePreview(root, content)
     note:ClearAllPoints()
     note:SetPoint("TOPLEFT", root.previewToggle, "TOPRIGHT", 12, -4)
     note:SetPoint("TOPRIGHT", pane, "BOTTOMRIGHT", -12, 22)
-    local kinds = { { "mixed", "Mixed" }, { "hit", "Hit" }, { "crit", "Crit" }, { "miss", "Miss" } }
-    pane.kindButtons = {}
-    for index, entry in ipairs(kinds) do
-        local kind, label = entry[1], entry[2]
-        local button = W.Button(pane, L[label], 52, 24, function()
-            pane.sampleKind, session.sampleKind = kind, kind
-            pane:UpdateLayout(); BD:RequestOptionsPreview()
-        end)
-        button:SetPoint("TOPLEFT", 202 + (index - 1) * 56, -8)
-        pane.kindButtons[kind] = button
+    local columnsHost = CreateFrame("Frame", nil, pane)
+    columnsHost:SetPoint("TOPLEFT", 12, -36)
+    columnsHost:SetPoint("BOTTOMRIGHT", -12, 44)
+    pane.stage, pane.viewport, pane.columns = columnsHost, columnsHost, {}
+    local function LayoutColumns()
+        local width = columnsHost:GetWidth()
+        local count = #pane.columns
+        if width <= 0 or count == 0 then return end
+        local gap = 10
+        local colWidth = (width - gap * (count - 1)) / count
+        for index, column in ipairs(pane.columns) do
+            column:ClearAllPoints()
+            column:SetPoint("TOPLEFT", columnsHost, "TOPLEFT", (index - 1) * (colWidth + gap), 0)
+            column:SetPoint("BOTTOMLEFT", columnsHost, "BOTTOMLEFT", (index - 1) * (colWidth + gap), 0)
+            column:SetWidth(colWidth)
+        end
     end
-    local replay = W.Button(pane, L["Replay"], 70, 24, function() BD:RequestOptionsPreview() end)
-    replay:SetPoint("TOPRIGHT", -12, -8)
+    for index, entry in ipairs({ { "hit", "Hit" }, { "crit", "Crit" }, { "miss", "Miss" } }) do
+        local column = CreateFrame("Frame", nil, columnsHost)
+        column.kind = entry[1]
+        if index > 1 then
+            local divider = column:CreateTexture(nil, "ARTWORK")
+            divider:SetWidth(1)
+            divider:SetPoint("TOPLEFT", -5, -2)
+            divider:SetPoint("BOTTOMLEFT", -5, 2)
+            divider:SetColorTexture(GOLD[1], GOLD[2], GOLD[3], 0.2)
+        end
+        local caption = column:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        caption:SetPoint("TOP", 0, -2)
+        caption:SetText(L[entry[2]])
+        caption:SetTextColor(unpack(GOLD))
+        local rule = column:CreateTexture(nil, "ARTWORK")
+        rule:SetHeight(1)
+        rule:SetPoint("TOPLEFT", 8, -18)
+        rule:SetPoint("TOPRIGHT", -8, -18)
+        rule:SetColorTexture(GOLD[1], GOLD[2], GOLD[3], 0.22)
+        local clip = CreateFrame("Frame", nil, column)
+        clip:SetPoint("TOPLEFT", 2, -22)
+        clip:SetPoint("BOTTOMRIGHT", -2, 2)
+        clip:SetClipsChildren(true)
+        local stage = CreateFrame("Frame", nil, clip)
+        stage:SetSize(1, 1)
+        stage:SetPoint("CENTER")
+        column.clip, column.stage = clip, stage
+        pane.columns[index] = column
+    end
     function pane:FitStage()
-        local left, right, bottom, top = BD:GetOptionsPreviewBounds(self.sampleKind)
-        local width, height = viewport:GetWidth(), viewport:GetHeight()
-        stage:SetScale(1); stage:ClearAllPoints()
-        -- Center the sample envelope without pushing the mock nameplate out of view.
-        local maxX, maxY = math.max(0, width / 2 - 76), math.max(0, height / 2 - 15)
-        local x = math.max(-maxX, math.min(maxX, -(left + right) / 2))
-        local y = math.max(-maxY, math.min(maxY, -(bottom + top) / 2))
-        stage:SetPoint("CENTER", viewport, "CENTER", x, y)
+        LayoutColumns()
+        local scale = 0.7
+        for _, column in ipairs(self.columns) do
+            local clip, stage = column.clip, column.stage
+            local left, right, bottom, top = BD:GetOptionsPreviewBounds(column.kind)
+            stage:ClearAllPoints()
+            stage:SetScale(scale)
+            stage:SetPoint("CENTER", clip, "CENTER", -(left + right) * 0.5 * scale, -(bottom + top) * 0.5 * scale)
+        end
+        scaleLabel:SetText(string.format(L["Preview scale: %d%%"], 70))
     end
     function pane:UpdateLayout()
         local open = BD.db.showOptionsPreview and true or false
@@ -215,12 +268,9 @@ local function CreatePreview(root, content)
         root.pageArea:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -74)
         root.pageArea:SetPoint("BOTTOMRIGHT", content, "BOTTOMRIGHT", 0, open and DRAWER_HEIGHT + 8 or 34)
         root.previewToggle:SetText(open and L["Hide preview"] or L["Show preview"])
-        for kind, button in pairs(self.kindButtons) do
-            button:SetBackdropBorderColor(unpack(kind == self.sampleKind and GOLD or { 0.35, 0.28, 0.17 }))
-        end
         for _, view in pairs(root.views) do view:UpdateScroll() end
     end
-    viewport:SetScript("OnSizeChanged", function() if pane:IsShown() then pane:FitStage() end end)
+    columnsHost:SetScript("OnSizeChanged", function() if pane:IsShown() then pane:FitStage() end end)
     return pane
 end
 
@@ -278,8 +328,9 @@ local function BuildConfigFrame()
     W.Text(titleBar, "PlateSCT", 52, -9, 135, "GameFontNormalLarge", GOLD)
     W.Text(titleBar, Version(), 52, -29, 130, "GameFontDisableSmall")
     W.Text(titleBar, FlavorLabel(), 216, -18, 520, "GameFontHighlightSmall", GOLD)
-    local close = W.Button(titleBar, "×", 28, 28, function() frame:Hide() end)
-    close:SetPoint("TOPRIGHT", -8, -8)
+    local close = W.CloseButton(frame, function() frame:Hide() end)
+    close:SetPoint("TOPRIGHT", -4, -4)
+    close:SetFrameLevel(titleBar:GetFrameLevel() + 5)
     W.Tooltip(close, L["Close"])
     local sidebar = CreateFrame("Frame", nil, frame, "BackdropTemplate")
     sidebar:SetWidth(SIDEBAR_WIDTH); sidebar:SetPoint("TOPLEFT", 12, -60); sidebar:SetPoint("BOTTOMLEFT", 12, 12)
@@ -291,6 +342,7 @@ local function BuildConfigFrame()
     frame.tabBar = CreateFrame("Frame", nil, content)
     frame.tabBar:SetPoint("TOPLEFT", 16, -48); frame.tabBar:SetPoint("TOPRIGHT", -16, -48); frame.tabBar:SetHeight(24)
     frame.pageArea = CreateFrame("Frame", nil, content)
+    frame.pageArea:SetClipsChildren(true)
     frame.previewToggle = W.Button(content, L["Show preview"], 130, 24, function()
         BD.db.showOptionsPreview = not BD.db.showOptionsPreview
         frame:Refresh()
@@ -305,8 +357,8 @@ local function BuildConfigFrame()
     footer:SetColorTexture(GOLD[1], GOLD[2], GOLD[3], 0.25); footer:SetHeight(1)
     footer:SetPoint("BOTTOMLEFT", 12, 88); footer:SetPoint("BOTTOMRIGHT", -12, 88)
 
-    local search = CreateFrame("EditBox", nil, sidebar, "InputBoxTemplate")
-    search:SetAutoFocus(false); search:SetSize(142, 26); search:SetPoint("TOPLEFT", 18, -32)
+    local search = W.EditBox(sidebar, 152, 26)
+    search:SetPoint("TOPLEFT", 12, -32)
     W.Text(sidebar, L["Find a setting"], 12, -12, 152, "GameFontDisableSmall")
     frame.searchBox = search
     local results = CreateFrame("Frame", nil, frame, "BackdropTemplate")
@@ -326,6 +378,7 @@ local function BuildConfigFrame()
         local page = self.pages[pageId]
         if not page then pageId, page = "combat", self.pages.combat end
         if not page then return end
+        local previous, previousPage = self.activeView, session.page
         self:DismissTransient(); SaveScroll(); StopMotion(self)
         for _, button in ipairs(self.tabButtons) do button:Hide() end
         self.tabButtons = {}
@@ -333,8 +386,28 @@ local function BuildConfigFrame()
         tabId = tabId or session.tabs[pageId] or tabs[1].id
         local view = self.views[pageId .. ":" .. tabId] or self.views[pageId .. ":" .. tabs[1].id]
         tabId = view.tab
+        local ox, oy = 0, -28
+        if previous and previous ~= view and previousPage == pageId and page.tabs then
+            local oldIndex, newIndex
+            for index, tab in ipairs(page.tabs) do
+                if tab.id == previous.tab then oldIndex = index end
+                if tab.id == view.tab then newIndex = index end
+            end
+            if oldIndex and newIndex and oldIndex ~= newIndex then
+                ox, oy = (newIndex > oldIndex and 48 or -48), 0
+            end
+        end
         session.page, session.tabs[pageId] = pageId, tabId
-        for _, other in pairs(self.views) do other:SetShown(other == view) end
+        local animate = not immediate and BD.db.settingsAnimations
+        local departing = animate and previous and previous ~= view
+        for _, other in pairs(self.views) do
+            other:SetShown(other == view or (departing and other == previous))
+        end
+        if departing then
+            previous:SetFrameLevel(self.pageArea:GetFrameLevel() + 1)
+            view:SetFrameLevel(self.pageArea:GetFrameLevel() + 2)
+            Dismiss(previous, -ox * 0.7, -oy * 0.7)
+        end
         self.activeView = view
         self.pageTitle:SetText(L[page.labelKey]); self.subtitle:SetText(L[page.subtitleKey or ""])
         for id, button in pairs(self.navButtons) do
@@ -346,7 +419,7 @@ local function BuildConfigFrame()
                 local button = self.cachedTabs[tabKey]
                 if not button then
                     local id = tab.id
-                    button = W.Button(self.tabBar, L[tab.labelKey], 176, 24, function() self:SelectPage(pageId, id) end)
+                    button = W.Button(self.tabBar, L[tab.labelKey], 176, 24, function() self:SelectPage(pageId, id) end, "flat")
                     button:SetPoint("TOPLEFT", (index - 1) * 184, 0)
                     self.cachedTabs[tabKey] = button
                 end
@@ -355,14 +428,14 @@ local function BuildConfigFrame()
             end
         end
         view:SetScroll(session.scroll[view.key] or 0)
-        if not immediate then Reveal(self, view) end
+        if animate then Reveal(self, view, ox, oy) end
     end
     frame.cachedTabs = {}
     for index, page in ipairs(BD.OptionsPages) do
         if not page.supported or page.supported() then
             frame.pages[page.id] = page
             local id = page.id
-            local button = W.Button(sidebar, L[page.labelKey], 152, 34, function() frame:SelectPage(id) end)
+            local button = W.Button(sidebar, L[page.labelKey], 152, 34, function() frame:SelectPage(id) end, "flat")
             button:SetPoint("TOPLEFT", 12, -76 - (index - 1) * 42)
             frame.navButtons[id] = button
             local tabs = page.tabs or { { id = "main" } }
@@ -426,7 +499,7 @@ local function BuildConfigFrame()
             local button = frame.resultButtons[index]
             if not button then
                 local resultIndex = index
-                button = W.Button(resultView.child, "", 368, 38, function() frame:ChooseSearchResult(resultIndex) end)
+                button = W.Button(resultView.child, "", 368, 38, function() frame:ChooseSearchResult(resultIndex) end, "flat")
                 button:SetPoint("TOPLEFT", 2, -(index - 1) * 42)
                 frame.resultButtons[index] = button
             end
@@ -457,7 +530,13 @@ local function BuildConfigFrame()
             resultView:SetScroll(selectedTop + 42 - resultView.scroll:GetHeight())
         end
     end)
-    search:SetScript("OnEditFocusGained", UpdateSearch)
+    search:SetScript("OnEditFocusGained", function()
+        W.Backdrop(search, "selected")
+        UpdateSearch()
+    end)
+    search:SetScript("OnEditFocusLost", function()
+        W.Backdrop(search, "control")
+    end)
     frame:SetScript("OnMouseDown", function() frame:DismissTransient(); search:ClearFocus() end)
     frame:SetScript("OnKeyDown", function(self, key)
         if key == "ESCAPE" then

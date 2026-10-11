@@ -25,6 +25,93 @@ local function Hook(frame, event, handler)
     end
 end
 
+local ACTION_FACES = {
+    idle = {
+        bg = { 0.11, 0.09, 0.065, 1 },
+        border = { 0.78, 0.62, 0.34, 1 },
+        top = { 0.16, 0.13, 0.09, 1 },
+        bottom = { 0.07, 0.055, 0.04, 1 },
+        line = { 0.88, 0.72, 0.43, 0.18 },
+        text = GOLD,
+    },
+    hover = {
+        bg = { 0.17, 0.13, 0.09, 1 },
+        border = { 0.96, 0.82, 0.50, 1 },
+        top = { 0.24, 0.18, 0.12, 1 },
+        bottom = { 0.10, 0.075, 0.05, 1 },
+        line = { 0.96, 0.84, 0.55, 0.32 },
+        text = { 1, 0.90, 0.62 },
+    },
+    down = {
+        bg = { 0.06, 0.048, 0.034, 1 },
+        border = { 0.58, 0.44, 0.24, 1 },
+        top = { 0.08, 0.062, 0.042, 1 },
+        bottom = { 0.045, 0.035, 0.025, 1 },
+        line = { 0.45, 0.34, 0.18, 0.1 },
+        text = { 0.70, 0.56, 0.32 },
+    },
+    selected = {
+        bg = { 0.18, 0.13, 0.07, 1 },
+        border = { 0.94, 0.78, 0.44, 1 },
+        top = { 0.26, 0.19, 0.10, 1 },
+        bottom = { 0.11, 0.08, 0.045, 1 },
+        line = { 0.96, 0.82, 0.48, 0.35 },
+        text = { 1, 0.88, 0.58 },
+    },
+}
+
+local function PaintGradient(texture, bottom, top)
+    if texture.SetGradientAlpha then
+        texture:SetGradientAlpha("VERTICAL", bottom[1], bottom[2], bottom[3], bottom[4],
+            top[1], top[2], top[3], top[4])
+    elseif texture.SetGradient and CreateColor then
+        texture:SetGradient("VERTICAL", CreateColor(unpack(bottom)), CreateColor(unpack(top)))
+    else
+        texture:SetColorTexture(top[1], top[2], top[3], 1)
+    end
+end
+
+local function EnsureActionFace(frame)
+    if frame.optionsActionFill then return end
+    local fill = frame:CreateTexture(nil, "BACKGROUND", nil, 1)
+    fill:SetPoint("TOPLEFT", 1, -1)
+    fill:SetPoint("BOTTOMRIGHT", -1, 1)
+    fill:SetTexture(WHITE)
+    frame.optionsActionFill = fill
+    local sheen = frame:CreateTexture(nil, "ARTWORK", nil, 1)
+    sheen:SetPoint("TOPLEFT", 2, -2)
+    sheen:SetPoint("TOPRIGHT", -2, -2)
+    sheen:SetHeight(1)
+    frame.optionsActionSheen = sheen
+    local lip = frame:CreateTexture(nil, "ARTWORK", nil, 1)
+    lip:SetPoint("BOTTOMLEFT", 2, 2)
+    lip:SetPoint("BOTTOMRIGHT", -2, 2)
+    lip:SetHeight(1)
+    frame.optionsActionLip = lip
+end
+
+local function HideActionFace(frame)
+    if not frame.optionsActionFill then return end
+    frame.optionsActionFill:Hide()
+    frame.optionsActionSheen:Hide()
+    frame.optionsActionLip:Hide()
+end
+
+function W.PaintAction(frame, mode)
+    local face = ACTION_FACES[mode] or ACTION_FACES.idle
+    EnsureActionFace(frame)
+    frame:SetBackdropColor(unpack(face.bg))
+    frame:SetBackdropBorderColor(unpack(face.border))
+    PaintGradient(frame.optionsActionFill, face.bottom, face.top)
+    frame.optionsActionFill:Show()
+    frame.optionsActionSheen:SetColorTexture(unpack(face.line))
+    frame.optionsActionSheen:Show()
+    frame.optionsActionLip:SetColorTexture(0, 0, 0, mode == "down" and 0.15 or 0.35)
+    frame.optionsActionLip:Show()
+    local font = frame:GetFontString()
+    if font and face.text then font:SetTextColor(unpack(face.text)) end
+end
+
 function W.Backdrop(frame, kind)
     if not frame.SetBackdrop and BackdropTemplateMixin and Mixin then
         Mixin(frame, BackdropTemplateMixin)
@@ -35,6 +122,9 @@ function W.Backdrop(frame, kind)
     if kind == "control" or kind == "button" then
         background = { 0.07, 0.065, 0.052, 1 }
         border = { 0.42, 0.33, 0.21, 0.9 }
+    elseif kind == "action" then
+        background = ACTION_FACES.idle.bg
+        border = ACTION_FACES.idle.border
     elseif kind == "selected" then
         background = { 0.14, 0.105, 0.053, 1 }
         border = { GOLD[1], GOLD[2], GOLD[3], 0.85 }
@@ -48,6 +138,7 @@ function W.Backdrop(frame, kind)
         background = { 0.12, 0.11, 0.10, 1 }
         border = { 0.35, 0.28, 0.19, 0.65 }
     end
+    frame.optionsBackdropKind = kind
     frame:SetBackdrop({
         bgFile = (kind == "window" or kind == "inset") and GLASS or WHITE,
         tile = kind == "window" or kind == "inset", tileSize = 64,
@@ -56,6 +147,11 @@ function W.Backdrop(frame, kind)
     })
     frame:SetBackdropColor(unpack(background))
     frame:SetBackdropBorderColor(unpack(border))
+    if frame.optionsStyle == "action" and (kind == "action" or kind == "selected") then
+        W.PaintAction(frame, kind == "selected" and "selected" or "idle")
+    else
+        HideActionFace(frame)
+    end
     if kind == "window" or kind == "inset" then
         -- Blizzard's glass texture contains transparency even at full backdrop alpha.
         if not frame.optionsBacking then
@@ -117,31 +213,100 @@ function W.Tooltip(owner, text)
     end)
 end
 
-function W.Button(parent, label, width, height, onClick)
+function W.Button(parent, label, width, height, onClick, style)
     local button = CreateFrame("Button", nil, parent, "BackdropTemplate")
     button:SetSize(width or 160, height or 28)
-    W.Backdrop(button, "control")
-    local font = button:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    local face = style == "flat" and "control" or "action"
+    button.optionsStyle = style == "flat" and "flat" or "action"
+    W.Backdrop(button, face)
+    local fontObject = "GameFontNormal"
+    local font = button:CreateFontString(nil, "OVERLAY", fontObject)
     button:SetFontString(font)
-    button:SetNormalFontObject("GameFontNormal")
-    button:SetHighlightFontObject("GameFontHighlight")
+    button:SetNormalFontObject(fontObject)
+    button:SetHighlightFontObject(face == "action" and "GameFontNormal" or "GameFontHighlight")
     button:SetDisabledFontObject("GameFontDisable")
     button:SetText(label or "")
     font:ClearAllPoints()
     font:SetPoint("LEFT", 8, 0)
     font:SetPoint("RIGHT", -8, 0)
+    font:SetJustifyH(face == "action" and "CENTER" or "LEFT")
     font:SetWordWrap(false)
+    if face == "action" then font:SetTextColor(unpack(GOLD)) end
     W.Tooltip(button, function(self) return self:GetText() end)
-    button:SetHighlightTexture(WHITE)
-    local highlight = button:GetHighlightTexture()
-    if highlight then highlight:SetVertexColor(GOLD[1], GOLD[2], GOLD[3], 0.13) end
-    button:SetPushedTexture(WHITE)
-    local pushed = button:GetPushedTexture()
-    if pushed then pushed:SetVertexColor(GOLD[1], GOLD[2], GOLD[3], 0.23) end
+    if face == "action" then
+        local function RestoreFace(self)
+            local mode = self.optionsBackdropKind == "selected" and "selected" or "idle"
+            if self:IsEnabled() and self.IsMouseOver and self:IsMouseOver() then mode = "hover" end
+            W.PaintAction(self, mode)
+        end
+        Hook(button, "OnEnter", function(self)
+            if not self:IsEnabled() then return end
+            W.PaintAction(self, "hover")
+        end)
+        Hook(button, "OnLeave", RestoreFace)
+        Hook(button, "OnMouseDown", function(self)
+            if not self:IsEnabled() then return end
+            W.PaintAction(self, "down")
+            local labelFont = self:GetFontString()
+            if labelFont then
+                labelFont:ClearAllPoints()
+                labelFont:SetPoint("LEFT", 8, -1)
+                labelFont:SetPoint("RIGHT", -8, -1)
+            end
+        end)
+        Hook(button, "OnMouseUp", function(self)
+            local labelFont = self:GetFontString()
+            if labelFont then
+                labelFont:ClearAllPoints()
+                labelFont:SetPoint("LEFT", 8, 0)
+                labelFont:SetPoint("RIGHT", -8, 0)
+            end
+            RestoreFace(self)
+        end)
+    else
+        button:SetHighlightTexture(WHITE)
+        local highlight = button:GetHighlightTexture()
+        if highlight then highlight:SetVertexColor(GOLD[1], GOLD[2], GOLD[3], 0.13) end
+        button:SetPushedTexture(WHITE)
+        local pushed = button:GetPushedTexture()
+        if pushed then pushed:SetVertexColor(GOLD[1], GOLD[2], GOLD[3], 0.23) end
+    end
     button:SetScript("OnClick", function(self, ...)
         if self:IsEnabled() and onClick then onClick(self, ...) end
     end)
     return button
+end
+
+function W.CloseButton(parent, onClick)
+    local button = CreateFrame("Button", nil, parent)
+    button:SetSize(24, 24)
+    local font = button:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+    font:SetPoint("CENTER", 0, 1)
+    font:SetText("×")
+    font:SetTextColor(unpack(TEXT))
+    button.label = font
+    button:SetScript("OnEnter", function(self)
+        self.label:SetTextColor(unpack(GOLD))
+    end)
+    button:SetScript("OnLeave", function(self)
+        self.label:SetTextColor(unpack(TEXT))
+    end)
+    button:SetScript("OnClick", function(self, ...)
+        if onClick then onClick(self, ...) end
+    end)
+    return button
+end
+
+function W.EditBox(parent, width, height)
+    local box = CreateFrame("EditBox", nil, parent, "BackdropTemplate")
+    box:SetSize(width or CONTROL_WIDTH, height or 26)
+    box:SetAutoFocus(false)
+    W.Backdrop(box, "control")
+    box:SetFontObject("GameFontHighlight")
+    box:SetTextInsets(8, 8, 0, 0)
+    box:SetJustifyH("LEFT")
+    box:SetTextColor(unpack(TEXT))
+    return box
 end
 
 local function GetBinding(binding)
@@ -177,6 +342,9 @@ local function SetAvailable(control)
     control.available = available and true or false
     control:SetEnabled(available and true or false)
     control.label:SetTextColor(unpack(available and TEXT or MUTED))
+    if control.layoutType == "input" then
+        control:SetTextColor(unpack(available and TEXT or MUTED))
+    end
     if control.reason then
         local reason = Evaluate(control.disabledReason, control)
         control.reason:SetText(not available and reason or "")
@@ -289,7 +457,7 @@ local function OpenMenu(control, root)
     for index, option in ipairs(options) do
         local entry = menu.entries[index]
         if not entry then
-            entry = W.Button(menu.child, "", width - 20, 28)
+            entry = W.Button(menu.child, "", width - 20, 28, nil, "flat")
             entry:SetNormalFontObject("GameFontHighlight")
             entry:EnableMouseWheel(true)
             entry:SetScript("OnMouseWheel", menu.MouseWheel)
@@ -530,7 +698,7 @@ function W.NewLayout(parent, root, pageId, tabId, width)
 
     function layout:Choice(key, label, options, tip, enabledPredicate, onChanged, disabledReason)
         local row, caption, reason, controlWidth, y = self:NewRow(label, 40, disabledReason)
-        local control = W.Button(row, "", controlWidth, 26)
+        local control = W.Button(row, "", controlWidth, 26, nil, "flat")
         control.layoutType = "choice"
         control:SetPoint("TOPRIGHT", -10, -7)
         local font = control:GetFontString()
@@ -562,10 +730,8 @@ function W.NewLayout(parent, root, pageId, tabId, width)
 
     function layout:Input(key, label, tip, onChanged, enabledPredicate, disabledReason)
         local row, caption, reason, controlWidth, y = self:NewRow(label, 40, disabledReason)
-        local control = CreateFrame("EditBox", nil, row, "InputBoxTemplate")
-        control:SetSize(controlWidth - 8, 26)
-        control:SetPoint("TOPRIGHT", -14, -7)
-        control:SetAutoFocus(false)
+        local control = W.EditBox(row, controlWidth, 26)
+        control:SetPoint("TOPRIGHT", -10, -7)
         control:SetMaxLetters(12)
         control:SetNumeric(false)
         control.layoutType = "input"
@@ -590,7 +756,11 @@ function W.NewLayout(parent, root, pageId, tabId, width)
             self:ClearFocus()
             self.cancelling = nil
         end)
+        control:SetScript("OnEditFocusGained", function(self)
+            W.Backdrop(self, "selected")
+        end)
         control:SetScript("OnEditFocusLost", function(self)
+            W.Backdrop(self, "control")
             if not self.cancelling then Commit(self) end
         end)
         control:SetScript("OnTextChanged", function(self, userInput)
@@ -652,7 +822,7 @@ function W.NewLayout(parent, root, pageId, tabId, width)
                     control:SetWidth(controlWidth - 8)
                     height = math.max(height, readoutHeight + 42)
                 elseif control.layoutType then
-                    control:SetWidth(control.layoutType == "input" and controlWidth - 8 or controlWidth)
+                    control:SetWidth(controlWidth)
                 end
                 if row.layoutReason then
                     row.layoutReason:SetWidth(self.width - 20)
