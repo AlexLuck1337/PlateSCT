@@ -1,7 +1,6 @@
 local ADDON_NAME, BD = ...
 
--- Replace Media/icon.png (same basename) with the real addon art.
-BD.ICON_TEXTURE = "Interface\\AddOns\\" .. ADDON_NAME .. "\\Media\\icon"
+BD.ICON_TEXTURE = "Interface\\AddOns\\" .. ADDON_NAME .. "\\Media\\psct-logo-mini.png"
 
 local L = BD.L
 local button
