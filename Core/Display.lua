@@ -5,6 +5,14 @@ local Anim = BD.Anim
 local ICON_GAP = 4
 local CRIT_LABEL_GAP = 3
 
+local function GetFrameStyle(self, hitKind, isIncoming, isHeal)
+    local override
+    if self.db.numberStyle == "aion2" and (isIncoming or isHeal or hitKind == "miss") then
+        override = "retail"
+    end
+    return self:GetStylePreset(override)
+end
+
 local function AnchorCritLabel(frame)
     if frame.critLabel and frame.critLabel:IsShown() then
         frame.critLabel:SetPoint("BOTTOMLEFT", frame.text, "BOTTOMRIGHT", CRIT_LABEL_GAP, 0)
@@ -93,6 +101,11 @@ end
 local function PlaceFrame(frame, anchor, baseX, baseY)
     frame.startX, frame.startY = BD.Pool.PickClearSpawn(anchor, frame, baseX, baseY,
         frame.isCrit, frame.usesClassicShove)
+    if frame.animMode == "aionSlam" then
+        BD.Pool.RelayerAion(frame:GetParent())
+        BD.Pool.ApplyMotion(frame)
+        return
+    end
     if frame.usesClassicShove then
         frame.classicReady = true
     end
@@ -121,6 +134,7 @@ local function ApplyTextLayout(frame, fontSize, fontPath, fontFlags, preset, lay
     frame.icon:ClearAllPoints()
     if frame.critLabel then
         frame.critLabel:ClearAllPoints()
+        frame.critLabel:SetAlpha(1)
     end
 
     local critLabelW = 0
@@ -136,7 +150,9 @@ local function ApplyTextLayout(frame, fontSize, fontPath, fontFlags, preset, lay
             frame.critLabel:SetShadowOffset(0, 0)
         end
         frame.critLabel:Show()
-        critLabelW = (frame.critLabel:GetStringWidth() or 0) + CRIT_LABEL_GAP
+        if frame.animMode ~= "aionSlam" then
+            critLabelW = (frame.critLabel:GetStringWidth() or 0) + CRIT_LABEL_GAP
+        end
     elseif frame.critLabel then
         frame.critLabel:SetText("")
         frame.critLabel:Hide()
@@ -150,6 +166,33 @@ local function ApplyTextLayout(frame, fontSize, fontPath, fontFlags, preset, lay
         if not ok then
             resolvedIcon = nil
         end
+    end
+
+    if frame.animMode == "aionSlam" then
+        -- Keep the number itself centered at the right-side landing point.
+        frame.text:SetPoint("CENTER", frame, "CENTER", 0, 0)
+        local labelAnchor = frame.text
+        if resolvedIcon then
+            frame.icon:SetVertexColor(1, 1, 1, 1)
+            frame.icon:Show()
+            if iconPosition == "top" then
+                frame.icon:SetPoint("BOTTOM", frame.text, "TOP", 0, ICON_GAP)
+                labelAnchor = frame.icon
+            elseif iconPosition == "bottom" then
+                frame.icon:SetPoint("TOP", frame.text, "BOTTOM", 0, -ICON_GAP)
+            elseif iconPosition == "right" then
+                frame.icon:SetPoint("LEFT", frame.text, "RIGHT", ICON_GAP, 0)
+            else
+                frame.icon:SetPoint("RIGHT", frame.text, "LEFT", -ICON_GAP, 0)
+            end
+        else
+            frame.icon:SetTexture(nil)
+            frame.icon:Hide()
+        end
+        if showCritLabel and frame.critLabel then
+            frame.critLabel:SetPoint("BOTTOM", labelAnchor, "TOP", 0, CRIT_LABEL_GAP)
+        end
+        return
     end
 
     if not resolvedIcon then
@@ -205,11 +248,12 @@ local function ApplyMotionSpawnParams(frame, motionStyle, floatDistance)
     end
 end
 
-local function ConfigureFrameCommon(self, frame, preset, isCrit, hitKind, isIncoming, measureOnly)
+local function ConfigureFrameCommon(self, frame, preset, isCrit, hitKind, isIncoming, measureOnly, numberStyle)
     frame.isCrit = isCrit and true or false
     frame.incoming = isIncoming and true or false
     frame.hitKind = hitKind or (isCrit and "crit" or "hit")
-    frame.usesClassicShove = self:IsClassicNumberStyle() and true or nil
+    frame.numberStyle = numberStyle or self.db.numberStyle or "retail"
+    frame.usesClassicShove = frame.numberStyle == "classic" and true or nil
 
     local durationMult = preset.durationMult
     if frame.isCrit and preset.critDurationMult then
@@ -244,13 +288,17 @@ local function ConfigureFrameCommon(self, frame, preset, isCrit, hitKind, isInco
     end
     local fontSize = self.db.fontSize or defaultFontSize
     local spacingScale = fontSize / defaultFontSize
+    frame.aionSpacingScale = frame.numberStyle == "aion2" and fontSize / 14 or nil
+    if frame.aionSpacingScale then
+        spacingScale = frame.aionSpacingScale
+    end
     frame.spawnLanes = ScaleSpawnLanes(preset.spawnLanes, spacingScale)
     frame.spawnMinDist = (preset.spawnMinDist or 20) * spacingScale
     frame.spawnMinDistCrit = (preset.spawnMinDistCrit or 26) * spacingScale
     frame.spawnJitter = (preset.spawnJitter or 10) * spacingScale
     frame.spawnCritY = preset.spawnCritY
 
-    local motionStyle = self:ResolveMotionStyle(frame.hitKind)
+    local motionStyle = self:ResolveMotionStyle(frame.hitKind, frame.numberStyle)
 
     -- Classic Slap: Modern look, Classic grow-and-settle crit pow.
     if motionStyle == "classicSlap" and frame.isCrit then
@@ -373,9 +421,75 @@ local function ClassicPreviewSamples(self, sampleKind)
     return samples
 end
 
-function BD:GetOptionsPreviewBounds(sampleKind)
-    local preset = self:GetStylePreset()
-    local classicStyle = self:IsClassicNumberStyle()
+local function AionTextBounds(textW, textH, labelW, labelH, iconSize, iconPosition)
+    local left, right, bottom, top = -textW * 0.5, textW * 0.5, -textH * 0.5, textH * 0.5
+    local labelBottom = top + CRIT_LABEL_GAP
+    if iconSize then
+        if iconPosition == "top" or iconPosition == "bottom" then
+            left, right = math.min(left, -iconSize * 0.5), math.max(right, iconSize * 0.5)
+            if iconPosition == "top" then
+                top = top + ICON_GAP + iconSize
+                labelBottom = top + CRIT_LABEL_GAP
+            else
+                bottom = bottom - ICON_GAP - iconSize
+            end
+        else
+            bottom, top = math.min(bottom, -iconSize * 0.5), math.max(top, iconSize * 0.5)
+            if iconPosition == "right" then
+                right = right + ICON_GAP + iconSize
+            else
+                left = left - ICON_GAP - iconSize
+            end
+        end
+    end
+    if labelW > 0 then
+        left, right = math.min(left, -labelW * 0.5), math.max(right, labelW * 0.5)
+        top = math.max(top, labelBottom + labelH)
+    end
+    return left, right, bottom, top
+end
+
+local function AionPreviewBounds(self, sampleKind)
+    local preset = self.STYLE_PRESETS.aion2
+    local fontSize = (self.db.fontSize or self.DEFAULTS.fontSize) * preset.fontScale
+    local fontPath = BD.ResolveFontPath(self.db.fontFace)
+    local spacing = fontSize / 14
+    local distance = (self.db.floatDistance or self.DEFAULTS.floatDistance) * preset.floatMult
+    local dx1, dx2, dy1, dy2 = Anim.GetAionMotionBounds(spacing, distance)
+    local jitter = preset.spawnJitter * spacing
+    local x, y = preset.spawnBaseX * spacing, preset.spawnBaseY * spacing
+    local left, right, bottom, top = 0, 0, 0, 0
+    for _, sample in ipairs(PREVIEW_SAMPLES) do
+        if sample.hitKind ~= "miss" and MatchesPreviewKind(sample, sampleKind) then
+            local text = BD.FormatAmount(sample.amount, self.db.abbreviate)
+            local width, height = MeasurePreviewText(text, fontPath, fontSize, preset.fontFlags)
+            local labelW, labelH = 0, 0
+            if sample.hitKind == "crit" and self.db.showCritLabel then
+                labelW, labelH = MeasurePreviewText(L["CRITICAL"], fontPath,
+                    math.max(8, math.floor(fontSize * 0.55 + 0.5)), preset.fontFlags)
+            end
+            local iconSize = self.db.showSpellIcon and math.max(12, math.floor(fontSize * 1.1 + 0.5)) or nil
+            local l, r, b, t = AionTextBounds(width, height, labelW, labelH, iconSize, self.db.iconPosition)
+            local scale = sample.hitKind == "crit" and preset.critSlapScale or 1
+            left = math.min(left, x + dx1 - jitter + l * scale - 4)
+            right = math.max(right, x + dx2 + jitter + r * scale + 4)
+            bottom = math.min(bottom, y + dy1 - jitter + b * scale - 4)
+            top = math.max(top, y + dy2 + jitter + t * scale + 4)
+        end
+    end
+    if not sampleKind or sampleKind == "mixed" or sampleKind == "miss" then
+        local l, r, b, t = self:GetOptionsPreviewBounds("miss", "retail")
+        left, right, bottom, top = math.min(left, l), math.max(right, r), math.min(bottom, b), math.max(top, t)
+    end
+    return left, right, bottom, top
+end
+
+function BD:GetOptionsPreviewBounds(sampleKind, styleOverride)
+    local preset, numberStyle = self:GetStylePreset(styleOverride)
+    if numberStyle == "aion2" then
+        return AionPreviewBounds(self, sampleKind)
+    end
+    local classicStyle = numberStyle == "classic"
     if classicStyle then
         return BD.Pool.GetClassicPreviewBounds(ClassicPreviewSamples(self, sampleKind), PREVIEW_STAGGER / 0.75)
     end
@@ -387,7 +501,7 @@ function BD:GetOptionsPreviewBounds(sampleKind)
     for _, sample in ipairs(PREVIEW_SAMPLES) do
         if MatchesPreviewKind(sample, sampleKind) then
             local isCrit = sample.hitKind == "crit"
-            local motionStyle = self:ResolveMotionStyle(sample.hitKind)
+            local motionStyle = self:ResolveMotionStyle(sample.hitKind, numberStyle)
             local critPreset = motionStyle == "classicSlap" and self.STYLE_PRESETS.classic or preset
             local classicPow = isCrit and (preset.animMode == "classicPow" or motionStyle == "classicSlap")
             local holdsCrit = isCrit and (preset.critsHold or motionStyle == "classicSlap")
@@ -474,19 +588,26 @@ local function SpawnMotionPreviewFrame(anchor, sample)
     local isCrit = kind == "crit"
     local isMiss = kind == "miss"
 
-    local preset = BD:GetStylePreset()
+    local preset, numberStyle = GetFrameStyle(BD, kind, false, false)
     local frame = BD.Pool.Acquire()
-    ConfigureFrameCommon(BD, frame, preset, isCrit, kind, false)
+    ConfigureFrameCommon(BD, frame, preset, isCrit, kind, false, nil, numberStyle)
 
     frame.isPreview = true
     frame.anchor = anchor
+    -- The preview origin represents the live plate anchor: its right edge for Aion.
     frame.anchorRelPoint = "CENTER"
     frame:SetParent(anchor)
+    frame:SetFrameLevel(anchor:GetFrameLevel() + 1)
     frame:ClearAllPoints()
 
     -- PreviewSpawnY is the near-plate slot. Classic combat puts crits there
     -- and hits higher (spawnBaseY 36 vs spawnCritY 8); keep that split.
     local spawnY = PreviewSpawnY(frame.motionStyle)
+    local spawnX = 0
+    if frame.animMode == "aionSlam" then
+        spawnX = preset.spawnBaseX * frame.aionSpacingScale
+        spawnY = preset.spawnBaseY * frame.aionSpacingScale
+    end
     if frame.usesClassicShove then
         if not (frame.isCrit and frame.critsHold) then
             local hitY = preset.spawnBaseY or 36
@@ -541,7 +662,7 @@ local function SpawnMotionPreviewFrame(anchor, sample)
     if frame.usesClassicShove then
         frame.amountScale = BD.ComputeClassicAmountScale(sample.amount)
     end
-    PlaceFrame(frame, anchor, 0, spawnY)
+    PlaceFrame(frame, anchor, spawnX, spawnY)
     frame:SetAlpha(1)
     if frame.isCrit then
         if frame.animMode == "classicPow" then
@@ -704,12 +825,12 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
         kind = isCrit and "crit" or "hit"
     end
 
-    local preset = self:GetStylePreset()
+    local preset, numberStyle = GetFrameStyle(self, kind, false, isHeal)
     local frame = BD.Pool.Acquire()
-    ConfigureFrameCommon(self, frame, preset, isCrit, kind, false)
+    ConfigureFrameCommon(self, frame, preset, isCrit, kind, false, nil, numberStyle)
 
     frame.anchor = plate
-    frame.anchorRelPoint = "TOP"
+    frame.anchorRelPoint = numberStyle == "aion2" and "TOPRIGHT" or "TOP"
     -- Parent UIParent. Host follows the plate while live. Death/reuse freezes
     -- at last world pin (do not read the plate). anchorGuid only when plaintext;
     -- Modern secrets: orphan on hide / NAME_PLATE_UNIT_REMOVED (see API.lua).
@@ -732,6 +853,11 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
     BD.Pool.AttachLingerHost(frame, plate)
 
     local baseY = preset.spawnBaseY or 8
+    local baseX = 0
+    if frame.animMode == "aionSlam" then
+        baseX = preset.spawnBaseX * frame.aionSpacingScale
+        baseY = baseY * frame.aionSpacingScale
+    end
     if frame.isCrit and frame.critsHold then
         baseY = frame.spawnCritY or preset.spawnCritY or 8
     end
@@ -801,7 +927,7 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
         frame.amountScale = BD.ComputeClassicAmountScale(amountForThreshold)
     end
 
-    PlaceFrame(frame, plate, 0, baseY)
+    PlaceFrame(frame, plate, baseX, baseY)
     frame:SetAlpha(frame.baseAlpha)
     if frame.isCrit then
         if frame.animMode == "classicPow" then
@@ -836,9 +962,9 @@ function BD:ShowIncoming(text, r, g, b, amountForThreshold, isCrit, hitKind)
         kind = isCrit and "crit" or "hit"
     end
 
-    local preset = self:GetStylePreset()
+    local preset, numberStyle = GetFrameStyle(self, kind, true, false)
     local frame = BD.Pool.Acquire()
-    ConfigureFrameCommon(self, frame, preset, isCrit, kind, true)
+    ConfigureFrameCommon(self, frame, preset, isCrit, kind, true, nil, numberStyle)
 
     frame.anchor = anchor
     frame.anchorRelPoint = relPoint or "CENTER"

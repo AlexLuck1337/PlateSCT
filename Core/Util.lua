@@ -2,9 +2,12 @@ local _, BD = ...
 
 local thresholdCurve = nil
 
-function BD:GetStylePreset()
-    local style = self.db.numberStyle or "retail"
-    return self.STYLE_PRESETS[style] or self.STYLE_PRESETS.retail
+function BD:GetStylePreset(styleOverride)
+    local style = styleOverride or self.db.numberStyle or "retail"
+    if not self.STYLE_PRESETS[style] then
+        style = "retail"
+    end
+    return self.STYLE_PRESETS[style], style
 end
 
 function BD:IsClassicNumberStyle()
@@ -584,8 +587,12 @@ function BD:ShouldUseSchoolColors()
     return self:GetStylePreset().useSchoolColors and true or false
 end
 
-function BD:ResolveMotionStyle(hitKind)
-    if (self.db.numberStyle or "retail") == "classic" then
+function BD:ResolveMotionStyle(hitKind, styleOverride)
+    local numberStyle = styleOverride or self.db.numberStyle or "retail"
+    if numberStyle == "aion2" then
+        return "aion2"
+    end
+    if numberStyle == "classic" then
         return "platesct"
     end
     local key = "animHit"

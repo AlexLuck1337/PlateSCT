@@ -15,7 +15,7 @@ local function PersonalModeAvailable()
 end
 
 local function ModernNumberStyle()
-    return BD.db.numberStyle ~= "classic"
+    return (BD.db.numberStyle or "retail") == "retail"
 end
 
 local function PixelValue(value)
@@ -144,8 +144,11 @@ local function BuildAnimation(parent, root)
     layout:Choice("numberStyle", L["Number style"], {
         { id = "retail", labelKey = "Modern number style" },
         { id = "classic", labelKey = "Classic number style" },
-    }, L["Both number styles are available on every supported WoW API."])
+        { id = "aion2", labelKey = "Impact number style" },
+    }, L["All number styles are available on every supported WoW API."])
     layout:Note(L["Modern scrolls up from the nameplate with a small crit pop. Classic keeps the grow-and-settle pow, packed close to the plate."])
+    layout:Note(L["Impact slams outgoing damage to the right and below the nameplate, then floats up. New hits layer in front; crits amplify and CRITICAL flashes above when enabled."])
+    layout:Note(L["Impact uses Modern for incoming damage, healing, and miss text, preserving saved Modern motions."])
 
     layout:Heading(L["Timing and movement"])
     layout:Slider("floatDistance", L["Scroll offset"], 10, 120, 5, PixelValue)
@@ -155,8 +158,8 @@ local function BuildAnimation(parent, root)
         function(value) return string.format(L["%.1fx"], value) end)
 
     layout:Heading(L["Modern number style motion"])
-    layout:Note(L["Pick a motion for each hit type. Classic number style ignores these and keeps its own animation."])
-    local motionReason = L["Classic number style uses its own animation. Switch to Modern number style to customize motion."]
+    layout:Note(L["Pick a motion for each hit type in Modern. Classic and Impact use their own damage animations."])
+    local motionReason = L["Switch to Modern number style to customize these motions."]
     layout:Choice("animHit", L["Normal hits"], BD.ANIM_STYLES,
         L["Motion used for normal damage numbers."], ModernNumberStyle, nil, motionReason)
     layout:Choice("animCrit", L["Critical hits"], BD.ANIM_STYLES_CRIT,
@@ -369,7 +372,7 @@ local function BuildWhatsNew(layout)
     layout:Heading(L["Settings redesign"])
     layout:Note(L["A new WoW-inspired settings window with clear sections, searchable controls, and gentle animations."])
     layout:Note(L["Modern API options now have their own page. Damage mode combines Only my damage and All engaged nameplates without changing saved preferences."])
-    layout:Note(L["The compact bottom preview includes Mixed, Hit, Crit, and Miss samples. Both number styles remain available on every API."])
+    layout:Note(L["The compact bottom preview includes Mixed, Hit, Crit, and Miss samples. All number styles remain available on every API."])
     layout:Heading(L["Existing features"])
     layout:Note(L["Outgoing healing, incoming damage, font selection, scroll speed, school colors, spell icons, and critical-hit sounds remain available."])
 end

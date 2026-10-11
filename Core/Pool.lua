@@ -129,6 +129,13 @@ local function ComputeMotion(frame)
     end
     local motionProgress = math.min(1, progress * scrollSpeed)
 
+    if frame.animMode == "aionSlam" then
+        local dx, dy = Anim.ComputeAionEntrance(frame.elapsed, frame.aionSpacingScale)
+        dy = dy + Anim.ComputeAionTravel(frame.elapsed, frame.duration, frame.floatDistance, scrollSpeed)
+        local scale = Anim.ComputeAionScale(frame.elapsed, frame.isCrit, frame.critSlapScale, frame.critRestScale)
+        return (frame.startX or 0) + dx, (frame.startY or 0) + dy, scale, Anim.ComputeAlpha(frame, progress)
+    end
+
     local scale, introDuration = ComputeIntroScale(frame)
     scale = scale * (frame.amountScale or 1)
     local extraY = 0
@@ -307,7 +314,7 @@ local function SnapshotLingerHost(frame, allowPlate)
     if nx ~= nil then
         local mx, my = ComputeMotion(frame)
         local factor = GetWorldScaleFactor(frame) or 1
-        if frame.classicReady then
+        if frame.classicReady or frame.animMode == "aionSlam" then
             factor = factor / frame:GetScale()
         end
         StoreLingerWorldCenter(frame, nx - mx * factor, ny - my * factor)
@@ -322,6 +329,13 @@ local function SnapshotLingerHost(frame, allowPlate)
             local okH, height = pcall(frame.anchor.GetHeight, frame.anchor)
             if factor and okH and BD.CanAccessValue(height) and height then
                 cy = cy + height * factor * 0.5
+            end
+            if frame.anchorRelPoint == "TOPRIGHT" then
+                local okW, width = pcall(frame.anchor.GetWidth, frame.anchor)
+                if not factor or not okW or not BD.CanAccessValue(width) or not width then
+                    return false
+                end
+                cx = cx + width * factor * 0.5
             end
             StoreLingerWorldCenter(frame, cx, cy)
             return true
@@ -431,6 +445,7 @@ local function ReleaseFrame(frame)
     frame.icon:ClearAllPoints()
     if frame.critLabel then
         frame.critLabel:SetText("")
+        frame.critLabel:SetAlpha(1)
         frame.critLabel:Hide()
         frame.critLabel:ClearAllPoints()
     end
@@ -439,6 +454,9 @@ local function ReleaseFrame(frame)
     frame.unitToken = nil
     frame.incoming = nil
     frame.motionStyle = nil
+    frame.animMode = nil
+    frame.numberStyle = nil
+    frame.aionSpacingScale = nil
     frame.anchorRelPoint = nil
     frame.usesClassicShove = nil
     frame.classicReady = nil
@@ -458,6 +476,7 @@ local function ReleaseFrame(frame)
     end
     frame:ClearAllPoints()
     frame:SetParent(UIParent)
+    frame:SetFrameLevel(0)
     frame:SetIgnoreParentScale(false)
     active[frame] = nil
     table.insert(pool, frame)
@@ -873,6 +892,10 @@ end
 
 --- Classic style uses measured rectangles; Modern style keeps its spawn lanes.
 local function PickClearSpawn(anchor, frame, baseX, baseY, isCrit, acrossAnchors)
+    if frame.animMode == "aionSlam" then
+        local jitter = frame.spawnJitter or 0
+        return baseX + (math.random() * 2 - 1) * jitter, baseY + (math.random() * 2 - 1) * jitter
+    end
     if frame.usesClassicShove and frame.classicBounds then
         return PickClassicSpawn(frame, baseX, baseY, ActiveClassicFrames(GetTime()))
     end
@@ -890,6 +913,40 @@ local function PickClearSpawn(anchor, frame, baseX, baseY, isCrit, acrossAnchors
     end
 
     return baseX + math.random(-jitter, jitter), baseY + math.random(0, jitter)
+end
+
+local function RelayerAion(parent)
+    local frames = {}
+    for frame in pairs(active) do
+        if frame.animMode == "aionSlam" and frame:GetParent() == parent then
+            frames[#frames + 1] = frame
+        end
+    end
+    table.sort(frames, function(a, b) return a.spawnOrder < b.spawnOrder end)
+    local baseLevel = math.max(100, parent:GetFrameLevel() + 1)
+    for index, frame in ipairs(frames) do
+        frame:SetFrameLevel(baseLevel + index - 1)
+    end
+end
+
+local function ApplyFrameMotion(frame)
+    local x, y, scale, alpha = ComputeMotion(frame)
+    if frame.classicReady or frame.animMode == "aionSlam" then
+        -- Keep placement in logical pixels while text size changes.
+        frame:SetScale(scale)
+        x, y = x / scale, y / scale
+    end
+    local motionAnchor = frame.lingerHost or frame.anchor
+    if motionAnchor then
+        local relPoint = frame.lingerHost and "CENTER" or (frame.anchorRelPoint or "TOP")
+        frame:ClearAllPoints()
+        SafeSetPoint(frame, "CENTER", motionAnchor, relPoint, x, y)
+    end
+    frame:SetScale(scale)
+    frame:SetAlpha(alpha)
+    if frame.animMode == "aionSlam" and frame.critLabel then
+        frame.critLabel:SetAlpha(Anim.ComputeAionLabelAlpha(frame.elapsed))
+    end
 end
 
 local function FrameOnUpdate(frame, elapsed)
@@ -922,21 +979,7 @@ local function FrameOnUpdate(frame, elapsed)
 
     MaybeRelayoutClassic()
 
-    local x, y, scale, alpha = ComputeMotion(frame)
-    if frame.classicReady then
-        -- SetPoint offsets also scale in WoW. Keep logical motion/placement
-        -- fixed while the visible text grows; Modern style retains its path.
-        frame:SetScale(scale)
-        x, y = x / scale, y / scale
-    end
-    local motionAnchor = frame.lingerHost or frame.anchor
-    if motionAnchor then
-        local relPoint = frame.lingerHost and "CENTER" or (frame.anchorRelPoint or "TOP")
-        frame:ClearAllPoints()
-        SafeSetPoint(frame, "CENTER", motionAnchor, relPoint, x, y)
-    end
-    frame:SetScale(scale)
-    frame:SetAlpha(alpha)
+    ApplyFrameMotion(frame)
 
     if not frame.incoming and not frame.isPreview and not frame.lingerFrozen then
         SnapshotLingerHost(frame, true)
@@ -1002,6 +1045,8 @@ BD.Pool = {
     Acquire = AcquireFrame,
     Release = ReleaseFrame,
     PickClearSpawn = PickClearSpawn,
+    ApplyMotion = ApplyFrameMotion,
+    RelayerAion = RelayerAion,
     RelayoutClassic = RelayoutClassic,
     GetClassicPreviewBounds = GetClassicPreviewBounds,
     ReleasePreviewFrames = ReleasePreviewFrames,

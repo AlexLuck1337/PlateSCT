@@ -21,7 +21,7 @@ BD.DEFAULTS = {
     incomingOffsetX = 0,
     incomingOffsetY = -100,
     debug = false,
-    numberStyle = "retail", -- "retail" = Modern style; "classic" = Classic style (not Classic version)
+    numberStyle = "retail", -- "retail", "classic", "aion2": number styles, not API clients
     useSchoolColors = false,
     animHit = "platesct",
     animCrit = "platesct",
@@ -106,6 +106,30 @@ BD.SOUND_CHANNELS = {
 }
 
 BD.STYLE_PRESETS = {
+    aion2 = {
+        fontFlags = "OUTLINE",
+        fontScale = 1.0,
+        popScale = 1.0,
+        popDuration = 0,
+        fadeMode = "aion",
+        fadeInRatio = 0,
+        driftX = 0,
+        useSchoolColors = false,
+        defaultColor = { 1.0, 0.93, 0.0 },
+        critColor = { 1.0, 0.93, 0.0 },
+        critPopStartScale = 1.0,
+        critSlapScale = 1.4,
+        critRestScale = 1.2,
+        durationMult = 1.0,
+        critDurationMult = 1.1,
+        floatMult = 1.0,
+        animMode = "aionSlam",
+        critsHold = false,
+        spawnBaseX = 36,
+        spawnBaseY = -26,
+        spawnJitter = 3,
+        shadowOffset = { 1, -1 },
+    },
     retail = {
         fontFlags = "OUTLINE",
         fontScale = 1.0,

@@ -3,6 +3,14 @@ local _, BD = ...
 local L = {}
 BD.RegisterLocale("ptBR", L)
 
+L["Impact number style"] = "Estilo de números Impact"
+L["All number styles are available on every supported WoW API."] = "Todos os estilos de números estão disponíveis em cada API de WoW compatível."
+L["Impact slams outgoing damage to the right and below the nameplate, then floats up. New hits layer in front; crits amplify and CRITICAL flashes above when enabled."] = "Impact lança o dano causado à direita e abaixo da placa de nome e depois o faz subir. Novos golpes aparecem na frente; críticos aumentam e CRÍTICO pisca acima quando ativado."
+L["Impact uses Modern for incoming damage, healing, and miss text, preserving saved Modern motions."] = "Impact usa Moderno para dano recebido, cura e erros, preservando os movimentos Moderno salvos."
+L["Pick a motion for each hit type in Modern. Classic and Impact use their own damage animations."] = "Escolha um movimento por tipo de golpe em Moderno. Clássico e Impact usam suas próprias animações de dano."
+L["Switch to Modern number style to customize these motions."] = "Mude para o estilo de números Moderno para personalizar esses movimentos."
+L["The compact bottom preview includes Mixed, Hit, Crit, and Miss samples. All number styles remain available on every API."] = "A prévia compacta inferior inclui exemplos mistos, normais, críticos e erros. Todos os estilos de números continuam disponíveis em cada API."
+
 L["PlateSCT is in Beta"] = "PlateSCT está em beta"
 L["This addon is in Beta mode. Inaccuracies and errors may show up. Please report such issues on the addon's page."] =
     "Este addon está em modo beta. Imprecisões e erros podem aparecer. Relate esses problemas na página do addon."

@@ -40,3 +40,4 @@ release/
 tools/
 .runtime/
 tests/
+!tests/aion_spec.lua
