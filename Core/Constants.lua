@@ -28,6 +28,7 @@ BD.DEFAULTS = {
     animMiss = "platesct",
     showCritLabel = false,
     showOptionsPreview = true,
+    settingsAnimations = true,
     showMinimapButton = true,
     minimapAngle = 200,
     locale = "auto",

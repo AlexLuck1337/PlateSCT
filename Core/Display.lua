@@ -202,6 +202,8 @@ local function PreviewSpawnY(motionStyle)
 end
 
 local previewGeneration = 0
+local previewReplayGeneration = 0
+local previewReplayPending = false
 local PREVIEW_STAGGER = 0.45
 local PREVIEW_SAMPLES = {
     { hitKind = "hit", amount = 12400, spellID = 6603, school = 1, fallbackIcon = "Interface\\Icons\\INV_Sword_04" },
@@ -212,6 +214,131 @@ local PREVIEW_SAMPLES = {
     { hitKind = "miss", text = "DODGE" },
     { hitKind = "miss", text = "IMMUNE" },
 }
+
+local function MatchesPreviewKind(sample, sampleKind)
+    if sampleKind ~= "hit" and sampleKind ~= "crit" and sampleKind ~= "miss" then
+        return true
+    end
+    return sample.hitKind == sampleKind
+end
+
+local previewMeasureFrame
+local previewMeasureText
+local function MeasurePreviewText(text, fontPath, fontSize, fontFlags)
+    if not previewMeasureText then
+        previewMeasureFrame = CreateFrame("Frame", nil, UIParent)
+        previewMeasureFrame:Hide()
+        previewMeasureText = previewMeasureFrame:CreateFontString(nil, "ARTWORK")
+    end
+    BD.SafeSetFont(previewMeasureText, fontPath, fontSize, fontFlags)
+    previewMeasureText:SetText(text)
+    return previewMeasureText:GetStringWidth() or 0, math.max(fontSize, previewMeasureText:GetStringHeight() or 0)
+end
+
+function BD:GetOptionsPreviewBounds(sampleKind)
+    local preset = self:GetStylePreset()
+    local classicStyle = self:IsClassicNumberStyle()
+    local baseFontSize = self.db.fontSize or self.DEFAULTS.fontSize
+    local fontSize = baseFontSize * preset.fontScale
+    local fontPath = BD.ResolveFontPath(self.db.fontFace)
+    local spacingScale = baseFontSize / math.max(1, self.DEFAULTS.fontSize or 14)
+    -- Include the mock nameplate as well as the full animation envelope.
+    local left, right, bottom, top = -70, 70, -9, 9
+    for _, sample in ipairs(PREVIEW_SAMPLES) do
+        if MatchesPreviewKind(sample, sampleKind) then
+            local isCrit = sample.hitKind == "crit"
+            local motionStyle = self:ResolveMotionStyle(sample.hitKind)
+            local critPreset = motionStyle == "classicSlap" and self.STYLE_PRESETS.classic or preset
+            local classicPow = isCrit and (preset.animMode == "classicPow" or motionStyle == "classicSlap")
+            local holdsCrit = isCrit and (preset.critsHold or motionStyle == "classicSlap")
+                and not BD.IsExtraMotionPath(motionStyle)
+            local peakScale = math.max(1, preset.popScale or 1)
+            if isCrit then
+                if classicPow then
+                    peakScale = math.max(critPreset.critPowStartScale or 1,
+                        critPreset.critPowPeakScale or 2, critPreset.critRestScale or 1.4)
+                else
+                    peakScale = math.max(preset.critPopStartScale or 0.72,
+                        preset.critSlapScale or 1.5, preset.critRestScale or 1.4)
+                end
+            end
+            if classicStyle then
+                peakScale = peakScale * 1.3
+            end
+
+            local text = sample.text or BD.FormatAmount(sample.amount, self.db.abbreviate)
+            local width, height = MeasurePreviewText(text, fontPath, fontSize, preset.fontFlags)
+            local critLabelWidth = 0
+            local iconYOffset = 0
+            if isCrit and self.db.showCritLabel then
+                local critSize = math.max(8, math.floor(fontSize * 0.55 + 0.5))
+                local labelWidth, labelHeight = MeasurePreviewText(L["CRITICAL"], fontPath, critSize, preset.fontFlags)
+                critLabelWidth = labelWidth + CRIT_LABEL_GAP
+                width = width + critLabelWidth
+                iconYOffset = math.abs(height - labelHeight) * 0.5
+                height = math.max(height, labelHeight)
+            end
+            if sample.hitKind ~= "miss" and self.db.showSpellIcon then
+                local iconSize = math.max(12, math.floor(fontSize * 1.1 + 0.5))
+                if self.db.iconPosition == "top" or self.db.iconPosition == "bottom" then
+                    width = math.max(width, iconSize + critLabelWidth)
+                    height = height + iconSize + ICON_GAP
+                else
+                    width = width + iconSize + ICON_GAP
+                    height = math.max(height, iconSize)
+                    if self.db.iconPosition == "right" and critLabelWidth > 0 then
+                        -- The right icon follows the label's lower baseline.
+                        height = height + iconYOffset * 2
+                    end
+                end
+            end
+            local halfWidth = width * peakScale * 0.5 + 4
+            local halfHeight = height * peakScale * 0.5 + 4
+            local spawnY = PreviewSpawnY(motionStyle)
+            if classicStyle and not holdsCrit then
+                spawnY = spawnY + (preset.spawnBaseY or 36) - (critPreset.spawnCritY or 8)
+            end
+            local minX, maxX, minY, maxY = 0, 0, spawnY, spawnY
+            if classicStyle then
+                -- Clear-spawn's 35-pixel spiral plus Classic's capped 40-pixel shove.
+                minX, maxX = -75, 75
+                minY, maxY = spawnY - 75, spawnY + 75
+            else
+                local jitter = (preset.spawnJitter or 10) * spacingScale
+                minX, maxX = -jitter, jitter
+                maxY = spawnY + jitter
+                for _, lane in ipairs(preset.spawnLanes or {}) do
+                    minX = math.min(minX, lane[1] * spacingScale)
+                    maxX = math.max(maxX, lane[1] * spacingScale)
+                    minY = math.min(minY, spawnY + lane[2] * spacingScale)
+                    maxY = math.max(maxY, spawnY + lane[2] * spacingScale)
+                end
+            end
+            local distance = (self.db.floatDistance or self.DEFAULTS.floatDistance) * preset.floatMult
+            if motionStyle == "fountain" then
+                -- Fountain's quadratic apex is below 35px for all supported random arcs.
+                minX, maxX = minX - 56, maxX + 56
+                minY, maxY = minY - 22, maxY + 35
+            elseif motionStyle == "rainfall" then
+                minX, maxX = minX - 18, maxX + 18
+                minY, maxY = minY + math.min(0, 4 - distance * 1.2), maxY + 12
+            elseif motionStyle == "verticalDown" then
+                minY = minY - (distance > 0 and distance or 20)
+            elseif not holdsCrit then
+                local drift = preset.driftX or 0
+                minX, maxX = minX + math.min(0, drift), maxX + math.max(0, drift)
+                minY, maxY = minY + math.min(0, distance), maxY + math.max(0, distance)
+            end
+            if isCrit and not classicPow then
+                local drop = preset.critSlapDrop or 0
+                minY, maxY = minY + math.min(0, drop), maxY + math.max(0, drop)
+            end
+            left, right = math.min(left, minX - halfWidth), math.max(right, maxX + halfWidth)
+            bottom, top = math.min(bottom, minY - halfHeight), math.max(top, maxY + halfHeight)
+        end
+    end
+    return left, right, bottom, top
+end
 
 local function SpawnMotionPreviewFrame(anchor, sample)
     sample = sample or PREVIEW_SAMPLES[1]
@@ -311,7 +438,7 @@ local function SpawnMotionPreviewFrame(anchor, sample)
     end
 end
 
-function BD:ShowMotionPreview(anchor)
+function BD:ShowMotionPreview(anchor, sampleKind)
     if not anchor or not anchor:IsShown() then
         return
     end
@@ -321,55 +448,80 @@ function BD:ShowMotionPreview(anchor)
 
     BD.Pool.ReleasePreviewFrames(anchor)
 
-    for index, sample in ipairs(PREVIEW_SAMPLES) do
-        C_Timer.After((index - 1) * PREVIEW_STAGGER, function()
-            if generation ~= previewGeneration then
-                return
-            end
-            if not anchor or not anchor:IsShown() then
-                return
-            end
-            SpawnMotionPreviewFrame(anchor, sample)
-        end)
+    local index = 0
+    for _, sample in ipairs(PREVIEW_SAMPLES) do
+        if MatchesPreviewKind(sample, sampleKind) then
+            local previewSample = sample
+            C_Timer.After(index * PREVIEW_STAGGER, function()
+                if generation ~= previewGeneration then
+                    return
+                end
+                if not anchor or not anchor:IsShown() then
+                    return
+                end
+                SpawnMotionPreviewFrame(anchor, previewSample)
+            end)
+            index = index + 1
+        end
     end
 end
 
-local previewReplayPending = false
-
 function BD:RequestOptionsPreview()
-    local pane = BD.configFrame and BD.configFrame.previewPane
+    local configFrame = self.configFrame
+    local pane = configFrame and configFrame.previewPane
     if not pane then
         return
     end
-    if not (self.db and self.db.showOptionsPreview) then
-        pane:Hide()
-        BD:ReleaseMotionPreviews()
+    if not configFrame:IsShown() then
+        self:ReleaseMotionPreviews()
         return
     end
-    pane:Show()
+    if pane.UpdateLayout then
+        pane:UpdateLayout()
+    elseif self.db and self.db.showOptionsPreview then
+        pane:Show()
+    else
+        pane:Hide()
+    end
+    if not (self.db and self.db.showOptionsPreview) then
+        self:ReleaseMotionPreviews()
+        return
+    end
+    if not pane:IsShown() or not (pane.stage or pane):IsShown() then
+        self:ReleaseMotionPreviews()
+        return
+    end
     if previewReplayPending then
         return
     end
     previewReplayPending = true
+    local generation = previewReplayGeneration
     C_Timer.After(0.08, function()
-        previewReplayPending = false
-        if not BD.configFrame or not BD.configFrame.previewPane then
+        if generation ~= previewReplayGeneration then
             return
         end
-        pane = BD.configFrame.previewPane
-        if not pane:IsShown() then
+        previewReplayPending = false
+        if BD.configFrame ~= configFrame or configFrame.previewPane ~= pane or not configFrame:IsShown() then
+            return
+        end
+        if not (BD.db and BD.db.showOptionsPreview) or not pane:IsShown() then
             return
         end
         local stage = pane.stage or pane
         if not stage:IsShown() then
             return
         end
-        BD:ShowMotionPreview(stage)
+        if pane.FitStage then
+            pane:FitStage()
+        end
+        BD:ShowMotionPreview(stage, pane.sampleKind)
     end)
 end
 
 function BD:ReleaseMotionPreviews()
     previewGeneration = previewGeneration + 1
+    previewReplayGeneration = previewReplayGeneration + 1
+    previewReplayPending = false
     BD.Pool.ReleasePreviewFrames()
 end
 

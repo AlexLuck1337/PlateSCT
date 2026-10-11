@@ -34,3 +34,8 @@ Desktop.ini
 dist/
 build/
 release/
+
+# Tools and other
+tools/
+.runtime/
+tests/

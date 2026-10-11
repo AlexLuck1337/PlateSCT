@@ -9,7 +9,7 @@
 ## Notes-itIT: Numeri di danno sulle barre del nome con soglia e abbreviazioni. Supporta Midnight, Forever e Classic.
 ## Notes-ptBR: Números de dano em placas de nome com limite e abreviações. Suporta Midnight, Forever e Classic.
 ## Author: Limitedby
-## Version: 1.1.5
+## Version: 1.2.0
 ## SavedVariables: PlateSCTDB
 ## IconTexture: Interface\AddOns\PlateSCT\Media\psct-logo-mini.png
 ## AddonCompartmentFunc: PlateSCT_OnAddonCompartmentClick
@@ -36,5 +36,7 @@ Core/Combat.lua
 Core/CombatClassic.lua
 Core/Probe.lua
 Core/Events.lua
+Options/Widgets.lua
+Options/Pages.lua
 Options/Options.lua
 Core/Minimap.lua
