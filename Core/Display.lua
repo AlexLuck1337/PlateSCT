@@ -22,6 +22,90 @@ local function ScaleSpawnLanes(lanes, scale)
     return scaled
 end
 
+local function ClassicTextBounds(textW, textH, labelW, labelH, iconSize, iconPosition)
+    local labelSpan = labelW > 0 and labelW + CRIT_LABEL_GAP or 0
+    local tx, ty = -labelSpan * 0.5, 0
+    if iconSize then
+        if iconPosition == "right" then
+            tx = -(iconSize + ICON_GAP + labelSpan) * 0.5
+        elseif iconPosition == "top" then
+            ty = -(iconSize + ICON_GAP) * 0.5
+        elseif iconPosition == "bottom" then
+            ty = (iconSize + ICON_GAP) * 0.5
+        else
+            tx = (iconSize + ICON_GAP - labelSpan) * 0.5
+        end
+    end
+    local left, right = tx - textW * 0.5, tx + textW * 0.5
+    local bottom, top = ty - textH * 0.5, ty + textH * 0.5
+    local textLeft, textRight, textBottom, textTop = left, right, bottom, top
+    if labelW > 0 then
+        right = math.max(right, textRight + CRIT_LABEL_GAP + labelW)
+        top = math.max(top, textBottom + labelH)
+    end
+    if iconSize then
+        local ix, iy = tx, ty
+        if iconPosition == "right" then
+            ix = right + ICON_GAP + iconSize * 0.5
+            if labelW > 0 then
+                iy = textBottom + labelH * 0.5
+            end
+        elseif iconPosition == "top" then
+            iy = textTop + ICON_GAP + iconSize * 0.5
+        elseif iconPosition == "bottom" then
+            iy = textBottom - ICON_GAP - iconSize * 0.5
+        else
+            ix = textLeft - ICON_GAP - iconSize * 0.5
+        end
+        left, right = math.min(left, ix - iconSize * 0.5), math.max(right, ix + iconSize * 0.5)
+        bottom, top = math.min(bottom, iy - iconSize * 0.5), math.max(top, iy + iconSize * 0.5)
+    end
+    return { left, right, bottom, top }
+end
+
+local function AccessibleTextSize(text, fontSize)
+    local ok, width, height = pcall(function()
+        return text:GetStringWidth(), text:GetStringHeight()
+    end)
+    -- Never inspect secret text to estimate its length. Use a conservative
+    -- font-based rectangle if the client cannot expose its rendered metrics.
+    if not ok or not BD.CanAccessValue(width) or not width then
+        width = fontSize * 12
+    end
+    if not ok or not BD.CanAccessValue(height) or not height then
+        height = fontSize
+    end
+    return width, math.max(fontSize, height)
+end
+
+local function RecordClassicBounds(frame, fontSize, iconSize, iconPosition)
+    if not frame.usesClassicShove then
+        return
+    end
+    local width, height = AccessibleTextSize(frame.text, fontSize)
+    local labelW, labelH = 0, 0
+    if frame.critLabel and frame.critLabel:IsShown() then
+        labelW, labelH = AccessibleTextSize(frame.critLabel, math.max(8, math.floor(fontSize * 0.55 + 0.5)))
+    end
+    frame.classicBounds = ClassicTextBounds(width, height, labelW, labelH, iconSize, iconPosition)
+end
+
+local function PlaceFrame(frame, anchor, baseX, baseY)
+    frame.startX, frame.startY = BD.Pool.PickClearSpawn(anchor, frame, baseX, baseY,
+        frame.isCrit, frame.usesClassicShove)
+    if frame.usesClassicShove then
+        frame.classicReady = true
+    end
+    frame:ClearAllPoints()
+    local at = frame.lingerHost or anchor
+    local scale = 1
+    if frame.usesClassicShove then
+        scale = frame.isCrit and (frame.critPowStartScale or 1) or (frame.popScale or 1)
+    end
+    frame:SetPoint("CENTER", at, frame.lingerHost and "CENTER" or (frame.anchorRelPoint or "TOP"),
+        frame.startX / scale, frame.startY / scale)
+end
+
 local function ApplyTextLayout(frame, fontSize, fontPath, fontFlags, preset, layoutOpts)
     layoutOpts = layoutOpts or {}
     local showIcon = layoutOpts.showIcon
@@ -73,6 +157,7 @@ local function ApplyTextLayout(frame, fontSize, fontPath, fontFlags, preset, lay
         frame.icon:Hide()
         frame.text:SetPoint("CENTER", frame, "CENTER", -critLabelW * 0.5, 0)
         AnchorCritLabel(frame)
+        RecordClassicBounds(frame, fontSize)
         return
     end
 
@@ -104,6 +189,7 @@ local function ApplyTextLayout(frame, fontSize, fontPath, fontFlags, preset, lay
         frame.icon:SetPoint("RIGHT", frame.text, "LEFT", -ICON_GAP, 0)
         AnchorCritLabel(frame)
     end
+    RecordClassicBounds(frame, fontSize, size, iconPosition)
 end
 
 local function ApplyMotionSpawnParams(frame, motionStyle, floatDistance)
@@ -119,10 +205,11 @@ local function ApplyMotionSpawnParams(frame, motionStyle, floatDistance)
     end
 end
 
-local function ConfigureFrameCommon(self, frame, preset, isCrit, hitKind, isIncoming)
+local function ConfigureFrameCommon(self, frame, preset, isCrit, hitKind, isIncoming, measureOnly)
     frame.isCrit = isCrit and true or false
     frame.incoming = isIncoming and true or false
     frame.hitKind = hitKind or (isCrit and "crit" or "hit")
+    frame.usesClassicShove = self:IsClassicNumberStyle() and true or nil
 
     local durationMult = preset.durationMult
     if frame.isCrit and preset.critDurationMult then
@@ -188,7 +275,11 @@ local function ConfigureFrameCommon(self, frame, preset, isCrit, hitKind, isInco
         frame.critsHold = false
     end
 
-    ApplyMotionSpawnParams(frame, motionStyle, frame.floatDistance)
+    if measureOnly then
+        frame.motionStyle = motionStyle
+    else
+        ApplyMotionSpawnParams(frame, motionStyle, frame.floatDistance)
+    end
 end
 
 local function PreviewSpawnY(motionStyle)
@@ -235,9 +326,59 @@ local function MeasurePreviewText(text, fontPath, fontSize, fontFlags)
     return previewMeasureText:GetStringWidth() or 0, math.max(fontSize, previewMeasureText:GetStringHeight() or 0)
 end
 
+local function ClassicPreviewSamples(self, sampleKind)
+    local samples = {}
+    local preset = self:GetStylePreset()
+    local fontSize = (self.db.fontSize or self.DEFAULTS.fontSize) * preset.fontScale
+    local fontPath = BD.ResolveFontPath(self.db.fontFace)
+    for _, sample in ipairs(PREVIEW_SAMPLES) do
+        if MatchesPreviewKind(sample, sampleKind) then
+            local frame = { elapsed = 0 }
+            local isCrit = sample.hitKind == "crit"
+            ConfigureFrameCommon(self, frame, preset, isCrit, sample.hitKind, false, true)
+            local text = sample.text or BD.FormatAmount(sample.amount, self.db.abbreviate)
+            local width, height = MeasurePreviewText(text, fontPath, fontSize, preset.fontFlags)
+            local labelW, labelH = 0, 0
+            if isCrit and self.db.showCritLabel then
+                local critSize = math.max(8, math.floor(fontSize * 0.55 + 0.5))
+                labelW, labelH = MeasurePreviewText(L["CRITICAL"], fontPath, critSize, preset.fontFlags)
+            end
+            local icon = sample.hitKind ~= "miss" and
+                (self:ResolveOutgoingSpellIcon(nil, sample.spellID)
+                    or self:ResolveOutgoingSpellIcon(sample.fallbackIcon, nil))
+            local iconSize = icon and math.max(12, math.floor(fontSize * 1.1 + 0.5)) or nil
+            frame.classicBounds = ClassicTextBounds(width, height, labelW, labelH, iconSize,
+                self.db.iconPosition or "left")
+            frame.classicReady, frame.amountScale = true, 1.3
+            frame.classicBaseY = PreviewSpawnY(frame.motionStyle)
+            if not (isCrit and frame.critsHold) then
+                frame.classicBaseY = frame.classicBaseY
+                    + (preset.spawnBaseY or 36) - (frame.spawnCritY or 8)
+            end
+            local distance = frame.floatDistance
+            if frame.motionStyle == "fountain" then
+                frame.previewTravel = { -56, 56, -22, 35 }
+            elseif frame.motionStyle == "rainfall" then
+                frame.previewTravel = { -18, 18, math.min(0, 4 - distance * 1.2), 12 }
+            elseif frame.motionStyle == "verticalDown" then
+                frame.previewTravel = { 0, 0, -(distance > 0 and distance or 20), 0 }
+            elseif not (isCrit and frame.critsHold) then
+                local drift = frame.driftX or 0
+                frame.previewTravel = { math.min(0, drift), math.max(0, drift),
+                    math.min(0, distance), math.max(0, distance) }
+            end
+            samples[#samples + 1] = frame
+        end
+    end
+    return samples
+end
+
 function BD:GetOptionsPreviewBounds(sampleKind)
     local preset = self:GetStylePreset()
     local classicStyle = self:IsClassicNumberStyle()
+    if classicStyle then
+        return BD.Pool.GetClassicPreviewBounds(ClassicPreviewSamples(self, sampleKind), PREVIEW_STAGGER / 0.75)
+    end
     local baseFontSize = self.db.fontSize or self.DEFAULTS.fontSize
     local fontSize = baseFontSize * preset.fontScale
     local fontPath = BD.ResolveFontPath(self.db.fontFace)
@@ -260,9 +401,6 @@ function BD:GetOptionsPreviewBounds(sampleKind)
                     peakScale = math.max(preset.critPopStartScale or 0.72,
                         preset.critSlapScale or 1.5, preset.critRestScale or 1.4)
                 end
-            end
-            if classicStyle then
-                peakScale = peakScale * 1.3
             end
 
             local text = sample.text or BD.FormatAmount(sample.amount, self.db.abbreviate)
@@ -294,24 +432,15 @@ function BD:GetOptionsPreviewBounds(sampleKind)
             local halfWidth = width * peakScale * 0.5 + 4
             local halfHeight = height * peakScale * 0.5 + 4
             local spawnY = PreviewSpawnY(motionStyle)
-            if classicStyle and not holdsCrit then
-                spawnY = spawnY + (preset.spawnBaseY or 36) - (critPreset.spawnCritY or 8)
-            end
             local minX, maxX, minY, maxY = 0, 0, spawnY, spawnY
-            if classicStyle then
-                -- Clear-spawn's 35-pixel spiral plus Classic's capped 40-pixel shove.
-                minX, maxX = -75, 75
-                minY, maxY = spawnY - 75, spawnY + 75
-            else
-                local jitter = (preset.spawnJitter or 10) * spacingScale
-                minX, maxX = -jitter, jitter
-                maxY = spawnY + jitter
-                for _, lane in ipairs(preset.spawnLanes or {}) do
-                    minX = math.min(minX, lane[1] * spacingScale)
-                    maxX = math.max(maxX, lane[1] * spacingScale)
-                    minY = math.min(minY, spawnY + lane[2] * spacingScale)
-                    maxY = math.max(maxY, spawnY + lane[2] * spacingScale)
-                end
+            local jitter = (preset.spawnJitter or 10) * spacingScale
+            minX, maxX = -jitter, jitter
+            maxY = spawnY + jitter
+            for _, lane in ipairs(preset.spawnLanes or {}) do
+                minX = math.min(minX, lane[1] * spacingScale)
+                maxX = math.max(maxX, lane[1] * spacingScale)
+                minY = math.min(minY, spawnY + lane[2] * spacingScale)
+                maxY = math.max(maxY, spawnY + lane[2] * spacingScale)
             end
             local distance = (self.db.floatDistance or self.DEFAULTS.floatDistance) * preset.floatMult
             if motionStyle == "fountain" then
@@ -358,22 +487,13 @@ local function SpawnMotionPreviewFrame(anchor, sample)
     -- PreviewSpawnY is the near-plate slot. Classic combat puts crits there
     -- and hits higher (spawnBaseY 36 vs spawnCritY 8); keep that split.
     local spawnY = PreviewSpawnY(frame.motionStyle)
-    if BD:IsClassicNumberStyle() then
+    if frame.usesClassicShove then
         if not (frame.isCrit and frame.critsHold) then
             local hitY = preset.spawnBaseY or 36
             local critY = frame.spawnCritY or preset.spawnCritY or 8
             spawnY = spawnY + (hitY - critY)
         end
-        frame.usesClassicShove = true
-        local sx, sy = BD.Pool.PickClearSpawn(anchor, frame, 0, spawnY, isCrit, true)
-        frame.classicBaseX = sx
-        frame.classicBaseY = sy
-        frame.startX = sx
-        frame.startY = sy
-    else
-        frame.startX, frame.startY = BD.Pool.PickClearSpawn(anchor, frame, 0, spawnY, isCrit)
     end
-    frame:SetPoint("CENTER", anchor, "CENTER", frame.startX, frame.startY)
 
     local fontSize = (BD.db.fontSize or BD.DEFAULTS.fontSize) * preset.fontScale
     local fontPath = BD.ResolveFontPath(BD.db.fontFace)
@@ -421,6 +541,7 @@ local function SpawnMotionPreviewFrame(anchor, sample)
     if frame.usesClassicShove then
         frame.amountScale = BD.ComputeClassicAmountScale(sample.amount)
     end
+    PlaceFrame(frame, anchor, 0, spawnY)
     frame:SetAlpha(1)
     if frame.isCrit then
         if frame.animMode == "classicPow" then
@@ -444,17 +565,42 @@ function BD:ShowMotionPreview(columns)
 
     previewGeneration = previewGeneration + 1
     local generation = previewGeneration
+    local stagger = self:IsClassicNumberStyle() and PREVIEW_STAGGER / 0.75 or PREVIEW_STAGGER
 
     local function PlayColumn(column)
         local anchor = column.stage or column.anchor
         if not anchor or not anchor:IsShown() then
             return
         end
+        if self:IsClassicNumberStyle() then
+            local samples = {}
+            for _, sample in ipairs(PREVIEW_SAMPLES) do
+                if MatchesPreviewKind(sample, column.kind) then
+                    samples[#samples + 1] = sample
+                end
+            end
+            if #samples == 0 then
+                return
+            end
+            local index = 1
+            local function PlaySample()
+                if generation ~= previewGeneration or not anchor:IsShown() then
+                    return
+                end
+                SpawnMotionPreviewFrame(anchor, samples[index])
+                index = index % #samples + 1
+                -- Schedule from the actual spawn: delayed timers cannot bunch
+                -- samples together or exceed the bounds' simultaneous count.
+                C_Timer.After(stagger, PlaySample)
+            end
+            C_Timer.After(0, PlaySample)
+            return
+        end
         local index = 0
         for _, sample in ipairs(PREVIEW_SAMPLES) do
             if MatchesPreviewKind(sample, column.kind) then
                 local previewSample, previewAnchor = sample, anchor
-                local delay = index * PREVIEW_STAGGER
+                local delay = index * stagger
                 index = index + 1
                 C_Timer.After(delay, function()
                     if generation ~= previewGeneration then
@@ -470,7 +616,7 @@ function BD:ShowMotionPreview(columns)
         if index == 0 then
             return
         end
-        C_Timer.After(index * PREVIEW_STAGGER, function()
+        C_Timer.After(index * stagger, function()
             if generation ~= previewGeneration then
                 return
             end
@@ -589,20 +735,6 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
     if frame.isCrit and frame.critsHold then
         baseY = frame.spawnCritY or preset.spawnCritY or 8
     end
-    if self:IsClassicNumberStyle() then
-        frame.usesClassicShove = true
-        -- Spread across plates in world space so AOE packs do not stack.
-        local sx, sy = BD.Pool.PickClearSpawn(plate, frame, 0, baseY, frame.isCrit, true)
-        frame.classicBaseX = sx
-        frame.classicBaseY = sy
-        frame.startX = sx
-        frame.startY = sy
-    else
-        frame.startX, frame.startY = BD.Pool.PickClearSpawn(plate, frame, 0, baseY, frame.isCrit)
-    end
-    frame:ClearAllPoints()
-    local lingerAt = frame.lingerHost or plate
-    frame:SetPoint("CENTER", lingerAt, frame.lingerHost and "CENTER" or "TOP", frame.startX, frame.startY)
 
     local fontSize = (self.db.fontSize or self.DEFAULTS.fontSize) * preset.fontScale
     local fontPath = BD.ResolveFontPath(self.db.fontFace)
@@ -669,6 +801,7 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
         frame.amountScale = BD.ComputeClassicAmountScale(amountForThreshold)
     end
 
+    PlaceFrame(frame, plate, 0, baseY)
     frame:SetAlpha(frame.baseAlpha)
     if frame.isCrit then
         if frame.animMode == "classicPow" then
@@ -680,7 +813,7 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
         frame:SetScale(frame.popScale or 1)
     end
     frame:Show()
-    -- Show first so screen centers exist for Classic AOE deconflict.
+    -- All visible geometry is ready before the shared Classic layout runs.
     if frame.usesClassicShove then
         BD.Pool.RelayoutClassic(plate)
     end
@@ -727,18 +860,6 @@ function BD:ShowIncoming(text, r, g, b, amountForThreshold, isCrit, hitKind)
         baseY = (frame.spawnCritY or -8) * 0.15
     end
     local spawnY = oy + baseY
-    if self:IsClassicNumberStyle() then
-        frame.usesClassicShove = true
-        local sx, sy = BD.Pool.PickClearSpawn(anchor, frame, ox, spawnY, frame.isCrit, true)
-        frame.classicBaseX = sx
-        frame.classicBaseY = sy
-        frame.startX = sx
-        frame.startY = sy
-    else
-        frame.startX, frame.startY = BD.Pool.PickClearSpawn(anchor, frame, ox, spawnY, frame.isCrit)
-    end
-    frame:ClearAllPoints()
-    frame:SetPoint("CENTER", anchor, frame.anchorRelPoint, frame.startX, frame.startY)
 
     local fontSize = (self.db.fontSize or self.DEFAULTS.fontSize) * preset.fontScale
     local fontPath = BD.ResolveFontPath(self.db.fontFace)
@@ -786,6 +907,7 @@ function BD:ShowIncoming(text, r, g, b, amountForThreshold, isCrit, hitKind)
         frame.amountScale = BD.ComputeClassicAmountScale(amountForThreshold)
     end
 
+    PlaceFrame(frame, anchor, ox, spawnY)
     frame:SetAlpha(frame.baseAlpha)
     if frame.isCrit then
         if frame.animMode == "classicPow" then

@@ -14,25 +14,17 @@ local DEFAULT_SPAWN_LANES = {
     { 0, 28 },
 }
 
-local CRIT_LABEL_GAP = 3
-local CLASSIC_LAYOUT_PAD = 10
--- Crits: fill center / right / left / up / down around newest.
--- Normal classic hits use PickClearSpawn instead (AOE packs must spread).
-local CLASSIC_HIT_COLUMNS = 3
+local CLASSIC_LAYOUT_PAD = 4
+local CLASSIC_LAYOUT_CELL = 64
+local classicWorldSpace = {}
 local ROLLING_AVERAGE_WINDOW = 10
 local ROLLING_AVERAGE_MAX_AGE = 8.0
--- Keep AOE spread near the plate; deconflict must not fling numbers off-screen.
-local CLASSIC_AOE_MIN_DIST = 26
-local CLASSIC_AOE_MIN_DIST_CRIT = 30
-local CLASSIC_DECONFLICT_NEED = 30
-local CLASSIC_MAX_DRIFT = 40
 
 local damageSamples = {}
 local rollingDamageAverage = 0
 local lastClassicRelayoutTime = -1
--- Rotating spiral so simultaneous AOE hits never share one screen slot.
-local classicFanIndex = 0
-local CLASSIC_GOLDEN_ANGLE = 2.39996322972865332
+local lastClassicLayout
+local spawnOrder = 0
 
 -- Only crits use the classic grow-and-settle shove grid. Normal hits keep
 -- their clear-spawn offsets so multi-target AOE does not pile in one stack.
@@ -44,7 +36,7 @@ local function IsClassicShoveFrame(frame)
 end
 
 local function IsClassicStyleFrame(frame)
-    return frame.usesClassicShove and frame.animMode == "classicPow" and not frame.incoming
+    return frame.usesClassicShove and frame.animMode == "classicPow" and frame.classicReady
 end
 
 local function PushDamageSample(amount)
@@ -122,278 +114,6 @@ local function ComputeIntroScale(frame)
     end
 
     return Anim.ComputeNormalScale(frame.elapsed, frame.popDuration, frame.popScale), introDuration
-end
-
-local function GetVisualHalfExtents(frame)
-    local introScale = ComputeIntroScale(frame)
-    local amountScale = frame.amountScale or 1
-    local scale = introScale * amountScale
-    local textW = frame.text:GetStringWidth() or 0
-    local textH = frame.text:GetStringHeight() or 0
-    local width = textW
-    local height = textH
-    if frame.critLabel and frame.critLabel:IsShown() then
-        width = width + (frame.critLabel:GetStringWidth() or 0) + CRIT_LABEL_GAP
-        height = math.max(height, frame.critLabel:GetStringHeight() or 0)
-    end
-    if frame.icon:IsShown() then
-        local iconW = frame.icon:GetWidth() or 0
-        width = width + iconW + 4
-        height = math.max(height, frame.icon:GetHeight() or 0)
-    end
-    return (width * scale) * 0.5, (height * scale) * 0.5, scale
-end
-
-local function CollectClassicCluster(anchor, wantCritCluster)
-    local frames = {}
-    for frame in pairs(active) do
-        if frame.anchor == anchor and IsClassicShoveFrame(frame) then
-            local isCritCluster = frame.isCrit and frame.critsHold
-            if isCritCluster == wantCritCluster then
-                frames[#frames + 1] = frame
-            end
-        end
-    end
-    table.sort(frames, function(a, b)
-        if a.elapsed == b.elapsed then
-            return tostring(a) < tostring(b)
-        end
-        return a.elapsed < b.elapsed
-    end)
-    return frames
-end
-
-local function RelayoutClassicCluster(frames, isCritCluster)
-    local center = frames[1]
-    if not center then
-        return
-    end
-
-    local centerHalfW, centerHalfH = GetVisualHalfExtents(center)
-    local baseX = center.classicBaseX or 0
-    local baseY = center.classicBaseY or center.startY or 0
-
-    for index, frame in ipairs(frames) do
-        frame.classicHidden = false
-        if index == 1 then
-            frame.startX = baseX
-            if isCritCluster then
-                frame.startY = frame.classicBaseY or center.startY
-            else
-                frame.startY = baseY
-            end
-        elseif isCritCluster then
-            local selfHalfW, selfHalfH = GetVisualHalfExtents(frame)
-            if index == 2 then
-                frame.startX = baseX + centerHalfW + selfHalfW + CLASSIC_LAYOUT_PAD
-                frame.startY = center.startY
-            elseif index == 3 then
-                frame.startX = baseX - centerHalfW - selfHalfW - CLASSIC_LAYOUT_PAD
-                frame.startY = center.startY
-            elseif index == 4 then
-                frame.startX = baseX
-                frame.startY = center.startY + centerHalfH + selfHalfH + CLASSIC_LAYOUT_PAD
-            elseif index == 5 then
-                frame.startX = baseX
-                frame.startY = center.startY - centerHalfH - selfHalfH - CLASSIC_LAYOUT_PAD
-            else
-                frame.classicHidden = true
-            end
-        else
-            local selfHalfW = select(1, GetVisualHalfExtents(frame))
-            local slot = index - 1
-            local row = math.floor(slot / CLASSIC_HIT_COLUMNS)
-            local col = slot % CLASSIC_HIT_COLUMNS
-            local xOff = 0
-            if col == 1 then
-                xOff = centerHalfW + selfHalfW + CLASSIC_LAYOUT_PAD
-            elseif col == 2 then
-                xOff = -(centerHalfW + selfHalfW + CLASSIC_LAYOUT_PAD)
-            end
-            local yOff = row * (centerHalfH * 2 + CLASSIC_LAYOUT_PAD)
-            frame.startX = baseX + xOff
-            frame.startY = baseY + yOff
-        end
-    end
-end
-
-local function RelayoutClassicAnchor(anchor)
-    RelayoutClassicCluster(CollectClassicCluster(anchor, true), true)
-    RelayoutClassicCluster(CollectClassicCluster(anchor, false), false)
-end
-
-local function ApplyClassicFramePoint(frame)
-    local motionAnchor = frame.lingerHost or frame.anchor
-    if not motionAnchor then
-        return
-    end
-    local relPoint = frame.lingerHost and "CENTER" or (frame.anchorRelPoint or "TOP")
-    frame:ClearAllPoints()
-    pcall(frame.SetPoint, frame, "CENTER", motionAnchor, relPoint, frame.startX or 0, frame.startY or 0)
-end
-
--- Never call GetCenter raw: measuring through a restricted nameplate errors/taints.
-local function SafeFrameCenter(frame)
-    if not frame then
-        return nil, nil
-    end
-    local ok, x, y = pcall(frame.GetCenter, frame)
-    if ok and x ~= nil and y ~= nil then
-        return x, y
-    end
-    return nil, nil
-end
-
-local function ClampClassicDrift(frame)
-    local bx = frame.classicBaseX or 0
-    local by = frame.classicBaseY or 0
-    local sx = frame.startX or 0
-    local sy = frame.startY or 0
-    local dx = sx - bx
-    local dy = sy - by
-    local distSq = dx * dx + dy * dy
-    local maxD = CLASSIC_MAX_DRIFT
-    if distSq > maxD * maxD and distSq > 0 then
-        local dist = math.sqrt(distSq)
-        frame.startX = bx + dx / dist * maxD
-        frame.startY = by + dy / dist * maxD
-    end
-end
-
--- Soft push for overlapping Classic number-style hits only. Caps drift so
--- numbers stay near their plate. Modern number style never enters this path.
-local function DeconflictClassicScreen()
-    local list = {}
-    for frame in pairs(active) do
-        if IsClassicStyleFrame(frame) and not frame.classicHidden and not frame.isPreview then
-            list[#list + 1] = frame
-        end
-    end
-    if #list < 2 then
-        return
-    end
-
-    for i = 1, #list do
-        ApplyClassicFramePoint(list[i])
-    end
-
-    -- Prefer screen centers when every frame can be measured. If any plate
-    -- chain is restricted, fall back to relative startX/startY only.
-    local posX, posY = {}, {}
-    local useScreen = true
-    for i = 1, #list do
-        local x, y = SafeFrameCenter(list[i])
-        if not x then
-            useScreen = false
-            break
-        end
-        posX[i] = x
-        posY[i] = y
-    end
-    if not useScreen then
-        for i = 1, #list do
-            posX[i] = list[i].startX or 0
-            posY[i] = list[i].startY or 0
-        end
-    end
-
-    local need = CLASSIC_DECONFLICT_NEED
-    for _ = 1, 2 do
-        local moved = false
-        for i = 1, #list do
-            local a = list[i]
-            local ax, ay = posX[i], posY[i]
-            for j = i + 1, #list do
-                local b = list[j]
-                local bx, by = posX[j], posY[j]
-                local dx = ax - bx
-                local dy = ay - by
-                local distSq = dx * dx + dy * dy
-                if distSq < 1 then
-                    local angle = (a.classicFanIndex or i) * CLASSIC_GOLDEN_ANGLE
-                    local push = need * 0.4
-                    local px = math.cos(angle) * push
-                    local py = math.sin(angle) * push
-                    a.startX = (a.startX or 0) + px
-                    a.startY = (a.startY or 0) + py
-                    b.startX = (b.startX or 0) - px
-                    b.startY = (b.startY or 0) - py
-                    ClampClassicDrift(a)
-                    ClampClassicDrift(b)
-                    if useScreen then
-                        posX[i] = ax + px
-                        posY[i] = ay + py
-                        posX[j] = bx - px
-                        posY[j] = by - py
-                    else
-                        posX[i] = a.startX or 0
-                        posY[i] = a.startY or 0
-                        posX[j] = b.startX or 0
-                        posY[j] = b.startY or 0
-                    end
-                    ax, ay = posX[i], posY[i]
-                    moved = true
-                elseif distSq < need * need then
-                    local dist = math.sqrt(distSq)
-                    local push = (need - dist) * 0.35
-                    local nx = dx / dist
-                    local ny = dy / dist
-                    a.startX = (a.startX or 0) + nx * push
-                    a.startY = (a.startY or 0) + ny * push
-                    b.startX = (b.startX or 0) - nx * push
-                    b.startY = (b.startY or 0) - ny * push
-                    ClampClassicDrift(a)
-                    ClampClassicDrift(b)
-                    if useScreen then
-                        posX[i] = ax + nx * push
-                        posY[i] = ay + ny * push
-                        posX[j] = bx - nx * push
-                        posY[j] = by - ny * push
-                    else
-                        posX[i] = a.startX or 0
-                        posY[i] = a.startY or 0
-                        posX[j] = b.startX or 0
-                        posY[j] = b.startY or 0
-                    end
-                    ax, ay = posX[i], posY[i]
-                    moved = true
-                end
-            end
-        end
-        if not moved then
-            break
-        end
-    end
-
-    for i = 1, #list do
-        ClampClassicDrift(list[i])
-        ApplyClassicFramePoint(list[i])
-    end
-end
-
-local function MaybeRelayoutClassic()
-    local now = GetTime()
-    if now == lastClassicRelayoutTime then
-        return
-    end
-    lastClassicRelayoutTime = now
-
-    local anchors = {}
-    local hasClassic = false
-    for frame in pairs(active) do
-        if IsClassicStyleFrame(frame) then
-            hasClassic = true
-            if IsClassicShoveFrame(frame) and frame.anchor then
-                anchors[frame.anchor] = true
-            end
-        end
-    end
-    for anchor in pairs(anchors) do
-        RelayoutClassicAnchor(anchor)
-    end
-    if hasClassic then
-        DeconflictClassicScreen()
-    end
 end
 
 local function ComputeMotion(frame)
@@ -513,11 +233,11 @@ end
 
 local function GetWorldScaleFactor(region)
     local worldScale = WorldFrame:GetEffectiveScale()
-    if not worldScale or worldScale == 0 then
+    if not BD.CanAccessValue(worldScale) or not worldScale or worldScale == 0 then
         return nil
     end
     local okScale, scale = pcall(region.GetEffectiveScale, region)
-    if not okScale or not scale or scale == 0 then
+    if not okScale or not BD.CanAccessValue(scale) or not scale or scale == 0 then
         scale = worldScale
     end
     return scale / worldScale
@@ -534,7 +254,8 @@ local function ReadWorldBottomLeft(region)
     local ok, left, bottom = pcall(function()
         return region:GetLeft(), region:GetBottom()
     end)
-    if not ok or left == nil or bottom == nil then
+    if not ok or not BD.CanAccessValue(left) or not BD.CanAccessValue(bottom)
+        or left == nil or bottom == nil then
         return nil
     end
     return left * factor, bottom * factor
@@ -549,7 +270,7 @@ local function ReadWorldCenter(region)
         return nil
     end
     local ok, x, y = pcall(region.GetCenter, region)
-    if ok and x ~= nil and y ~= nil then
+    if ok and BD.CanAccessValue(x) and BD.CanAccessValue(y) and x ~= nil and y ~= nil then
         return x * factor, y * factor
     end
     local left, bottom = ReadWorldBottomLeft(region)
@@ -558,13 +279,13 @@ local function ReadWorldCenter(region)
     end
     local okW, width = pcall(region.GetWidth, region)
     local okH, height = pcall(region.GetHeight, region)
-    local w = ((okW and width) or 0) * factor
-    local h = ((okH and height) or 0) * factor
+    local w = ((okW and BD.CanAccessValue(width) and width) or 0) * factor
+    local h = ((okH and BD.CanAccessValue(height) and height) or 0) * factor
     return left + w * 0.5, bottom + h * 0.5
 end
 
 local function StoreLingerWorldCenter(frame, x, y)
-    if x ~= nil and y ~= nil then
+    if BD.CanAccessValue(x) and BD.CanAccessValue(y) and x ~= nil and y ~= nil then
         frame.lingerWorldX = x
         frame.lingerWorldY = y
     end
@@ -586,6 +307,9 @@ local function SnapshotLingerHost(frame, allowPlate)
     if nx ~= nil then
         local mx, my = ComputeMotion(frame)
         local factor = GetWorldScaleFactor(frame) or 1
+        if frame.classicReady then
+            factor = factor / frame:GetScale()
+        end
         StoreLingerWorldCenter(frame, nx - mx * factor, ny - my * factor)
         if frame.lingerWorldX ~= nil then
             return true
@@ -596,7 +320,7 @@ local function SnapshotLingerHost(frame, allowPlate)
         if cx ~= nil then
             local factor = GetWorldScaleFactor(frame.anchor)
             local okH, height = pcall(frame.anchor.GetHeight, frame.anchor)
-            if factor and okH and height then
+            if factor and okH and BD.CanAccessValue(height) and height then
                 cy = cy + height * factor * 0.5
             end
             StoreLingerWorldCenter(frame, cx, cy)
@@ -693,6 +417,9 @@ local function AttachLingerHost(frame, plate)
 end
 
 local function ReleaseFrame(frame)
+    if frame.classicReady then
+        lastClassicLayout = nil
+    end
     frame:SetScript("OnUpdate", nil)
     frame:Hide()
     frame:SetAlpha(0)
@@ -714,11 +441,13 @@ local function ReleaseFrame(frame)
     frame.motionStyle = nil
     frame.anchorRelPoint = nil
     frame.usesClassicShove = nil
+    frame.classicReady = nil
+    frame.classicBounds = nil
     frame.classicBaseX = nil
     frame.classicBaseY = nil
-    frame.classicFanIndex = nil
     frame.amountScale = nil
-    frame.classicHidden = nil
+    frame.spawnOrder = nil
+    frame.spawnTime = nil
     frame.lingerFrozen = nil
     frame.lingerWorldX = nil
     frame.lingerWorldY = nil
@@ -746,6 +475,357 @@ local function ApproxFrameWorldPos(frame, sx, sy)
         return frame.lingerWorldX + sx, frame.lingerWorldY + sy
     end
     return nil, nil
+end
+
+local function GetClassicLayoutScale(frame)
+    local scale = ComputeIntroScale(frame)
+    if frame.isCrit and frame.elapsed < (frame.critPowDuration or 0.22) then
+        scale = math.max(scale, frame.critPowStartScale or 1,
+            frame.critPowPeakScale or 2, frame.critRestScale or 1.4)
+    elseif not frame.isCrit and frame.elapsed < (frame.popDuration or 0) then
+        scale = math.max(scale, 1, frame.popScale or 1)
+    end
+    return scale * (frame.amountScale or 1)
+end
+
+local function ClassicOrigin(frame)
+    if frame.isPreview or frame.incoming then
+        return nil, nil, 1
+    end
+    -- Measure our host, never the nameplate. Remove the frame's animation
+    -- scale: offsets and the layout gap are in unscaled frame coordinates.
+    local okScale, factor = pcall(function()
+        return GetWorldScaleFactor(frame) / frame:GetScale()
+    end)
+    if not okScale or not BD.CanAccessValue(factor) or not factor or factor <= 0 then
+        factor = 1
+    end
+    if frame.lingerHost then
+        local ok, x, y = pcall(ReadWorldCenter, frame.lingerHost)
+        if ok and BD.CanAccessValue(x) and BD.CanAccessValue(y) and x and y then
+            return x, y, factor
+        end
+    end
+    local x, y = frame.lingerWorldX, frame.lingerWorldY
+    if BD.CanAccessValue(x) and BD.CanAccessValue(y) and x and y then
+        return x, y, factor
+    end
+    return nil, nil, 1
+end
+
+local function BuildClassicEntries(frames)
+    local entries, localAnchors = {}, {}
+    for _, frame in ipairs(frames) do
+        local ox, oy, factor = ClassicOrigin(frame)
+        if not ox and frame.anchor and not frame.isPreview and not frame.incoming then
+            localAnchors[frame.anchor] = true
+        end
+        entries[#entries + 1] = {
+            frame = frame, ox = ox, oy = oy, factor = factor,
+            order = frame.spawnOrder, anchor = frame.anchor,
+            preview = frame.isPreview, incoming = frame.incoming,
+            frozen = frame.lingerFrozen, shove = IsClassicShoveFrame(frame),
+        }
+    end
+    for _, entry in ipairs(entries) do
+        local frame = entry.frame
+        if localAnchors[frame.anchor] then
+            entry.ox, entry.oy, entry.factor = nil, nil, 1
+        end
+        local x, y = ComputeMotion(frame)
+        local scale = GetClassicLayoutScale(frame) * entry.factor
+        local bounds = frame.classicBounds
+        entry.left, entry.right = bounds[1] * scale, bounds[2] * scale
+        entry.bottom, entry.top = bounds[3] * scale, bounds[4] * scale
+        entry.dx, entry.dy = x - (frame.startX or 0), y - (frame.startY or 0)
+        entry.x = (entry.ox or 0) + x * entry.factor
+        entry.y = (entry.oy or 0) + y * entry.factor
+    end
+    return entries
+end
+
+local function ClassicSpace(obstacles, entry, create)
+    local frame = entry.frame
+    local domain = frame.isPreview and obstacles.preview
+        or (frame.incoming and obstacles.incoming or obstacles.outgoing)
+    local key = entry.ox and classicWorldSpace or frame.anchor or frame
+    local space = domain[key]
+    if not space and create then
+        space = { entries = {}, cells = {} }
+        domain[key] = space
+    end
+    return space
+end
+
+local function AddClassicObstacle(obstacles, entry)
+    local space = ClassicSpace(obstacles, entry, true)
+    space.entries[#space.entries + 1] = entry
+    local gap = CLASSIC_LAYOUT_PAD * entry.factor
+    local minX = math.floor((entry.x + entry.left - gap) / CLASSIC_LAYOUT_CELL)
+    local maxX = math.floor((entry.x + entry.right + gap) / CLASSIC_LAYOUT_CELL)
+    local minY = math.floor((entry.y + entry.bottom - gap) / CLASSIC_LAYOUT_CELL)
+    local maxY = math.floor((entry.y + entry.top + gap) / CLASSIC_LAYOUT_CELL)
+    for x = minX, maxX do
+        for y = minY, maxY do
+            local key = x .. ":" .. y
+            local cell = space.cells[key]
+            if not cell then
+                cell = {}
+                space.cells[key] = cell
+            end
+            cell[#cell + 1] = entry
+        end
+    end
+end
+
+local function ClassicObstacles(entries)
+    local obstacles = { preview = {}, incoming = {}, outgoing = {}, query = 0 }
+    for _, entry in ipairs(entries or {}) do
+        AddClassicObstacle(obstacles, entry)
+    end
+    return obstacles
+end
+
+local function ClassicSlotBlocked(entry, x, y, obstacles)
+    local space = ClassicSpace(obstacles, entry, false)
+    if not space then
+        return false
+    end
+    -- Only test rectangles in nearby cells. Keep the exact rectangle test;
+    -- the index changes lookup cost, never the chosen spacing or burst limit.
+    obstacles.query = obstacles.query + 1
+    local query = obstacles.query
+    local pad = CLASSIC_LAYOUT_PAD * entry.factor
+    local minX = math.floor((x + entry.left - pad) / CLASSIC_LAYOUT_CELL)
+    local maxX = math.floor((x + entry.right + pad) / CLASSIC_LAYOUT_CELL)
+    local minY = math.floor((y + entry.bottom - pad) / CLASSIC_LAYOUT_CELL)
+    local maxY = math.floor((y + entry.top + pad) / CLASSIC_LAYOUT_CELL)
+    for cx = minX, maxX do
+        for cy = minY, maxY do
+            local cell = space.cells[cx .. ":" .. cy]
+            for _, other in ipairs(cell or {}) do
+                if other.lastQuery ~= query then
+                    other.lastQuery = query
+                    local gap = CLASSIC_LAYOUT_PAD * math.max(entry.factor, other.factor)
+                    if x + entry.right > other.x + other.left - gap + 0.001
+                        and x + entry.left < other.x + other.right + gap - 0.001
+                        and y + entry.top > other.y + other.bottom - gap + 0.001
+                        and y + entry.bottom < other.y + other.top + gap - 0.001 then
+                        return true
+                    end
+                end
+            end
+        end
+    end
+    return false
+end
+
+local function FindClassicSlot(entry, x, y, obstacles)
+    if not ClassicSlotBlocked(entry, x, y, obstacles) then
+        return x, y
+    end
+    local bestX, bestY, bestDistance
+    local function Try(cx, cy)
+        local distance = (cx - x) ^ 2 + (cy - y) ^ 2
+        if (not bestDistance or distance < bestDistance)
+            and not ClassicSlotBlocked(entry, cx, cy, obstacles) then
+            bestX, bestY, bestDistance = cx, cy, distance
+        end
+    end
+    local space = ClassicSpace(obstacles, entry, false)
+    for _, other in ipairs(space.entries) do
+        local gap = CLASSIC_LAYOUT_PAD * math.max(entry.factor, other.factor)
+        local right = other.x + other.right + gap - entry.left
+        local left = other.x + other.left - gap - entry.right
+        local top = other.y + other.top + gap - entry.bottom
+        local bottom = other.y + other.bottom - gap - entry.top
+        -- Stable tie order; corners fill compact adjoining rings after
+        -- the first cross. An outer edge always provides an uncapped slot.
+        Try(right, y)
+        Try(left, y)
+        Try(x, top)
+        Try(x, bottom)
+        Try(right, top)
+        Try(left, top)
+        Try(right, bottom)
+        Try(left, bottom)
+    end
+    return bestX, bestY
+end
+
+local function NewestClassicFirst(a, b)
+    return (a.frame.spawnOrder or 0) > (b.frame.spawnOrder or 0)
+end
+
+local function ClassicLayoutUnchanged(entries)
+    if not lastClassicLayout or lastClassicLayout.count ~= #entries then
+        return false
+    end
+    for _, entry in ipairs(entries) do
+        local old = lastClassicLayout[entry.frame]
+        if not old or old.order ~= entry.order or old.anchor ~= entry.anchor
+            or old.preview ~= entry.preview or old.incoming ~= entry.incoming
+            or old.frozen ~= entry.frozen or old.shove ~= entry.shove
+            or old.ox ~= entry.ox or old.oy ~= entry.oy or old.factor ~= entry.factor
+            or old.left ~= entry.left or old.right ~= entry.right
+            or old.bottom ~= entry.bottom or old.top ~= entry.top
+            or old.dx ~= entry.dx or old.dy ~= entry.dy
+            or ((not entry.shove or entry.frozen) and (old.x ~= entry.x or old.y ~= entry.y)) then
+            return false
+        end
+    end
+    return true
+end
+
+local function LayoutClassicFrames(frames, useCache)
+    local entries = BuildClassicEntries(frames)
+    if useCache and ClassicLayoutUnchanged(entries) then
+        return entries
+    end
+    table.sort(entries, NewestClassicFirst)
+    local obstacles, crits = ClassicObstacles(), {}
+    local domains = { preview = {}, incoming = {}, outgoing = {} }
+    for _, entry in ipairs(entries) do
+        if IsClassicShoveFrame(entry.frame) and not entry.frame.lingerFrozen then
+            crits[#crits + 1] = entry
+        else
+            AddClassicObstacle(obstacles, entry)
+        end
+    end
+    for _, entry in ipairs(crits) do
+        local frame = entry.frame
+        local clusters = frame.isPreview and domains.preview
+            or (frame.incoming and domains.incoming or domains.outgoing)
+        local cluster = clusters[frame.anchor]
+        local x = (entry.ox or 0) + (frame.classicBaseX or 0) * entry.factor
+        local y = (entry.oy or 0) + (frame.classicBaseY or 0) * entry.factor
+        if cluster then
+            cluster.count = cluster.count + 1
+            local center = cluster.center
+            local gap = CLASSIC_LAYOUT_PAD * math.max(entry.factor, center.factor)
+            x, y = center.x, center.y
+            if cluster.count == 2 then
+                x = center.x + center.right + gap - entry.left
+            elseif cluster.count == 3 then
+                x = center.x + center.left - gap - entry.right
+            elseif cluster.count == 4 then
+                y = center.y + center.top + gap - entry.bottom
+            elseif cluster.count == 5 then
+                y = center.y + center.bottom - gap - entry.top
+            end
+        end
+        entry.x, entry.y = FindClassicSlot(entry, x, y, obstacles)
+        frame.startX = (entry.x - (entry.ox or 0)) / entry.factor - entry.dx
+        frame.startY = (entry.y - (entry.oy or 0)) / entry.factor - entry.dy
+        if not cluster then
+            clusters[frame.anchor] = { center = entry, count = 1 }
+        end
+        AddClassicObstacle(obstacles, entry)
+    end
+    if useCache then
+        lastClassicLayout = { count = #entries }
+        for _, entry in ipairs(entries) do
+            lastClassicLayout[entry.frame] = entry
+        end
+    end
+    return entries
+end
+
+local function ActiveClassicFrames(now)
+    local frames = {}
+    for frame in pairs(active) do
+        if IsClassicStyleFrame(frame) then
+            frame.elapsed = math.max(0, now - frame.spawnTime)
+            if frame.elapsed < frame.duration then
+                frames[#frames + 1] = frame
+            end
+        end
+    end
+    return frames
+end
+
+local function RelayoutClassic()
+    local frames = ActiveClassicFrames(GetTime())
+    LayoutClassicFrames(frames, true)
+    for _, frame in ipairs(frames) do
+        if IsClassicShoveFrame(frame) and not frame.lingerFrozen then
+            local anchor = frame.lingerHost or frame.anchor
+            local relPoint = frame.lingerHost and "CENTER" or (frame.anchorRelPoint or "TOP")
+            local x, y, scale = ComputeMotion(frame)
+            frame:SetScale(scale)
+            frame:ClearAllPoints()
+            SafeSetPoint(frame, "CENTER", anchor, relPoint, x / scale, y / scale)
+        end
+    end
+end
+
+local function MaybeRelayoutClassic()
+    local now = GetTime()
+    if now ~= lastClassicRelayoutTime then
+        lastClassicRelayoutTime = now
+        RelayoutClassic()
+    end
+end
+
+local function PickClassicSpawn(frame, baseX, baseY, frames)
+    frame.classicBaseX, frame.classicBaseY = baseX, baseY
+    frame.startX, frame.startY = baseX, baseY
+    if IsClassicShoveFrame(frame) then
+        return baseX, baseY
+    end
+    frames[#frames + 1] = frame
+    local entries = BuildClassicEntries(frames)
+    frames[#frames] = nil
+    local entry = table.remove(entries)
+    table.sort(entries, NewestClassicFirst)
+    local x, y = FindClassicSlot(entry, entry.x, entry.y, ClassicObstacles(entries))
+    return (x - (entry.ox or 0)) / entry.factor - entry.dx,
+        (y - (entry.oy or 0)) / entry.factor - entry.dy
+end
+
+local function GetClassicPreviewBounds(samples, stagger)
+    local left, right, bottom, top = 0, 0, 0, 0
+    local maxDuration, maxWidth, maxHeight = 0, 0, 0
+    local allHeld = #samples > 0
+    for _, sample in ipairs(samples) do
+        maxDuration = math.max(maxDuration, sample.duration)
+        local scale = GetClassicLayoutScale(sample)
+        local bounds = sample.classicBounds
+        maxWidth = math.max(maxWidth, (bounds[2] - bounds[1]) * scale)
+        maxHeight = math.max(maxHeight, (bounds[4] - bounds[3]) * scale)
+        allHeld = allHeld and IsClassicShoveFrame(sample)
+    end
+    local count = math.max(1, math.ceil(maxDuration / stagger))
+    -- FindClassicSlot tries both ends of every blocked interval on each axis.
+    -- The nearer end is at most half their total length away. Each obstacle
+    -- contributes at most two maximum dimensions plus two gaps, so this
+    -- radius covers every packing choice, including later preview cycles and
+    -- variable amount scales. A finite simulation cannot guarantee that.
+    local radius = (count - 1) * (math.min(maxWidth, maxHeight) + CLASSIC_LAYOUT_PAD)
+    for _, sample in ipairs(samples) do
+        local scale = GetClassicLayoutScale(sample)
+        local bounds = sample.classicBounds
+        local reachX, reachY = radius, radius
+        if IsClassicShoveFrame(sample) then
+            -- Held crits prefer the newest center, then its measured cross.
+            -- A hit obstacle can move the center by another packing radius.
+            local centerReach = allHeld and 0 or radius
+            reachX = centerReach + (count > 1 and maxWidth + CLASSIC_LAYOUT_PAD or 0)
+            reachY = centerReach + (count > 3 and maxHeight + CLASSIC_LAYOUT_PAD or 0)
+            -- The first three crits are separated horizontally by construction.
+            if not allHeld or count > 3 then
+                reachX, reachY = reachX + radius, reachY + radius
+            end
+        end
+        local travel = sample.previewTravel or { 0, 0, 0, 0 }
+        local y = sample.classicBaseY
+        left = math.min(left, -reachX + travel[1] + bounds[1] * scale)
+        right = math.max(right, reachX + travel[2] + bounds[2] * scale)
+        bottom = math.min(bottom, y - reachY + travel[3] + bounds[3] * scale)
+        top = math.max(top, y + reachY + travel[4] + bounds[4] * scale)
+    end
+    return left - CLASSIC_LAYOUT_PAD, right + CLASSIC_LAYOUT_PAD,
+        bottom - CLASSIC_LAYOUT_PAD, top + CLASSIC_LAYOUT_PAD
 end
 
 local function SpawnSlotBlocked(frame, anchor, cx, cy, minDistSq, acrossAnchors)
@@ -791,35 +871,15 @@ local function SpawnSlotBlocked(frame, anchor, cx, cy, minDistSq, acrossAnchors)
     return false
 end
 
---- acrossAnchors: also avoid numbers on other nameplates (AOE packs).
---- Uses a golden-angle spiral so packed plates still fan out on screen.
+--- Classic style uses measured rectangles; Modern style keeps its spawn lanes.
 local function PickClearSpawn(anchor, frame, baseX, baseY, isCrit, acrossAnchors)
+    if frame.usesClassicShove and frame.classicBounds then
+        return PickClassicSpawn(frame, baseX, baseY, ActiveClassicFrames(GetTime()))
+    end
     local lanes = frame.spawnLanes or DEFAULT_SPAWN_LANES
     local minDist = isCrit and (frame.spawnMinDistCrit or 26) or (frame.spawnMinDist or 20)
-    if acrossAnchors then
-        minDist = math.max(minDist, isCrit and CLASSIC_AOE_MIN_DIST_CRIT or CLASSIC_AOE_MIN_DIST)
-    end
     local minDistSq = minDist * minDist
     local jitter = frame.spawnJitter or 10
-
-    if acrossAnchors then
-        classicFanIndex = classicFanIndex + 1
-        frame.classicFanIndex = classicFanIndex
-        -- Tight spiral near the plate (about 10-36px), not screen-wide.
-        for n = 0, 11 do
-            local idx = classicFanIndex + n
-            local angle = idx * CLASSIC_GOLDEN_ANGLE
-            local ring = 10 + (n % 6) * 5
-            local cx = baseX + math.cos(angle) * ring
-            local cy = baseY + math.sin(angle) * ring
-            if not SpawnSlotBlocked(frame, anchor, cx, cy, minDistSq, true) then
-                return cx, cy
-            end
-        end
-        local angle = classicFanIndex * CLASSIC_GOLDEN_ANGLE
-        local ring = 14 + (classicFanIndex % 6) * 4
-        return baseX + math.cos(angle) * ring, baseY + math.sin(angle) * ring
-    end
 
     for _, lane in ipairs(lanes) do
         local cx = baseX + lane[1]
@@ -833,7 +893,11 @@ local function PickClearSpawn(anchor, frame, baseX, baseY, isCrit, acrossAnchors
 end
 
 local function FrameOnUpdate(frame, elapsed)
-    frame.elapsed = frame.elapsed + elapsed
+    if IsClassicStyleFrame(frame) then
+        frame.elapsed = math.max(0, GetTime() - frame.spawnTime)
+    else
+        frame.elapsed = frame.elapsed + elapsed
+    end
     if frame.elapsed / frame.duration >= 1 then
         ReleaseFrame(frame)
         return
@@ -859,8 +923,11 @@ local function FrameOnUpdate(frame, elapsed)
     MaybeRelayoutClassic()
 
     local x, y, scale, alpha = ComputeMotion(frame)
-    if frame.classicHidden then
-        alpha = 0
+    if frame.classicReady then
+        -- SetPoint offsets also scale in WoW. Keep logical motion/placement
+        -- fixed while the visible text grows; Modern style retains its path.
+        frame:SetScale(scale)
+        x, y = x / scale, y / scale
     end
     local motionAnchor = frame.lingerHost or frame.anchor
     if motionAnchor then
@@ -911,6 +978,9 @@ local function AcquireFrame()
         frame = CreatePooledFrame()
     end
     active[frame] = true
+    spawnOrder = spawnOrder + 1
+    frame.spawnOrder = spawnOrder
+    frame.spawnTime = GetTime()
     frame.elapsed = 0
     frame:SetScript("OnUpdate", FrameOnUpdate)
     return frame
@@ -932,10 +1002,8 @@ BD.Pool = {
     Acquire = AcquireFrame,
     Release = ReleaseFrame,
     PickClearSpawn = PickClearSpawn,
-    RelayoutClassic = function(anchor)
-        RelayoutClassicAnchor(anchor)
-        DeconflictClassicScreen()
-    end,
+    RelayoutClassic = RelayoutClassic,
+    GetClassicPreviewBounds = GetClassicPreviewBounds,
     ReleasePreviewFrames = ReleasePreviewFrames,
     AttachLingerHost = AttachLingerHost,
     SnapshotLingerHost = SnapshotLingerHost,
