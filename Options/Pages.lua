@@ -112,8 +112,15 @@ local function BuildAppearance(parent, root)
     layout:Slider("fontSize", L["Font size"], 10, 48, 1, tostring)
     layout:Checkbox("useSchoolColors", L["Color by damage school"],
         L["Tint numbers by school (fire orange, frost blue, and so on). Off keeps the default yellow."])
-    layout:Checkbox("showCritLabel", L["Show CRITICAL"],
-        L["Show the word CRITICAL in small caps next to critical hit numbers."])
+    layout:Checkbox({
+        id = "showCritLabel",
+        get = function() return BD:GetCritLabelSetting() end,
+        set = function(value)
+            local _, key = BD:GetCritLabelSetting()
+            BD.db[key] = value
+        end,
+    }, L["Show CRITICAL"],
+        L["Show CRITICAL on critical hits. Impact saves its own choice, enabled by default."])
 
     layout:Heading(L["Number formatting"])
     layout:Checkbox("abbreviate", L["Abbreviate numbers"],
@@ -144,7 +151,7 @@ local function BuildAnimation(parent, root)
     layout:Choice("numberStyle", L["Number style"], {
         { id = "retail", labelKey = "Modern number style" },
         { id = "classic", labelKey = "Classic number style" },
-        { id = "aion2", labelKey = "Impact number style" },
+        { id = "impact", labelKey = "Impact number style" },
     }, L["All number styles are available on every supported WoW API."])
     layout:Note(L["Modern scrolls up from the nameplate with a small crit pop. Classic keeps the grow-and-settle pow, packed close to the plate."])
     layout:Note(L["Impact slams outgoing damage to the right and below the nameplate, then floats up. New hits layer in front; crits amplify and CRITICAL flashes above when enabled."])

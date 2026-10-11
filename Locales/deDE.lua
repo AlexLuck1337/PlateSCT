@@ -140,8 +140,8 @@ L["%d px"] = "%d px"
 L["%.1fs"] = "%.1fs"
 L["%.1fx"] = "%.1fx"
 L["Show CRITICAL"] = "KRITISCH anzeigen"
-L["Show the word CRITICAL in small caps next to critical hit numbers."] =
-    "Zeigt das Wort KRITISCH in kleinen Versalien neben kritischen Treffern."
+L["Show CRITICAL on critical hits. Impact saves its own choice, enabled by default."] =
+    "Zeigt KRITISCH bei kritischen Treffern. Impact speichert eine eigene Auswahl, die standardmäßig aktiviert ist."
 L["CRITICAL"] = "KRITISCH"
 
 L["Minimum damage threshold"] = "Mindest-Schadensschwelle"

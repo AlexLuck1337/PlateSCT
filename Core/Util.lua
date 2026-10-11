@@ -14,6 +14,13 @@ function BD:IsClassicNumberStyle()
     return (self.db.numberStyle or "retail") == "classic"
 end
 
+-- Impact keeps its label choice separate from Classic/Modern.
+function BD:GetCritLabelSetting(styleOverride)
+    local style = styleOverride or self.db.numberStyle or "retail"
+    local key = style == "impact" and "showImpactCritLabel" or "showCritLabel"
+    return self.db[key], key
+end
+
 local FALLBACK_FONT = "Fonts\\FRIZQT__.TTF"
 
 function BD.GetDefaultFontPath()
@@ -589,8 +596,8 @@ end
 
 function BD:ResolveMotionStyle(hitKind, styleOverride)
     local numberStyle = styleOverride or self.db.numberStyle or "retail"
-    if numberStyle == "aion2" then
-        return "aion2"
+    if numberStyle == "impact" then
+        return "impact"
     end
     if numberStyle == "classic" then
         return "platesct"

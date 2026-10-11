@@ -235,8 +235,8 @@ L["Motion used for critical hits."] = "Motion used for critical hits."
 L["Motion used for critical hits. Classic Slap uses the Classic grow-and-settle pow."] =
     "Motion used for critical hits. Classic Slap uses the Classic grow-and-settle pow."
 L["Show CRITICAL"] = "Show CRITICAL"
-L["Show the word CRITICAL in small caps next to critical hit numbers."] =
-    "Show the word CRITICAL in small caps next to critical hit numbers."
+L["Show CRITICAL on critical hits. Impact saves its own choice, enabled by default."] =
+    "Show CRITICAL on critical hits. Impact saves its own choice, enabled by default."
 L["CRITICAL"] = "CRITICAL"
 
 -- Incoming

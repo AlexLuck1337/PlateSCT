@@ -7,7 +7,7 @@ local CRIT_LABEL_GAP = 3
 
 local function GetFrameStyle(self, hitKind, isIncoming, isHeal)
     local override
-    if self.db.numberStyle == "aion2" and (isIncoming or isHeal or hitKind == "miss") then
+    if self.db.numberStyle == "impact" and (isIncoming or isHeal or hitKind == "miss") then
         override = "retail"
     end
     return self:GetStylePreset(override)
@@ -101,8 +101,8 @@ end
 local function PlaceFrame(frame, anchor, baseX, baseY)
     frame.startX, frame.startY = BD.Pool.PickClearSpawn(anchor, frame, baseX, baseY,
         frame.isCrit, frame.usesClassicShove)
-    if frame.animMode == "aionSlam" then
-        BD.Pool.RelayerAion(frame:GetParent())
+    if frame.animMode == "impactSlam" then
+        BD.Pool.RelayerImpact(frame:GetParent())
         BD.Pool.ApplyMotion(frame)
         return
     end
@@ -150,7 +150,7 @@ local function ApplyTextLayout(frame, fontSize, fontPath, fontFlags, preset, lay
             frame.critLabel:SetShadowOffset(0, 0)
         end
         frame.critLabel:Show()
-        if frame.animMode ~= "aionSlam" then
+        if frame.animMode ~= "impactSlam" then
             critLabelW = (frame.critLabel:GetStringWidth() or 0) + CRIT_LABEL_GAP
         end
     elseif frame.critLabel then
@@ -168,7 +168,7 @@ local function ApplyTextLayout(frame, fontSize, fontPath, fontFlags, preset, lay
         end
     end
 
-    if frame.animMode == "aionSlam" then
+    if frame.animMode == "impactSlam" then
         -- Keep the number itself centered at the right-side landing point.
         frame.text:SetPoint("CENTER", frame, "CENTER", 0, 0)
         local labelAnchor = frame.text
@@ -288,9 +288,9 @@ local function ConfigureFrameCommon(self, frame, preset, isCrit, hitKind, isInco
     end
     local fontSize = self.db.fontSize or defaultFontSize
     local spacingScale = fontSize / defaultFontSize
-    frame.aionSpacingScale = frame.numberStyle == "aion2" and fontSize / 14 or nil
-    if frame.aionSpacingScale then
-        spacingScale = frame.aionSpacingScale
+    frame.impactSpacingScale = frame.numberStyle == "impact" and fontSize / 14 or nil
+    if frame.impactSpacingScale then
+        spacingScale = frame.impactSpacingScale
     end
     frame.spawnLanes = ScaleSpawnLanes(preset.spawnLanes, spacingScale)
     frame.spawnMinDist = (preset.spawnMinDist or 20) * spacingScale
@@ -387,7 +387,7 @@ local function ClassicPreviewSamples(self, sampleKind)
             local text = sample.text or BD.FormatAmount(sample.amount, self.db.abbreviate)
             local width, height = MeasurePreviewText(text, fontPath, fontSize, preset.fontFlags)
             local labelW, labelH = 0, 0
-            if isCrit and self.db.showCritLabel then
+            if isCrit and self:GetCritLabelSetting("classic") then
                 local critSize = math.max(8, math.floor(fontSize * 0.55 + 0.5))
                 labelW, labelH = MeasurePreviewText(L["CRITICAL"], fontPath, critSize, preset.fontFlags)
             end
@@ -421,7 +421,7 @@ local function ClassicPreviewSamples(self, sampleKind)
     return samples
 end
 
-local function AionTextBounds(textW, textH, labelW, labelH, iconSize, iconPosition)
+local function ImpactTextBounds(textW, textH, labelW, labelH, iconSize, iconPosition)
     local left, right, bottom, top = -textW * 0.5, textW * 0.5, -textH * 0.5, textH * 0.5
     local labelBottom = top + CRIT_LABEL_GAP
     if iconSize then
@@ -449,13 +449,13 @@ local function AionTextBounds(textW, textH, labelW, labelH, iconSize, iconPositi
     return left, right, bottom, top
 end
 
-local function AionPreviewBounds(self, sampleKind)
-    local preset = self.STYLE_PRESETS.aion2
+local function ImpactPreviewBounds(self, sampleKind)
+    local preset = self.STYLE_PRESETS.impact
     local fontSize = (self.db.fontSize or self.DEFAULTS.fontSize) * preset.fontScale
     local fontPath = BD.ResolveFontPath(self.db.fontFace)
     local spacing = fontSize / 14
     local distance = (self.db.floatDistance or self.DEFAULTS.floatDistance) * preset.floatMult
-    local dx1, dx2, dy1, dy2 = Anim.GetAionMotionBounds(spacing, distance)
+    local dx1, dx2, dy1, dy2 = Anim.GetImpactMotionBounds(spacing, distance)
     local jitter = preset.spawnJitter * spacing
     local x, y = preset.spawnBaseX * spacing, preset.spawnBaseY * spacing
     local left, right, bottom, top = 0, 0, 0, 0
@@ -464,12 +464,12 @@ local function AionPreviewBounds(self, sampleKind)
             local text = BD.FormatAmount(sample.amount, self.db.abbreviate)
             local width, height = MeasurePreviewText(text, fontPath, fontSize, preset.fontFlags)
             local labelW, labelH = 0, 0
-            if sample.hitKind == "crit" and self.db.showCritLabel then
+            if sample.hitKind == "crit" and self:GetCritLabelSetting("impact") then
                 labelW, labelH = MeasurePreviewText(L["CRITICAL"], fontPath,
                     math.max(8, math.floor(fontSize * 0.55 + 0.5)), preset.fontFlags)
             end
             local iconSize = self.db.showSpellIcon and math.max(12, math.floor(fontSize * 1.1 + 0.5)) or nil
-            local l, r, b, t = AionTextBounds(width, height, labelW, labelH, iconSize, self.db.iconPosition)
+            local l, r, b, t = ImpactTextBounds(width, height, labelW, labelH, iconSize, self.db.iconPosition)
             local scale = sample.hitKind == "crit" and preset.critSlapScale or 1
             left = math.min(left, x + dx1 - jitter + l * scale - 4)
             right = math.max(right, x + dx2 + jitter + r * scale + 4)
@@ -486,8 +486,8 @@ end
 
 function BD:GetOptionsPreviewBounds(sampleKind, styleOverride)
     local preset, numberStyle = self:GetStylePreset(styleOverride)
-    if numberStyle == "aion2" then
-        return AionPreviewBounds(self, sampleKind)
+    if numberStyle == "impact" then
+        return ImpactPreviewBounds(self, sampleKind)
     end
     local classicStyle = numberStyle == "classic"
     if classicStyle then
@@ -521,7 +521,7 @@ function BD:GetOptionsPreviewBounds(sampleKind, styleOverride)
             local width, height = MeasurePreviewText(text, fontPath, fontSize, preset.fontFlags)
             local critLabelWidth = 0
             local iconYOffset = 0
-            if isCrit and self.db.showCritLabel then
+            if isCrit and self:GetCritLabelSetting(numberStyle) then
                 local critSize = math.max(8, math.floor(fontSize * 0.55 + 0.5))
                 local labelWidth, labelHeight = MeasurePreviewText(L["CRITICAL"], fontPath, critSize, preset.fontFlags)
                 critLabelWidth = labelWidth + CRIT_LABEL_GAP
@@ -594,7 +594,7 @@ local function SpawnMotionPreviewFrame(anchor, sample)
 
     frame.isPreview = true
     frame.anchor = anchor
-    -- The preview origin represents the live plate anchor: its right edge for Aion.
+    -- The preview origin represents the live plate anchor: its right edge for Impact.
     frame.anchorRelPoint = "CENTER"
     frame:SetParent(anchor)
     frame:SetFrameLevel(anchor:GetFrameLevel() + 1)
@@ -604,9 +604,9 @@ local function SpawnMotionPreviewFrame(anchor, sample)
     -- and hits higher (spawnBaseY 36 vs spawnCritY 8); keep that split.
     local spawnY = PreviewSpawnY(frame.motionStyle)
     local spawnX = 0
-    if frame.animMode == "aionSlam" then
-        spawnX = preset.spawnBaseX * frame.aionSpacingScale
-        spawnY = preset.spawnBaseY * frame.aionSpacingScale
+    if frame.animMode == "impactSlam" then
+        spawnX = preset.spawnBaseX * frame.impactSpacingScale
+        spawnY = preset.spawnBaseY * frame.impactSpacingScale
     end
     if frame.usesClassicShove then
         if not (frame.isCrit and frame.critsHold) then
@@ -645,7 +645,7 @@ local function SpawnMotionPreviewFrame(anchor, sample)
     end
 
     local iconSize = math.max(12, math.floor((fontSize * 1.1) + 0.5))
-    local showCritLabel = isCrit and BD.db.showCritLabel and true or false
+    local showCritLabel = isCrit and BD:GetCritLabelSetting(numberStyle) and true or false
     ApplyTextLayout(frame, fontSize, fontPath, preset.fontFlags, preset, {
         showIcon = resolvedIcon ~= nil,
         iconSize = iconSize,
@@ -830,7 +830,7 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
     ConfigureFrameCommon(self, frame, preset, isCrit, kind, false, nil, numberStyle)
 
     frame.anchor = plate
-    frame.anchorRelPoint = numberStyle == "aion2" and "TOPRIGHT" or "TOP"
+    frame.anchorRelPoint = numberStyle == "impact" and "TOPRIGHT" or "TOP"
     -- Parent UIParent. Host follows the plate while live. Death/reuse freezes
     -- at last world pin (do not read the plate). anchorGuid only when plaintext;
     -- Modern secrets: orphan on hide / NAME_PLATE_UNIT_REMOVED (see API.lua).
@@ -854,9 +854,9 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
 
     local baseY = preset.spawnBaseY or 8
     local baseX = 0
-    if frame.animMode == "aionSlam" then
-        baseX = preset.spawnBaseX * frame.aionSpacingScale
-        baseY = baseY * frame.aionSpacingScale
+    if frame.animMode == "impactSlam" then
+        baseX = preset.spawnBaseX * frame.impactSpacingScale
+        baseY = baseY * frame.impactSpacingScale
     end
     if frame.isCrit and frame.critsHold then
         baseY = frame.spawnCritY or preset.spawnCritY or 8
@@ -875,7 +875,7 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
 
     local resolvedIcon = self:ResolveOutgoingSpellIcon(spellIcon, spellId)
     local iconSize = math.max(12, math.floor((fontSize * 1.1) + 0.5))
-    local showCritLabel = frame.isCrit and self.db.showCritLabel and true or false
+    local showCritLabel = frame.isCrit and self:GetCritLabelSetting(numberStyle) and true or false
 
     if isHeal then
         if self:ShouldUseSchoolColors() then
@@ -1002,7 +1002,7 @@ function BD:ShowIncoming(text, r, g, b, amountForThreshold, isCrit, hitKind)
     local textR = r or color[1]
     local textG = g or color[2]
     local textB = b or color[3]
-    local showCritLabel = frame.isCrit and self.db.showCritLabel and true or false
+    local showCritLabel = frame.isCrit and self:GetCritLabelSetting(numberStyle) and true or false
 
     ApplyTextLayout(frame, fontSize, fontPath, preset.fontFlags, preset, {
         showCritLabel = showCritLabel,

@@ -129,10 +129,10 @@ local function ComputeMotion(frame)
     end
     local motionProgress = math.min(1, progress * scrollSpeed)
 
-    if frame.animMode == "aionSlam" then
-        local dx, dy = Anim.ComputeAionEntrance(frame.elapsed, frame.aionSpacingScale)
-        dy = dy + Anim.ComputeAionTravel(frame.elapsed, frame.duration, frame.floatDistance, scrollSpeed)
-        local scale = Anim.ComputeAionScale(frame.elapsed, frame.isCrit, frame.critSlapScale, frame.critRestScale)
+    if frame.animMode == "impactSlam" then
+        local dx, dy = Anim.ComputeImpactEntrance(frame.elapsed, frame.impactSpacingScale)
+        dy = dy + Anim.ComputeImpactTravel(frame.elapsed, frame.duration, frame.floatDistance, scrollSpeed)
+        local scale = Anim.ComputeImpactScale(frame.elapsed, frame.isCrit, frame.critSlapScale, frame.critRestScale)
         return (frame.startX or 0) + dx, (frame.startY or 0) + dy, scale, Anim.ComputeAlpha(frame, progress)
     end
 
@@ -314,7 +314,7 @@ local function SnapshotLingerHost(frame, allowPlate)
     if nx ~= nil then
         local mx, my = ComputeMotion(frame)
         local factor = GetWorldScaleFactor(frame) or 1
-        if frame.classicReady or frame.animMode == "aionSlam" then
+        if frame.classicReady or frame.animMode == "impactSlam" then
             factor = factor / frame:GetScale()
         end
         StoreLingerWorldCenter(frame, nx - mx * factor, ny - my * factor)
@@ -456,7 +456,7 @@ local function ReleaseFrame(frame)
     frame.motionStyle = nil
     frame.animMode = nil
     frame.numberStyle = nil
-    frame.aionSpacingScale = nil
+    frame.impactSpacingScale = nil
     frame.anchorRelPoint = nil
     frame.usesClassicShove = nil
     frame.classicReady = nil
@@ -892,7 +892,7 @@ end
 
 --- Classic style uses measured rectangles; Modern style keeps its spawn lanes.
 local function PickClearSpawn(anchor, frame, baseX, baseY, isCrit, acrossAnchors)
-    if frame.animMode == "aionSlam" then
+    if frame.animMode == "impactSlam" then
         local jitter = frame.spawnJitter or 0
         return baseX + (math.random() * 2 - 1) * jitter, baseY + (math.random() * 2 - 1) * jitter
     end
@@ -915,10 +915,10 @@ local function PickClearSpawn(anchor, frame, baseX, baseY, isCrit, acrossAnchors
     return baseX + math.random(-jitter, jitter), baseY + math.random(0, jitter)
 end
 
-local function RelayerAion(parent)
+local function RelayerImpact(parent)
     local frames = {}
     for frame in pairs(active) do
-        if frame.animMode == "aionSlam" and frame:GetParent() == parent then
+        if frame.animMode == "impactSlam" and frame:GetParent() == parent then
             frames[#frames + 1] = frame
         end
     end
@@ -931,7 +931,7 @@ end
 
 local function ApplyFrameMotion(frame)
     local x, y, scale, alpha = ComputeMotion(frame)
-    if frame.classicReady or frame.animMode == "aionSlam" then
+    if frame.classicReady or frame.animMode == "impactSlam" then
         -- Keep placement in logical pixels while text size changes.
         frame:SetScale(scale)
         x, y = x / scale, y / scale
@@ -944,8 +944,8 @@ local function ApplyFrameMotion(frame)
     end
     frame:SetScale(scale)
     frame:SetAlpha(alpha)
-    if frame.animMode == "aionSlam" and frame.critLabel then
-        frame.critLabel:SetAlpha(Anim.ComputeAionLabelAlpha(frame.elapsed))
+    if frame.animMode == "impactSlam" and frame.critLabel then
+        frame.critLabel:SetAlpha(Anim.ComputeImpactLabelAlpha(frame.elapsed))
     end
 end
 
@@ -1046,7 +1046,7 @@ BD.Pool = {
     Release = ReleaseFrame,
     PickClearSpawn = PickClearSpawn,
     ApplyMotion = ApplyFrameMotion,
-    RelayerAion = RelayerAion,
+    RelayerImpact = RelayerImpact,
     RelayoutClassic = RelayoutClassic,
     GetClassicPreviewBounds = GetClassicPreviewBounds,
     ReleasePreviewFrames = ReleasePreviewFrames,

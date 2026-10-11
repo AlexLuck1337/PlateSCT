@@ -140,8 +140,8 @@ L["%d px"] = "%d пкс"
 L["%.1fs"] = "%.1fс"
 L["%.1fx"] = "%.1fx"
 L["Show CRITICAL"] = "Показывать КРИТ"
-L["Show the word CRITICAL in small caps next to critical hit numbers."] =
-    "Показывает слово КРИТ прописными буквами рядом с критическими ударами."
+L["Show CRITICAL on critical hits. Impact saves its own choice, enabled by default."] =
+    "Показывает КРИТ при критических ударах. Для Impact настройка сохраняется отдельно и включена по умолчанию."
 L["CRITICAL"] = "КРИТ"
 
 L["Minimum damage threshold"] = "Минимальный порог урона"
