@@ -36,9 +36,9 @@ local function Version()
 end
 
 local function FlavorLabel()
-    if BD.API.IsModern() then return L["Modern API — Midnight & Forever"] end
-    if BD.API.IsClassic() then return L["Classic API — Era/TBC/Wrath/MoP"] end
-    return L["Unsupported client — combat text unavailable"]
+    if BD.API.IsModern() then return L["Modern API - Midnight & Forever"] end
+    if BD.API.IsClassic() then return L["Classic API - Era/TBC/Wrath/MoP"] end
+    return L["Unsupported client - combat text unavailable"]
 end
 
 local function StopMotion(frame)
@@ -490,7 +490,8 @@ local function BuildConfigFrame()
             local aliases = meta.control.searchAliases
             if type(aliases) == "table" then aliases = table.concat(aliases, " ") end
             local searchable = meta.searchText .. " " .. SearchText(aliases or "")
-            if searchable:find(query, 1, true) then
+            local row = meta.control.row or meta.control
+            if row:IsShown() and searchable:find(query, 1, true) then
                 frame.searchMatches[#frame.searchMatches + 1] = meta
             end
         end
@@ -514,6 +515,7 @@ local function BuildConfigFrame()
         results:SetHeight(#matches == 0 and 48 or 16 + math.min(8, #matches) * 42)
         resultView:SetScroll(0); results:Show()
     end
+    frame.refreshers[#frame.refreshers + 1] = UpdateSearch
     search:SetScript("OnTextChanged", UpdateSearch)
     search:SetScript("OnEnterPressed", function() frame:ChooseSearchResult(frame.searchSelection) end)
     search:SetScript("OnEscapePressed", function() frame:DismissTransient(); search:ClearFocus() end)
@@ -635,7 +637,7 @@ SlashCmdList["PLATESCT"] = function(message)
     message = string.lower(strtrim(message or ""))
     if message == "probe" or message == "meter" then
         if BD.API.IsModern() then BD:DumpDamageMeterProbe()
-        else print("|cffff6600PlateSCT:|r " .. L["Meter probe requires Modern API — Midnight & Forever."]) end
+        else print("|cffff6600PlateSCT:|r " .. L["Meter probe requires Modern API - Midnight & Forever."]) end
         return
     end
     BD:OpenOptions()

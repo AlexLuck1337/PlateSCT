@@ -13,6 +13,14 @@ local function GetFrameStyle(self, hitKind, isIncoming, isHeal)
     return self:GetStylePreset(override)
 end
 
+local function GetImpactPlacement(self, spacingScale)
+    local preset = self.STYLE_PRESETS.impact
+    if self.db.impactPosition == "top" then
+        return 0, preset.spawnTopY * spacingScale, "TOP"
+    end
+    return preset.spawnBaseX * spacingScale, preset.spawnBaseY * spacingScale, "TOPRIGHT"
+end
+
 local function AnchorCritLabel(frame)
     if frame.critLabel and frame.critLabel:IsShown() then
         frame.critLabel:SetPoint("BOTTOMLEFT", frame.text, "BOTTOMRIGHT", CRIT_LABEL_GAP, 0)
@@ -457,7 +465,7 @@ local function ImpactPreviewBounds(self, sampleKind)
     local distance = (self.db.floatDistance or self.DEFAULTS.floatDistance) * preset.floatMult
     local dx1, dx2, dy1, dy2 = Anim.GetImpactMotionBounds(spacing, distance)
     local jitter = preset.spawnJitter * spacing
-    local x, y = preset.spawnBaseX * spacing, preset.spawnBaseY * spacing
+    local x, y = GetImpactPlacement(self, spacing)
     local left, right, bottom, top = 0, 0, 0, 0
     for _, sample in ipairs(PREVIEW_SAMPLES) do
         if sample.hitKind ~= "miss" and MatchesPreviewKind(sample, sampleKind) then
@@ -594,7 +602,7 @@ local function SpawnMotionPreviewFrame(anchor, sample)
 
     frame.isPreview = true
     frame.anchor = anchor
-    -- The preview origin represents the live plate anchor: its right edge for Impact.
+    -- The preview origin represents the selected live plate anchor.
     frame.anchorRelPoint = "CENTER"
     frame:SetParent(anchor)
     frame:SetFrameLevel(anchor:GetFrameLevel() + 1)
@@ -605,8 +613,7 @@ local function SpawnMotionPreviewFrame(anchor, sample)
     local spawnY = PreviewSpawnY(frame.motionStyle)
     local spawnX = 0
     if frame.animMode == "impactSlam" then
-        spawnX = preset.spawnBaseX * frame.impactSpacingScale
-        spawnY = preset.spawnBaseY * frame.impactSpacingScale
+        spawnX, spawnY = GetImpactPlacement(BD, frame.impactSpacingScale)
     end
     if frame.usesClassicShove then
         if not (frame.isCrit and frame.critsHold) then
@@ -830,7 +837,11 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
     ConfigureFrameCommon(self, frame, preset, isCrit, kind, false, nil, numberStyle)
 
     frame.anchor = plate
-    frame.anchorRelPoint = numberStyle == "impact" and "TOPRIGHT" or "TOP"
+    frame.anchorRelPoint = "TOP"
+    local baseX, baseY = 0, preset.spawnBaseY or 8
+    if frame.animMode == "impactSlam" then
+        baseX, baseY, frame.anchorRelPoint = GetImpactPlacement(self, frame.impactSpacingScale)
+    end
     -- Parent UIParent. Host follows the plate while live. Death/reuse freezes
     -- at last world pin (do not read the plate). anchorGuid only when plaintext;
     -- Modern secrets: orphan on hide / NAME_PLATE_UNIT_REMOVED (see API.lua).
@@ -852,12 +863,6 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
     frame.unitToken = unit
     BD.Pool.AttachLingerHost(frame, plate)
 
-    local baseY = preset.spawnBaseY or 8
-    local baseX = 0
-    if frame.animMode == "impactSlam" then
-        baseX = preset.spawnBaseX * frame.impactSpacingScale
-        baseY = baseY * frame.impactSpacingScale
-    end
     if frame.isCrit and frame.critsHold then
         baseY = frame.spawnCritY or preset.spawnCritY or 8
     end

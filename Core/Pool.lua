@@ -300,7 +300,7 @@ end
 
 -- Read our frames first. Nameplate GetCenter is often nil on Classic *children*,
 -- but the plate widget itself can still report a center while shown.
--- After reuse that center is the neighbor — allowPlate only while GUID matches.
+-- After reuse that center is the neighbor - allowPlate only while GUID matches.
 local function SnapshotLingerHost(frame, allowPlate)
     local host = frame.lingerHost
     if host then
@@ -409,7 +409,7 @@ local function GetPlateUnitToken(plate)
 end
 
 local function AnchorGuidChanged(frame)
-    -- Classic-only reuse signal. Modern UnitGUID is often secret — ValuesNotEqual
+    -- Classic-only reuse signal. Modern UnitGUID is often secret - ValuesNotEqual
     -- returns false; orphan via plate hide / NAME_PLATE_UNIT_REMOVED instead.
     -- Compare the plate widget's current token; stored nameplateN can lag reuse.
     if not frame.anchorGuid then
@@ -971,7 +971,7 @@ local function FrameOnUpdate(frame, elapsed)
         if AnchorGuidChanged(frame) or not frame.anchor or not AnchorIsShown(frame.anchor) then
             FreezeLingerHost(frame)
         else
-            -- Previous bind is still laid out — snapshot before we ClearAllPoints.
+            -- Previous bind is still laid out - snapshot before we ClearAllPoints.
             SnapshotLingerHost(frame, true)
             BindLingerHostToPlate(frame, frame.anchor)
         end

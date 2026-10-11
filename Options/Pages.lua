@@ -18,6 +18,10 @@ local function ModernNumberStyle()
     return (BD.db.numberStyle or "retail") == "retail"
 end
 
+local function ImpactNumberStyle()
+    return BD.db.numberStyle == "impact"
+end
+
 local function PixelValue(value)
     return string.format(L["%d px"], value)
 end
@@ -73,7 +77,7 @@ local function BuildCombat(parent, root)
         IsModernAPI() and L["In Only my damage mode, also treat a recent pet cast as your hit."]
             or L["Also show damage from your pet and guardians on nameplates."],
         PersonalModeAvailable, nil,
-        L["Choose Personal — experimental under Modern API → Damage mode to use pet matching."])
+        L["Choose Personal - experimental under Modern API → Damage mode to use pet matching."])
 
     layout:Heading(L["Healing"])
     layout:Checkbox("showHealing", L["Show healing"],
@@ -134,7 +138,7 @@ local function BuildAppearance(parent, root)
         IsModernAPI() and L["Display the spell's icon next to the damage number. Uses the matched cast or auto-attack."]
             or L["Display the spell's icon next to the damage number. Uses the spell from the combat log."],
         PersonalModeAvailable, nil,
-        L["Choose Personal — experimental under Modern API → Damage mode to use spell icons."])
+        L["Choose Personal - experimental under Modern API → Damage mode to use spell icons."])
     layout:Choice("iconPosition", L["Icon position"], BD.ICON_POSITIONS,
         L["Place the spell icon beside, above, or below the number."], function()
             return PersonalModeAvailable() and BD.db.showSpellIcon
@@ -154,7 +158,7 @@ local function BuildAnimation(parent, root)
         { id = "impact", labelKey = "Impact number style" },
     }, L["All number styles are available on every supported WoW API."])
     layout:Note(L["Modern scrolls up from the nameplate with a small crit pop. Classic keeps the grow-and-settle pow, packed close to the plate."])
-    layout:Note(L["Impact slams outgoing damage to the right and below the nameplate, then floats up. New hits layer in front; crits amplify and CRITICAL flashes above when enabled."])
+    layout:Note(L["Impact slams outgoing damage beside or above the nameplate, then floats up. New hits layer in front; crits amplify and CRITICAL flashes above when enabled."])
     layout:Note(L["Impact uses Modern for incoming damage, healing, and miss text, preserving saved Modern motions."])
 
     layout:Heading(L["Timing and movement"])
@@ -164,16 +168,22 @@ local function BuildAnimation(parent, root)
     layout:Slider("scrollSpeed", L["Scroll speed"], 0.5, 3, 0.1,
         function(value) return string.format(L["%.1fx"], value) end)
 
-    layout:Heading(L["Modern number style motion"])
-    layout:Note(L["Pick a motion for each hit type in Modern. Classic and Impact use their own damage animations."])
-    local motionReason = L["Switch to Modern number style to customize these motions."]
-    layout:Choice("animHit", L["Normal hits"], BD.ANIM_STYLES,
-        L["Motion used for normal damage numbers."], ModernNumberStyle, nil, motionReason)
-    layout:Choice("animCrit", L["Critical hits"], BD.ANIM_STYLES_CRIT,
-        L["Motion used for critical hits. Classic Slap uses the Classic grow-and-settle pow."],
-        ModernNumberStyle, nil, motionReason)
-    layout:Choice("animMiss", L["Miss / Parry / Dodge"], BD.ANIM_STYLES,
-        L["Motion used for miss, parry, dodge, and similar outcomes."], ModernNumberStyle, nil, motionReason)
+    layout:When(ModernNumberStyle, function()
+        layout:Heading(L["Modern number style motion"])
+        layout:Choice("animHit", L["Normal hits"], BD.ANIM_STYLES,
+            L["Motion used for normal damage numbers."], ModernNumberStyle)
+        layout:Choice("animCrit", L["Critical hits"], BD.ANIM_STYLES_CRIT,
+            L["Motion used for critical hits. Classic Slap uses the Classic grow-and-settle pow."], ModernNumberStyle)
+        layout:Choice("animMiss", L["Miss / Parry / Dodge"], BD.ANIM_STYLES,
+            L["Motion used for miss, parry, dodge, and similar outcomes."], ModernNumberStyle)
+    end)
+    layout:When(ImpactNumberStyle, function()
+        layout:Heading(L["Impact style position"])
+        layout:Choice("impactPosition", L["Damage position"], {
+            { id = "side", labelKey = "Side", recommended = true },
+            { id = "top", labelKey = "Top" },
+        }, L["Place Impact damage to the right of the nameplate or centered above it."], ImpactNumberStyle)
+    end)
     layout:Finish()
 end
 
@@ -246,12 +256,12 @@ end
 local function BuildModernMode(layout)
     layout:Heading(L["Damage mode"])
     local control = layout:Choice(damageMode, L["Damage mode"], {
-        { id = "personal", labelKey = "Personal — experimental" },
+        { id = "personal", labelKey = "Personal - experimental" },
         { id = "target", labelKey = "Current target" },
         { id = "engaged", labelKey = "Engaged nameplates" },
     }, L["Personal matches recent casts. Current target and Engaged nameplates show damage from all sources."])
     control.searchAliases = { L["Only my damage"], L["All engaged nameplates"] }
-    layout:Note(L["Personal — experimental: best-effort matching by destination and timing. Other players' hits on the same target can appear."])
+    layout:Note(L["Personal - experimental: best-effort matching by destination and timing. Other players' hits on the same target can appear."])
     layout:Note(L["Current target: all-source numbers on your target. Engaged nameplates: all-source numbers on engaged enemies."])
     layout:Heading(L["Attribution limitations"])
     layout:Note(L["Best effort: matches your casts to nameplates by destination and timing. Dest-matched cleave can show. Other players on the same target can still appear. Mythic+ uses the Dungeon profile."])
@@ -355,11 +365,11 @@ end
 local function BuildDiagnostics(layout)
     layout:Heading(L["Your WoW API"])
     if IsModernAPI() then
-        layout:Note(L["Modern API — Midnight & Forever"])
+        layout:Note(L["Modern API - Midnight & Forever"])
         layout:Note(L["Modern clients restrict combat information. Personal mode estimates ownership; all-source modes display target or engaged-nameplate damage."])
         layout:Note(L["Unreadable amounts cannot trigger threshold sounds. Unreadable damage schools are always allowed by the school filter."])
     else
-        layout:Note(L["Classic API — Era/TBC/Wrath/MoP"])
+        layout:Note(L["Classic API - Era/TBC/Wrath/MoP"])
         layout:Note(L["Classic clients read damage ownership and spells directly from the combat log. Modern attribution and school-filter options do not apply."])
     end
     layout:Heading(L["Diagnostics"])

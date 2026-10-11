@@ -2,7 +2,7 @@ local _, BD = ...
 
 -- Classic API only: CLEU ingestion for unrestricted clients (Era / TBC / Wrath / MoP).
 -- Pet detection follows Classic combat-log conventions (LibThreatClassic / Recount):
---   - Live UnitGUID("pet") only (Pet- prefix is a type, not ownership — raid pets share it)
+--   - Live UnitGUID("pet") only (Pet- prefix is a type, not ownership - raid pets share it)
 --   - 0x1111 sourceFlags mask (Mine + Friendly + Player-controlled + Pet)
 --   - Mine + Guardian, Mine + Pet- GUID, or Mine + Player-controlled NPC (some hunter pets)
 --   - SPELL_SUMMON destinations owned by the player
@@ -204,7 +204,7 @@ local function UncacheNameplateToken(unit)
         return
     end
     -- Clear by token: UnitGUID can already be gone on REMOVED, and nameplate
-    -- tokens are reused — a GUID-only clear leaves stale maps to neighbors.
+    -- tokens are reused - a GUID-only clear leaves stale maps to neighbors.
     for guid, token in pairs(guidToToken) do
         if token == unit then
             guidToToken[guid] = nil

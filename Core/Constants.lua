@@ -22,6 +22,7 @@ BD.DEFAULTS = {
     incomingOffsetY = -100,
     debug = false,
     numberStyle = "retail", -- "retail", "classic", "impact": number styles, not API clients
+    impactPosition = "side",
     useSchoolColors = false,
     animHit = "platesct",
     animCrit = "platesct",
@@ -128,6 +129,7 @@ BD.STYLE_PRESETS = {
         critsHold = false,
         spawnBaseX = 36,
         spawnBaseY = -26,
+        spawnTopY = 26,
         spawnJitter = 3,
         shadowOffset = { 1, -1 },
     },

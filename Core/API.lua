@@ -1,7 +1,7 @@
 local _, BD = ...
 
 --[[
-PlateSCT API flavor lock — source of truth for Modern vs Classic version boundaries.
+PlateSCT API flavor lock - source of truth for Modern vs Classic version boundaries.
 Do not add a root README for this contract (release zips pack the folder).
 
 =============================================================================
@@ -13,10 +13,10 @@ ARCHITECTURE: one infra + two flavor APIs
     Must not: parse CLEU, register UNIT_COMBAT for numbers, assume plaintext
     GUID/amount ownership, or call AssertModern/AssertClassic combat parsers.
 
-  MODERN FLAVOR — Core/Combat.lua, Attribution.lua, Probe.lua
+  MODERN FLAVOR - Core/Combat.lua, Attribution.lua, Probe.lua
     Entry points: AssertModern(...). Owns UNIT_COMBAT, attribution, secrets.
 
-  CLASSIC FLAVOR — Core/CombatClassic.lua
+  CLASSIC FLAVOR - Core/CombatClassic.lua
     Entry points: AssertClassic(...). Owns CLEU, GUID↔plate, pet flags, spellId.
 
   Flavor may call infra (ShowOnNameplate, OrphanFramesForUnit, …).
@@ -25,13 +25,13 @@ ARCHITECTURE: one infra + two flavor APIs
 =============================================================================
 TWO WOW APIs
 =============================================================================
-  Modern API — Midnight / Forever
+  Modern API - Midnight / Forever
     Midnight: WOW_PROJECT_MAINLINE (1), interface >= 120000 (TOC 120100).
     Forever:  interface 16001 (1.60.x band 16000–16999). Project is
               WOW_PROJECT_CAMELOT (18) or, on some builds, MAINLINE (1).
     Same flavor: combat restrictions, UNIT_COMBAT, secret values.
 
-  Classic API — Era / TBC / Wrath / MoP
+  Classic API - Era / TBC / Wrath / MoP
     Era:   WOW_PROJECT_CLASSIC (2), TOC 11509, interface 11000–11999.
     TBC:   WOW_PROJECT_BURNING_CRUSADE_CLASSIC (5), TOC 20506, 20000–29999.
     Wrath: WOW_PROJECT_WRATH_CLASSIC (11), interface 30000–39999.
@@ -48,7 +48,7 @@ TERMINOLOGY (chat + comments)
   Never say "Classic" or "Modern" alone when client vs style could be mixed.
 
 =============================================================================
-MODERN API (Midnight / Forever — combat restrictions)
+MODERN API (Midnight / Forever - combat restrictions)
 =============================================================================
   Allowed:
     UNIT_COMBAT for numbers; issecretvalue/canaccessvalue via Util helpers only;
@@ -67,7 +67,7 @@ MODERN API (Midnight / Forever — combat restrictions)
     Classic pet flag / SPELL_SUMMON ownership model.
 
 =============================================================================
-CLASSIC API (Era / TBC / Wrath / MoP — no restrictions)
+CLASSIC API (Era / TBC / Wrath / MoP - no restrictions)
 =============================================================================
   Allowed:
     COMBAT_LOG_EVENT_UNFILTERED + CombatLogGetCurrentEventInfo;
@@ -85,7 +85,7 @@ CLASSIC API (Era / TBC / Wrath / MoP — no restrictions)
     MatchOutgoingHit or cast-tracking for spell icons (use CLEU spellId instead).
 
 =============================================================================
-SECRET VALUES — what belongs / does not
+SECRET VALUES - what belongs / does not
 =============================================================================
   Belongs (Modern, via Util):
     BD.IsSecret / ValuePresent / CanAccessValue / ValuesEqual / ValuesNotEqual;
