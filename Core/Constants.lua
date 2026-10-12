@@ -21,12 +21,14 @@ BD.DEFAULTS = {
     incomingOffsetX = 0,
     incomingOffsetY = -100,
     debug = false,
-    numberStyle = "retail", -- "retail" = Modern style; "classic" = Classic style (not Classic version)
+    numberStyle = "retail", -- "retail", "classic", "impact": number styles, not API clients
+    impactPosition = "side",
     useSchoolColors = false,
     animHit = "platesct",
     animCrit = "platesct",
     animMiss = "platesct",
     showCritLabel = false,
+    showImpactCritLabel = true,
     showOptionsPreview = true,
     settingsAnimations = true,
     showMinimapButton = true,
@@ -106,6 +108,31 @@ BD.SOUND_CHANNELS = {
 }
 
 BD.STYLE_PRESETS = {
+    impact = {
+        fontFlags = "OUTLINE",
+        fontScale = 1.0,
+        popScale = 1.0,
+        popDuration = 0,
+        fadeMode = "impact",
+        fadeInRatio = 0,
+        driftX = 0,
+        useSchoolColors = false,
+        defaultColor = { 1.0, 0.93, 0.0 },
+        critColor = { 1.0, 0.93, 0.0 },
+        critPopStartScale = 1.0,
+        critSlapScale = 1.4,
+        critRestScale = 1.2,
+        durationMult = 1.0,
+        critDurationMult = 1.1,
+        floatMult = 1.0,
+        animMode = "impactSlam",
+        critsHold = false,
+        spawnBaseX = 44,
+        spawnBaseY = -26,
+        spawnTopY = 26,
+        spawnJitter = 3,
+        shadowOffset = { 1, -1 },
+    },
     retail = {
         fontFlags = "OUTLINE",
         fontScale = 1.0,

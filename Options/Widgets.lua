@@ -552,6 +552,14 @@ function W.NewLayout(parent, root, pageId, tabId, width)
         self.rows[#self.rows + 1] = row
     end
 
+    function layout:When(predicate, build)
+        local first = #self.rows + 1
+        build(self)
+        for index = first, #self.rows do
+            self.rows[index].isVisible = predicate
+        end
+    end
+
     function layout:Heading(text)
         if #self.rows > 0 then self:Gap(14) end
         self.section = text
@@ -797,45 +805,49 @@ function W.NewLayout(parent, root, pageId, tabId, width)
     function layout:Reflow()
         local y = -16
         for _, row in ipairs(self.rows) do
-            y = y - row.layoutGap
-            local caption, control = row.layoutCaption, row.layoutControl
-            local indent = row.layoutKind == "note" and 8 or 0
-            row:ClearAllPoints()
-            row:SetPoint("TOPLEFT", self.x + indent, y)
-            row:SetWidth(self.width - indent * 2)
-            local height
-            if row.layoutKind == "heading" then
-                caption:SetWidth(self.width)
-                height = math.max(32, caption:GetStringHeight() + 12)
-            elseif row.layoutKind == "note" then
-                caption:SetWidth(self.width - 16)
-                height = math.max(16, caption:GetStringHeight()) + 12
-            else
-                local controlWidth = math.min(CONTROL_WIDTH, math.floor(self.width * 0.44))
-                caption:SetWidth(self.width - controlWidth - 36)
-                height = math.max(row.minimumHeight, caption:GetStringHeight() + 20)
-                if control.layoutType == "slider" then
-                    control.valueText:SetWidth(controlWidth)
-                    local readoutHeight = math.max(14, control.valueText:GetStringHeight())
-                    control:ClearAllPoints()
-                    control:SetPoint("TOPRIGHT", -14, -15 - readoutHeight)
-                    control:SetWidth(controlWidth - 8)
-                    height = math.max(height, readoutHeight + 42)
-                elseif control.layoutType then
-                    control:SetWidth(controlWidth)
-                end
-                if row.layoutReason then
-                    row.layoutReason:SetWidth(self.width - 20)
-                    row.layoutReason:ClearAllPoints()
-                    row.layoutReason:SetPoint("TOPLEFT", 10, -height)
-                    if row.layoutReason:IsShown() then
-                        height = height + math.max(16, row.layoutReason:GetStringHeight()) + 8
+            local visible = not row.isVisible or row.isVisible()
+            row:SetShown(visible)
+            if visible then
+                y = y - row.layoutGap
+                local caption, control = row.layoutCaption, row.layoutControl
+                local indent = row.layoutKind == "note" and 8 or 0
+                row:ClearAllPoints()
+                row:SetPoint("TOPLEFT", self.x + indent, y)
+                row:SetWidth(self.width - indent * 2)
+                local height
+                if row.layoutKind == "heading" then
+                    caption:SetWidth(self.width)
+                    height = math.max(32, caption:GetStringHeight() + 12)
+                elseif row.layoutKind == "note" then
+                    caption:SetWidth(self.width - 16)
+                    height = math.max(16, caption:GetStringHeight()) + 12
+                else
+                    local controlWidth = math.min(CONTROL_WIDTH, math.floor(self.width * 0.44))
+                    caption:SetWidth(self.width - controlWidth - 36)
+                    height = math.max(row.minimumHeight, caption:GetStringHeight() + 20)
+                    if control.layoutType == "slider" then
+                        control.valueText:SetWidth(controlWidth)
+                        local readoutHeight = math.max(14, control.valueText:GetStringHeight())
+                        control:ClearAllPoints()
+                        control:SetPoint("TOPRIGHT", -14, -15 - readoutHeight)
+                        control:SetWidth(controlWidth - 8)
+                        height = math.max(height, readoutHeight + 42)
+                    elseif control.layoutType then
+                        control:SetWidth(controlWidth)
                     end
+                    if row.layoutReason then
+                        row.layoutReason:SetWidth(self.width - 20)
+                        row.layoutReason:ClearAllPoints()
+                        row.layoutReason:SetPoint("TOPLEFT", 10, -height)
+                        if row.layoutReason:IsShown() then
+                            height = height + math.max(16, row.layoutReason:GetStringHeight()) + 8
+                        end
+                    end
+                    control.searchMeta.y = y
                 end
-                control.searchMeta.y = y
+                row:SetHeight(height)
+                y = y - height - (row.layoutKind == "control" and 3 or 0)
             end
-            row:SetHeight(height)
-            y = y - height - (row.layoutKind == "control" and 3 or 0)
         end
         self.y = y
         parent:SetHeight(math.max(1, -y + 16))

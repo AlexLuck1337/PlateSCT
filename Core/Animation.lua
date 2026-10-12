@@ -81,10 +81,63 @@ function Anim.ComputeNormalScale(elapsed, popDuration, popScale)
     return popScale + (1 - popScale) * eased
 end
 
+Anim.IMPACT_ENTRANCE_DURATION = 0.12
+local IMPACT_SLAM_DURATION = 0.08
+local IMPACT_START_X, IMPACT_START_Y, IMPACT_OVERSHOOT = 20, 8, 2
+
+function Anim.ComputeImpactEntrance(elapsed, spacingScale)
+    if elapsed < IMPACT_SLAM_DURATION then
+        local t = Anim.EaseOutQuint(elapsed / IMPACT_SLAM_DURATION)
+        local scale = spacingScale or 1
+        return (IMPACT_START_X - (IMPACT_START_X + IMPACT_OVERSHOOT) * t) * scale,
+            (IMPACT_START_Y - (IMPACT_START_Y + IMPACT_OVERSHOOT) * t) * scale
+    end
+    local settle = Anim.IMPACT_ENTRANCE_DURATION - IMPACT_SLAM_DURATION
+    local offset = -IMPACT_OVERSHOOT * (1 - Anim.EaseOutCubic((elapsed - IMPACT_SLAM_DURATION) / settle)) * (spacingScale or 1)
+    return offset, offset
+end
+
+function Anim.ComputeImpactScale(elapsed, isCrit, peakScale, restScale)
+    if not isCrit then
+        return 1
+    end
+    local peak, rest = peakScale or 1.4, restScale or 1.2
+    if elapsed < 0.04 then
+        return 1 + (peak - 1) * Anim.EaseOutCubic(elapsed / 0.04)
+    end
+    return peak + (rest - peak) * Anim.EaseOutCubic((elapsed - 0.04) / 0.08)
+end
+
+function Anim.ComputeImpactTravel(elapsed, duration, distance, scrollSpeed)
+    local span = duration - Anim.IMPACT_ENTRANCE_DURATION
+    if span <= 0 then
+        return 0
+    end
+    local progress = Anim.Clamp01((elapsed - Anim.IMPACT_ENTRANCE_DURATION) / span * math.max(0.01, scrollSpeed or 1))
+    return (distance or 0) * Anim.EaseOutQuad(progress)
+end
+
+function Anim.GetImpactMotionBounds(spacingScale, distance)
+    local scale = spacingScale or 1
+    return -IMPACT_OVERSHOOT * scale, IMPACT_START_X * scale,
+        math.min(-IMPACT_OVERSHOOT * scale, distance or 0), math.max(IMPACT_START_Y * scale, distance or 0)
+end
+
+function Anim.ComputeImpactLabelAlpha(elapsed)
+    local t = Anim.Clamp01(elapsed / Anim.IMPACT_ENTRANCE_DURATION)
+    -- One opacity dip, with no repeated flashing or forced color change.
+    return 1 - 0.55 * math.sin(math.pi * t) ^ 2
+end
+
 function Anim.ComputeAlpha(frame, progress)
     local fadePower = frame.fadePower or 1
     local baseAlpha = frame.baseAlpha or 1
     local fadeIn = frame.fadeInRatio or 0
+
+    if frame.fadeMode == "impact" then
+        local t = Anim.Clamp01((progress - 0.55) / 0.45)
+        return baseAlpha * (1 - t * t * (3 - 2 * t))
+    end
 
     if fadeIn > 0 and progress < fadeIn then
         return Anim.EaseOutQuint(progress / fadeIn) * baseAlpha
