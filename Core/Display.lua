@@ -21,6 +21,19 @@ local function GetImpactPlacement(self, spacingScale)
     return preset.spawnBaseX * spacingScale, preset.spawnBaseY * spacingScale, "TOPRIGHT"
 end
 
+local function ImpactTextOffset(self, iconSize, iconPosition)
+    if self.db.impactPosition ~= "top" or not iconSize then
+        return 0
+    end
+    local offset = (iconSize + ICON_GAP) * 0.5
+    if iconPosition == "right" then
+        return -offset
+    elseif iconPosition ~= "top" and iconPosition ~= "bottom" then
+        return offset
+    end
+    return 0
+end
+
 local function AnchorCritLabel(frame)
     if frame.critLabel and frame.critLabel:IsShown() then
         frame.critLabel:SetPoint("BOTTOMLEFT", frame.text, "BOTTOMRIGHT", CRIT_LABEL_GAP, 0)
@@ -167,8 +180,8 @@ local function ApplyTextLayout(frame, fontSize, fontPath, fontFlags, preset, lay
     end
 
     local resolvedIcon = showIcon and iconTexture
+    local size = iconSize or math.max(12, math.floor((fontSize * 1.1) + 0.5))
     if resolvedIcon then
-        local size = iconSize or math.max(12, math.floor((fontSize * 1.1) + 0.5))
         frame.icon:SetSize(size, size)
         local ok = pcall(frame.icon.SetTexture, frame.icon, resolvedIcon)
         if not ok then
@@ -177,8 +190,9 @@ local function ApplyTextLayout(frame, fontSize, fontPath, fontFlags, preset, lay
     end
 
     if frame.animMode == "impactSlam" then
-        -- Keep the number itself centered at the right-side landing point.
-        frame.text:SetPoint("CENTER", frame, "CENTER", 0, 0)
+        -- Top placement centers the number and side icon together.
+        local textX = ImpactTextOffset(BD, resolvedIcon and size, iconPosition)
+        frame.text:SetPoint("CENTER", frame, "CENTER", textX, 0)
         local labelAnchor = frame.text
         if resolvedIcon then
             frame.icon:SetVertexColor(1, 1, 1, 1)
@@ -478,6 +492,8 @@ local function ImpactPreviewBounds(self, sampleKind)
             end
             local iconSize = self.db.showSpellIcon and math.max(12, math.floor(fontSize * 1.1 + 0.5)) or nil
             local l, r, b, t = ImpactTextBounds(width, height, labelW, labelH, iconSize, self.db.iconPosition)
+            local textX = ImpactTextOffset(self, iconSize, self.db.iconPosition)
+            l, r = l + textX, r + textX
             local scale = sample.hitKind == "crit" and preset.critSlapScale or 1
             left = math.min(left, x + dx1 - jitter + l * scale - 4)
             right = math.max(right, x + dx2 + jitter + r * scale + 4)
