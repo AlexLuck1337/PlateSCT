@@ -386,6 +386,9 @@ local function BuildDiagnostics(layout)
 end
 
 local function BuildWhatsNew(layout)
+    layout:Heading(L["Impact number style"])
+    layout:Note(L["Impact slams outgoing damage beside or above the nameplate, then floats up. New hits layer in front; crits amplify and CRITICAL flashes above when enabled."])
+    layout:Note(L["Impact uses Modern for incoming damage, healing, and miss text, preserving saved Modern motions."])
     layout:Heading(L["Settings redesign"])
     layout:Note(L["A new WoW-inspired settings window with clear sections, searchable controls, and gentle animations."])
     layout:Note(L["Modern API options now have their own page. Damage mode combines Only my damage and All engaged nameplates without changing saved preferences."])
