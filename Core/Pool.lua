@@ -19,6 +19,8 @@ local CLASSIC_LAYOUT_CELL = 64
 local classicWorldSpace = {}
 local ROLLING_AVERAGE_WINDOW = 10
 local ROLLING_AVERAGE_MAX_AGE = 8.0
+local IMPACT_PUSH_DURATION = 0.08
+local IMPACT_STACK_OFFSET = 32
 
 local damageSamples = {}
 local rollingDamageAverage = 0
@@ -116,6 +118,16 @@ local function ComputeIntroScale(frame)
     return Anim.ComputeNormalScale(frame.elapsed, frame.popDuration, frame.popScale), introDuration
 end
 
+local function ComputeImpactPush(frame)
+    local target = frame.impactPushTo or 0
+    if not frame.impactPushStarted then
+        return target
+    end
+    local progress = (frame.elapsed - frame.impactPushStarted) / IMPACT_PUSH_DURATION
+    local from = frame.impactPushFrom or 0
+    return from + (target - from) * Anim.EaseOutCubic(progress)
+end
+
 local function ComputeMotion(frame)
     local progress = 0
     if frame.duration and frame.duration > 0 then
@@ -132,6 +144,7 @@ local function ComputeMotion(frame)
     if frame.animMode == "impactSlam" then
         local dx, dy = Anim.ComputeImpactEntrance(frame.elapsed, frame.impactSpacingScale)
         dy = dy + Anim.ComputeImpactTravel(frame.elapsed, frame.duration, frame.floatDistance, scrollSpeed)
+        dy = dy + ComputeImpactPush(frame)
         local scale = Anim.ComputeImpactScale(frame.elapsed, frame.isCrit, frame.critSlapScale, frame.critRestScale)
         return (frame.startX or 0) + dx, (frame.startY or 0) + dy, scale, Anim.ComputeAlpha(frame, progress)
     end
@@ -457,6 +470,9 @@ local function ReleaseFrame(frame)
     frame.animMode = nil
     frame.numberStyle = nil
     frame.impactSpacingScale = nil
+    frame.impactPushFrom = nil
+    frame.impactPushTo = nil
+    frame.impactPushStarted = nil
     frame.anchorRelPoint = nil
     frame.usesClassicShove = nil
     frame.classicReady = nil
@@ -890,11 +906,28 @@ local function SpawnSlotBlocked(frame, anchor, cx, cy, minDistSq, acrossAnchors)
     return false
 end
 
+local function PushImpactFrames(anchor, frame)
+    frame.impactPushTo = 0
+    for other in pairs(active) do
+        if other ~= frame and other.animMode == "impactSlam" and other.impactPushTo ~= nil
+            and other.anchor == anchor and other.anchorRelPoint == frame.anchorRelPoint
+            and other.isPreview == frame.isPreview and not other.lingerFrozen
+            and other.elapsed < other.duration then
+            -- Keep each push fixed in logical pixels, independent of font or crit size.
+            other.impactPushFrom = ComputeImpactPush(other)
+            other.impactPushTo = other.impactPushTo + IMPACT_STACK_OFFSET
+            other.impactPushStarted = other.elapsed
+        end
+    end
+end
+
 --- Classic style uses measured rectangles; Modern style keeps its spawn lanes.
 local function PickClearSpawn(anchor, frame, baseX, baseY, isCrit, acrossAnchors)
     if frame.animMode == "impactSlam" then
         local jitter = frame.spawnJitter or 0
-        return baseX + (math.random() * 2 - 1) * jitter, baseY + (math.random() * 2 - 1) * jitter
+        local x, y = baseX + (math.random() * 2 - 1) * jitter, baseY + (math.random() * 2 - 1) * jitter
+        PushImpactFrames(anchor, frame)
+        return x, y
     end
     if frame.usesClassicShove and frame.classicBounds then
         return PickClassicSpawn(frame, baseX, baseY, ActiveClassicFrames(GetTime()))
