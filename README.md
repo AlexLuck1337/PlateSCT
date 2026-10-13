@@ -32,10 +32,14 @@ Classic API clients use the unrestricted combat log. Modern API clients use `UNI
 
 ## Installation
 
-1. Close World of Warcraft.
-2. Copy the `PlateSCT` folder into the `Interface/AddOns` directory for the client you play.
-3. Check that the resulting path is `Interface/AddOns/PlateSCT/PlateSCT.toc`, without an extra nested repository folder.
-4. Start the game, enable **PlateSCT** in the character-selection AddOns list, then enter the game.
+Install PlateSCT using either option:
+
+- **CurseForge:** install [PlateSCT](https://www.curseforge.com/wow/addons/platesct) through the CurseForge app, or download it from the website and extract the `PlateSCT` folder into your game client's `Interface/AddOns` directory.
+- **Tagged release:** download the addon archive from a [tagged release](https://github.com/Spatovaliyski/PlateSCT/releases) and extract the `PlateSCT` folder into your game client's `Interface/AddOns` directory.
+
+For a manual installation, check that the resulting path is `Interface/AddOns/PlateSCT/PlateSCT.toc`, without an extra nested folder.
+
+You can install while the game is running. After installation, type `/reload` in chat to load the addon. Make sure **PlateSCT** is enabled in the AddOns list.
 
 Enable the nameplates you want to see outgoing numbers on in the game's settings.
 
