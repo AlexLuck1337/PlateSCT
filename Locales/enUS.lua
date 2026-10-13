@@ -3,6 +3,19 @@ local _, BD = ...
 local L = {}
 BD.RegisterLocale("enUS", L)
 
+-- Number position and font preview
+L["Number position"] = "Number position"
+L["X offset"] = "X offset"
+L["Y offset"] = "Y offset"
+L["Offsets are saved separately for each number style. Positive X moves right; positive Y moves up. Incoming uses its own position controls."] = "Offsets are saved separately for each number style. Positive X moves right; positive Y moves up. Incoming uses its own position controls."
+L["Hover over a font to preview 12345."] = "Hover over a font to preview 12345."
+L["Press Ctrl+C to copy the URL."] = "Press Ctrl+C to copy the URL."
+L["Open Link"] = "Open Link"
+
+-- Translation feedback
+L["This translation was generated with AI. If you find inconsistent terminology or incorrect wording, please report it through GitHub Issues. Thank you for your help! Translation contributors will be credited."] =
+    "This translation was generated with AI. If you find inconsistent terminology or incorrect wording, please report it through GitHub Issues. Thank you for your help! Translation contributors will be credited."
+
 -- Impact number style
 L["Impact number style"] = "Impact number style"
 L["All number styles are available on every supported WoW API."] = "All number styles are available on every supported WoW API."

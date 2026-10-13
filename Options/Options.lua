@@ -246,20 +246,38 @@ local function CreatePreview(root, content)
         local stage = CreateFrame("Frame", nil, clip)
         stage:SetSize(1, 1)
         stage:SetPoint("CENTER")
+        local plateMarker = stage:CreateTexture(nil, "BACKGROUND")
+        plateMarker:SetSize(64, 6)
+        plateMarker:SetPoint("CENTER")
+        plateMarker:SetColorTexture(0.60, 0.57, 0.48, 0.75)
         column.clip, column.stage = clip, stage
         pane.columns[index] = column
     end
     function pane:FitStage()
         LayoutColumns()
         local scale = 0.7
-        for _, column in ipairs(self.columns) do
-            local clip, stage = column.clip, column.stage
+        local offsetX, offsetY = BD:GetNumberStyleOffsets()
+        local bounds = {}
+        for index, column in ipairs(self.columns) do
+            local clip = column.clip
+            if clip:GetWidth() <= 0 or clip:GetHeight() <= 0 then return end
+            -- Motion bounds use the default spawn; keep the marker at the unshifted origin.
             local left, right, bottom, top = BD:GetOptionsPreviewBounds(column.kind)
+            left, right = math.min(-32, left + offsetX), math.max(32, right + offsetX)
+            bottom, top = math.min(-3, bottom + offsetY), math.max(3, top + offsetY)
+            bounds[index] = { left, right, bottom, top }
+            scale = math.min(scale,
+                math.max(1, clip:GetWidth() - 16) / math.max(1, right - left),
+                math.max(1, clip:GetHeight() - 16) / math.max(1, top - bottom))
+        end
+        for index, column in ipairs(self.columns) do
+            local clip, stage = column.clip, column.stage
+            local left, right, bottom, top = unpack(bounds[index])
             stage:ClearAllPoints()
             stage:SetScale(scale)
             stage:SetPoint("CENTER", clip, "CENTER", -(left + right) * 0.5 * scale, -(bottom + top) * 0.5 * scale)
         end
-        scaleLabel:SetText(string.format(L["Preview scale: %d%%"], 70))
+        scaleLabel:SetText(string.format(L["Preview scale: %d%%"], math.floor(scale * 100 + 0.5)))
     end
     function pane:UpdateLayout()
         local open = BD.db.showOptionsPreview and true or false

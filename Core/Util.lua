@@ -10,6 +10,13 @@ function BD:GetStylePreset(styleOverride)
     return self.STYLE_PRESETS[style], style
 end
 
+function BD:GetNumberStyleOffsets(styleOverride)
+    local _, style = self:GetStylePreset(styleOverride)
+    local xKey, yKey = style .. "OffsetX", style .. "OffsetY"
+    return self.db[xKey] or self.DEFAULTS[xKey] or 0,
+        self.db[yKey] or self.DEFAULTS[yKey] or 0, xKey, yKey
+end
+
 function BD:IsClassicNumberStyle()
     return (self.db.numberStyle or "retail") == "classic"
 end
@@ -91,8 +98,8 @@ function BD.SafeSetFont(fontString, path, size, flags)
         return BD.GetDefaultFontPath()
     end
     local usePath = path or BD.GetDefaultFontPath()
-    local ok = pcall(fontString.SetFont, fontString, usePath, size, flags or "")
-    if ok then
+    local ok, loaded = pcall(fontString.SetFont, fontString, usePath, size, flags or "")
+    if ok and loaded ~= false then
         return usePath
     end
     local fallback = BD.GetDefaultFontPath()

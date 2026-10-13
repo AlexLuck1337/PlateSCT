@@ -375,6 +375,53 @@ local function OptionDisplay(option)
     return text
 end
 
+local function HideFontPreview(menu, owner)
+    local preview = menu.fontPreview
+    if preview and (not owner or preview.owner == owner) then
+        preview.owner = nil
+        preview:Hide()
+    end
+end
+
+local function ShowFontPreview(menu, entry)
+    if not menu.owner or menu.owner.binding ~= "fontFace" or not menu:IsShown() then return end
+    if GameTooltip then GameTooltip:Hide() end
+    local preview = menu.fontPreview
+    if not preview then
+        preview = CreateFrame("Frame", nil, menu, "BackdropTemplate")
+        preview:SetFrameStrata("TOOLTIP")
+        preview:SetFrameLevel(menu:GetFrameLevel() + 4)
+        preview:SetClampedToScreen(true)
+        preview:EnableMouse(false)
+        W.Backdrop(preview, "window")
+        preview.label = W.Text(preview, "", 12, -10, nil, "GameFontNormal", TEXT)
+        preview.label:SetWordWrap(false)
+        preview.number = preview:CreateFontString(nil, "OVERLAY", "GameFontNormalHuge")
+        preview.number:SetPoint("TOPLEFT", 12, -32)
+        preview.number:SetWordWrap(false)
+        menu.fontPreview = preview
+    end
+    local preset = BD:GetStylePreset()
+    local size = (BD.db.fontSize or BD.DEFAULTS.fontSize) * preset.fontScale
+    BD.SafeSetFont(preview.number, BD.ResolveFontPath(entry.optionId), size, preset.fontFlags)
+    local shadow = preset.shadowOffset
+    preview.number:SetShadowOffset(shadow and shadow[1] or 0, shadow and shadow[2] or 0)
+    preview.number:SetShadowColor(0, 0, 0, 1)
+    preview.number:SetTextColor(unpack(preset.defaultColor))
+    preview.number:SetText("12345")
+    preview.label:SetWidth(0)
+    preview.label:SetText(entry:GetText())
+    local width = math.max(100, preview.label:GetStringWidth(), preview.number:GetStringWidth()) + 24
+    local screenWidth = UIParent:GetWidth() * UIParent:GetEffectiveScale() / preview:GetEffectiveScale()
+    width = math.min(width, math.max(100, screenWidth - 24))
+    preview.label:SetWidth(width - 24)
+    preview:SetSize(width, 44 + math.max(size, preview.number:GetStringHeight()))
+    preview:ClearAllPoints()
+    preview:SetPoint("TOPLEFT", entry, "TOPRIGHT", 8, 0)
+    preview.owner = entry
+    preview:Show()
+end
+
 local function CreateMenu(root)
     local layer = CreateFrame("Button", nil, UIParent)
     layer:SetAllPoints(UIParent)
@@ -409,6 +456,7 @@ local function CreateMenu(root)
     thumb:SetColorTexture(GOLD[1], GOLD[2], GOLD[3], 0.85)
     menu.thumb = thumb
     local function UpdateThumb()
+        HideFontPreview(menu)
         local full = child:GetHeight()
         local view = scroll:GetHeight()
         local maximum = math.max(0, full - view)
@@ -433,6 +481,7 @@ local function CreateMenu(root)
     scroll:SetScript("OnVerticalScroll", UpdateThumb)
     function menu:Dismiss() self:Hide() end
     menu:SetScript("OnHide", function(self)
+        HideFontPreview(self)
         layer:Hide()
         if self.owner then W.Backdrop(self.owner, "control") end
         self.owner = nil
@@ -466,8 +515,12 @@ local function OpenMenu(control, root)
             font:SetPoint("RIGHT", -9, 0)
             font:SetJustifyH("LEFT")
             font:SetWordWrap(false)
+            Hook(entry, "OnEnter", function(self) ShowFontPreview(menu, self) end)
+            Hook(entry, "OnLeave", function(self) HideFontPreview(menu, self) end)
+            Hook(entry, "OnHide", function(self) HideFontPreview(menu, self) end)
             menu.entries[index] = entry
         end
+        entry.optionId = option.id
         entry:SetText(OptionDisplay(option))
         W.Backdrop(entry, option.id == selected and "selected" or "row")
         entry:GetFontString():SetTextColor(unpack(option.id == selected and GOLD or TEXT))
@@ -823,7 +876,13 @@ function W.NewLayout(parent, root, pageId, tabId, width)
                     height = math.max(16, caption:GetStringHeight()) + 12
                 else
                     local controlWidth = math.min(CONTROL_WIDTH, math.floor(self.width * 0.44))
-                    caption:SetWidth(self.width - controlWidth - 36)
+                    if control.layoutType == "action" then
+                        controlWidth = math.min(self.width - 20,
+                            math.max(controlWidth, control:GetFontString():GetStringWidth() + 16))
+                        caption:SetWidth(self.width - 20)
+                    else
+                        caption:SetWidth(self.width - controlWidth - 36)
+                    end
                     height = math.max(row.minimumHeight, caption:GetStringHeight() + 20)
                     if control.layoutType == "slider" then
                         control.valueText:SetWidth(controlWidth)

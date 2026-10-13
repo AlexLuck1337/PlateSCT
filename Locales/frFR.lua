@@ -3,6 +3,19 @@ local _, BD = ...
 local L = {}
 BD.RegisterLocale("frFR", L)
 
+-- Number position and font preview
+L["Number position"] = "Position des nombres"
+L["X offset"] = "Décalage X"
+L["Y offset"] = "Décalage Y"
+L["Offsets are saved separately for each number style. Positive X moves right; positive Y moves up. Incoming uses its own position controls."] = "Les décalages sont enregistrés séparément pour chaque style de nombres. X positif déplace vers la droite ; Y positif vers le haut. Les dégâts subis ont leurs propres réglages de position."
+L["Hover over a font to preview 12345."] = "Survolez une police pour afficher un aperçu de 12345."
+L["Press Ctrl+C to copy the URL."] = "Appuyez sur Ctrl+C pour copier l'URL."
+L["Open Link"] = "Ouvrir le lien"
+
+-- Translation feedback
+L["This translation was generated with AI. If you find inconsistent terminology or incorrect wording, please report it through GitHub Issues. Thank you for your help! Translation contributors will be credited."] =
+    "Cette traduction a été générée par IA. Si vous trouvez des termes incohérents ou des formulations incorrectes, veuillez les signaler via GitHub Issues. Merci pour votre aide ! Les contributeurs à la traduction seront crédités."
+
 L["Impact number style"] = "Style des nombres Impact"
 L["All number styles are available on every supported WoW API."] = "Tous les styles de nombres sont disponibles sur chaque API WoW prise en charge."
 L["Impact slams outgoing damage beside or above the nameplate, then floats up. New hits layer in front; crits amplify and CRITICAL flashes above when enabled."] = "Impact projette les dégâts infligés à côté ou au-dessus de la plaque de nom, puis les fait monter. Les nouveaux coups passent devant ; les critiques grossissent et CRITIQUE clignote au-dessus si activé."

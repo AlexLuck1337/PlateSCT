@@ -120,6 +120,11 @@ local function RecordClassicBounds(frame, fontSize, iconSize, iconPosition)
 end
 
 local function PlaceFrame(frame, anchor, baseX, baseY)
+    if not frame.incoming then
+        -- Placement follows the selected style, including Impact's Modern-motion fallback.
+        local offsetX, offsetY = BD:GetNumberStyleOffsets()
+        baseX, baseY = baseX + offsetX, baseY + offsetY
+    end
     frame.startX, frame.startY = BD.Pool.PickClearSpawn(anchor, frame, baseX, baseY,
         frame.isCrit, frame.usesClassicShove)
     if frame.animMode == "impactSlam" then

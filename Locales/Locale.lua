@@ -12,6 +12,9 @@ BD.LOCALE_OPTIONS = {
     { id = "ruRU", label = "Русский" },
     { id = "itIT", label = "Italiano" },
     { id = "ptBR", label = "Português" },
+    { id = "zhCN", label = "简体中文" },
+    { id = "zhTW", label = "繁體中文" },
+    { id = "koKR", label = "한국어" },
 }
 
 local active = {}
@@ -43,7 +46,7 @@ function BD:NormalizeLocaleCode(code)
     if code == "esMX" then
         return "esES"
     end
-    if code == "enGB" then
+    if code == "enGB" or code == "enCN" or code == "enTW" then
         return "enUS"
     end
     if code == "ptPT" then

@@ -2,6 +2,27 @@ local _, BD = ...
 local L = BD.L
 local W = BD.OptionsWidgets
 
+local TRANSLATION_ISSUES_URL = "https://github.com/Spatovaliyski/PlateSCT/issues"
+
+StaticPopupDialogs["PLATESCT_TRANSLATION_ISSUES_URL"] = {
+    text = L["Press Ctrl+C to copy the URL."],
+    button1 = CLOSE,
+    hasEditBox = true,
+    editBoxWidth = 360,
+    OnShow = function(self)
+        local editBox = self.GetEditBox and self:GetEditBox() or self.editBox or self.EditBox
+        editBox:SetText(TRANSLATION_ISSUES_URL)
+        editBox:SetFocus()
+        editBox:HighlightText()
+    end,
+    EditBoxOnEnterPressed = function(self) self:GetParent():Hide() end,
+    EditBoxOnEscapePressed = function(self) self:GetParent():Hide() end,
+    timeout = 0,
+    whileDead = true,
+    hideOnEscape = true,
+    preferredIndex = 3,
+}
+
 local function IsModernAPI()
     return BD.API and BD.API.IsModern()
 end
@@ -112,6 +133,7 @@ local function BuildAppearance(parent, root)
     layout:Heading(L["Text style"])
     layout:Choice("fontFace", L["Font"], BD.GetFontFaceOptions(),
         L["Game fonts, plus SharedMedia fonts when that library is loaded by another addon."])
+    layout:Note(L["Hover over a font to preview 12345."])
     layout:Note(L["Only fonts inside the WoW folder can load. SharedMedia fonts appear when another addon provides them."])
     layout:Slider("fontSize", L["Font size"], 10, 48, 1, tostring)
     layout:Checkbox("useSchoolColors", L["Color by damage school"],
@@ -160,6 +182,31 @@ local function BuildAnimation(parent, root)
     layout:Note(L["Modern scrolls up from the nameplate with a small crit pop. Classic keeps the grow-and-settle pow, packed close to the plate."])
     layout:Note(L["Impact slams outgoing damage beside or above the nameplate, then floats up. New hits layer in front; crits amplify and CRITICAL flashes above when enabled."])
     layout:Note(L["Impact uses Modern for incoming damage, healing, and miss text, preserving saved Modern motions."])
+
+    layout:Heading(L["Number position"])
+    layout:Slider({
+        id = "numberOffsetX",
+        get = function()
+            local x = BD:GetNumberStyleOffsets()
+            return x
+        end,
+        set = function(value)
+            local _, _, key = BD:GetNumberStyleOffsets()
+            BD.db[key] = value
+        end,
+    }, L["X offset"], -200, 200, 1, PixelValue)
+    layout:Slider({
+        id = "numberOffsetY",
+        get = function()
+            local _, y = BD:GetNumberStyleOffsets()
+            return y
+        end,
+        set = function(value)
+            local _, _, _, key = BD:GetNumberStyleOffsets()
+            BD.db[key] = value
+        end,
+    }, L["Y offset"], -200, 200, 1, PixelValue)
+    layout:Note(L["Offsets are saved separately for each number style. Positive X moves right; positive Y moves up. Incoming uses its own position controls."])
 
     layout:Heading(L["Timing and movement"])
     layout:Slider("floatDistance", L["Scroll offset"], 10, 120, 5, PixelValue)
@@ -347,6 +394,14 @@ local function BuildPreferences(layout, root)
     layout:Choice({ id = "locale", get = function() return BD.db.locale end,
         set = function(value) BD:SetLocalePreference(value) end },
         L["Language"], localeOptions, L["Choose the language used by PlateSCT panels and messages."])
+    local localeCode = BD:ResolveLocaleCode()
+    if localeCode == "zhCN" or localeCode == "zhTW" or localeCode == "koKR" then
+        layout:Note(L["This translation was generated with AI. If you find inconsistent terminology or incorrect wording, please report it through GitHub Issues. Thank you for your help! Translation contributors will be credited."])
+        layout:Action("translationIssues", L["Open Link"],
+            L["Press Ctrl+C to copy the URL."], function()
+                StaticPopup_Show("PLATESCT_TRANSLATION_ISSUES_URL")
+            end)
+    end
     layout:Heading(L["Settings window"])
     layout:Checkbox("settingsAnimations", L["Animate settings"],
         L["Use gentle fades and row reveals in this settings window. Combat animation is unaffected."])
