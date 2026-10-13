@@ -84,21 +84,3 @@ The addon uses Lua 5.1. World of Warcraft loads only the files listed in `PlateS
 | `Options/` | Settings pages, controls, and panel behavior |
 | `Locales/` | Locale registry and translated strings |
 | `Media/` | Bundled visual and sound assets |
-
-## Development
-
-The addon namespace is `BD`, obtained with `local _, BD = ...`; the public global is `PlateSCT`.
-
-Keep combat ingestion in its owning flavor: Classic API clients use `Core/CombatClassic.lua`, while Modern API clients use `Core/Combat.lua`, `Core/Attribution.lua`, and `Core/Probe.lua`. Both flavors call shared display and frame infrastructure. Shared infrastructure must not ingest combat events or call flavor ingestion functions.
-
-Modern API combat values can be secret. Use the existing `BD.IsSecret`, `BD.ValuePresent`, `BD.CanAccessValue`, `BD.ValuesEqual`, and `BD.ValuesNotEqual` helpers before performing operations that require accessible values. Do not compare, stringify, concatenate, or use unchecked secret values as sort keys. Damage thresholds use the existing curve-based filtering path. Do not store secret GUIDs on frames as identities.
-
-For changes:
-
-- Keep Lua 5.1 compatibility: no `goto`, floor-division operator, or native bitwise operators.
-- Add new saved settings to `BD.DEFAULTS`. If existing saved data must change, append a migration and keep the layout revision consistent with the final migration step.
-- Add new translation keys to `Locales/enUS.lua` and every supported locale in the same change.
-- Add new runtime files to `PlateSCT.toc` in the required load order.
-- Verify behavior in the affected game client. Use settings previews for appearance and motion changes, and actual combat for event routing, attribution, pet ownership, and nameplate reuse.
-
-Release archives package the addon folder. Keep development-only artifacts out of that folder when preparing a release.
