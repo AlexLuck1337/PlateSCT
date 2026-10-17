@@ -98,6 +98,19 @@ L["Click to open settings."] = "點擊開啟設定。"
 L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."] =
     "敵方名條已關閉。PlateSCT 需要名條才能顯示數字。\n按 V（預設按鍵），或在「介面 → 遊戲 → 名稱」中啟用。"
 L["Who to show"] = "顯示來源"
+
+-- Off-target numbers
+L["Show"] = "顯示"
+L["Dim"] = "淡化"
+L["Hide"] = "隱藏"
+L["Other nameplates"] = "其他名條"
+L["How numbers look on enemies you are not targeting. Dim makes them smaller and fainter so your target stands out."] =
+    "非目前目標敵人身上的數字顯示方式。「淡化」會讓它們更小更淡，使目前目標更突出。"
+L["Only Engaged nameplates mode shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
+    "只有「交戰中的名條」模式會在非目標敵人身上顯示數字。請在「現代 API」→「傷害模式」中更改。"
+L["Off-target size"] = "非目標大小"
+L["Off-target opacity"] = "非目標不透明度"
+
 L["Only my damage"] = "僅顯示我的傷害"
 L["Show hits when a recent cast or auto-attack matches the nameplate. Midnight cannot prove who dealt the hit in a group."] =
     "近期施法或自動攻擊與名條符合時，顯示該次命中。Midnight 在隊伍中無法確認是誰造成了傷害。"
@@ -188,6 +201,7 @@ L["Font"] = "字型"
 L["Font size"] = "字型大小"
 L["Scroll offset"] = "捲動距離"
 L["Scroll speed"] = "捲動速度"
+L["%d%%"] = "%d%%"
 L["Display duration"] = "顯示時間"
 L["Game default"] = "遊戲預設"
 L["Friz Quadrata"] = "Friz Quadrata"

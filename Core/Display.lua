@@ -1007,6 +1007,16 @@ function BD:ReleaseMotionPreviews()
     BD.Pool.ReleasePreviewFrames()
 end
 
+-- Off-target: a plate other than your current target's. With no target, nothing is off-target.
+-- Compares nameplate frames, which works on both APIs (UnitIsUnit is unreliable on Modern).
+local function IsOffTargetPlate(self, plate)
+    if (self.db.offTargetMode or "show") == "show" then
+        return false
+    end
+    local targetPlate = BD.GetNamePlateFrame("target")
+    return targetPlate ~= nil and targetPlate ~= plate
+end
+
 function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isHeal, spellIcon, hitKind, spellId)
     local plate = BD.GetNamePlateFrame(unit)
     if not plate then
@@ -1017,6 +1027,11 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
     local kind = hitKind
     if not kind then
         kind = isCrit and "crit" or "hit"
+    end
+
+    local offTarget = IsOffTargetPlate(self, plate)
+    if offTarget and self.db.offTargetMode == "hide" then
+        return
     end
 
     local combineKey
@@ -1064,6 +1079,9 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
     end
 
     local fontSize = (self.db.fontSize or self.DEFAULTS.fontSize) * preset.fontScale
+    if offTarget then
+        fontSize = fontSize * (self.db.offTargetScale or self.DEFAULTS.offTargetScale)
+    end
     local fontPath = BD.ResolveFontPath(self.db.fontFace)
     fontPath = BD.SafeSetFont(frame.text, fontPath, fontSize, preset.fontFlags)
     if preset.shadowOffset then
@@ -1118,6 +1136,9 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
         if not ok then
             frame.baseAlpha = 1
         end
+    end
+    if offTarget then
+        frame.baseAlpha = frame.baseAlpha * (self.db.offTargetAlpha or self.DEFAULTS.offTargetAlpha)
     end
 
     if frame.baseAlpha <= 0 then

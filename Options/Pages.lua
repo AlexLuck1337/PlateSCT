@@ -47,6 +47,10 @@ local function PixelValue(value)
     return string.format(L["%d px"], value)
 end
 
+local function PercentValue(value)
+    return string.format(L["%d%%"], math.floor(value * 100 + 0.5))
+end
+
 local function RefreshScenario()
     if BD.RefreshScenario then
         BD:RefreshScenario()
@@ -60,6 +64,12 @@ local function EnemyNameplatesEnabled()
     end
     local ok, enabled = pcall(reader, "nameplateShowEnemies")
     return not ok or enabled == nil or (enabled ~= false and enabled ~= "0" and enabled ~= 0)
+end
+
+-- On Modern only Engaged nameplates shows other enemies: Current target never does, and Personal
+-- attributes hits only to the cast's target, so off-target styling would have nothing to style.
+local function OffTargetAvailable()
+    return not IsModernAPI() or (not BD.db.onlyMyDamage and BD.db.allNameplates)
 end
 
 local function BuildCombat(parent, root)
@@ -99,6 +109,13 @@ local function BuildCombat(parent, root)
             or L["Also show damage from your pet and guardians on nameplates."],
         PersonalModeAvailable, nil,
         L["Choose Personal - experimental under Modern API → Damage mode to use pet matching."])
+    layout:Choice("offTargetMode", L["Other nameplates"], BD.OFF_TARGET_MODES,
+        L["How numbers look on enemies you are not targeting. Dim makes them smaller and fainter so your target stands out."],
+        OffTargetAvailable, nil, L["Only Engaged nameplates mode shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."])
+    layout:When(function() return BD.db.offTargetMode == "dim" and OffTargetAvailable() end, function()
+        layout:Slider("offTargetScale", L["Off-target size"], 0.4, 1, 0.05, PercentValue)
+        layout:Slider("offTargetAlpha", L["Off-target opacity"], 0.1, 1, 0.05, PercentValue)
+    end)
 
     layout:Heading(L["Healing"])
     layout:Checkbox("showHealing", L["Show healing"],

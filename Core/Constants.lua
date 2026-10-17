@@ -16,6 +16,9 @@ BD.DEFAULTS = {
     onlyMyDamage = true,
     allNameplates = false,
     includePetDamage = true,
+    offTargetMode = "show", -- "show" | "dim" | "hide"
+    offTargetScale = 0.75,
+    offTargetAlpha = 0.5,
     showHealing = false,
     showIncoming = false,
     combineHits = false,
@@ -103,6 +106,12 @@ BD.ICON_POSITIONS = {
     { id = "right", labelKey = "Right" },
     { id = "top", labelKey = "Top" },
     { id = "bottom", labelKey = "Bottom" },
+}
+
+BD.OFF_TARGET_MODES = {
+    { id = "show", labelKey = "Show" },
+    { id = "dim", labelKey = "Dim" },
+    { id = "hide", labelKey = "Hide" },
 }
 
 -- Scale pulse when a hit merges into a live number.

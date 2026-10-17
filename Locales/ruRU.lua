@@ -88,6 +88,19 @@ L["Click to open settings."] = "Нажмите, чтобы открыть нас
 L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."] =
     "Индикаторы врагов выключены. PlateSCT нужны они, чтобы показывать числа.\nНажмите V (по умолчанию) или включите их в Интерфейс → Игра → Имена."
 L["Who to show"] = "Что показывать"
+
+-- Off-target numbers
+L["Show"] = "Показывать"
+L["Dim"] = "Приглушить"
+L["Hide"] = "Скрыть"
+L["Other nameplates"] = "Другие индикаторы"
+L["How numbers look on enemies you are not targeting. Dim makes them smaller and fainter so your target stands out."] =
+    "Как выглядят числа на врагах, которые не являются вашей целью. «Приглушить» делает их меньше и бледнее, чтобы цель выделялась."
+L["Only Engaged nameplates mode shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
+    "Числа на врагах, которые не являются вашей целью, показывает только режим «Индикаторы в бою». Измените его в разделе Современный API → Режим урона."
+L["Off-target size"] = "Размер вне цели"
+L["Off-target opacity"] = "Непрозрачность вне цели"
+
 L["Only my damage"] = "Только мой урон"
 L["Show hits on your current target when you recently cast or auto-attacked. Midnight cannot prove who dealt the hit in a group."] =
     "Показывает удары по текущей цели, если вы недавно произнесли заклинание или автоатаковали. Midnight не может доказать, кто нанёс удар в группе."
@@ -142,6 +155,7 @@ L["Font"] = "Шрифт"
 L["Font size"] = "Размер шрифта"
 L["Scroll offset"] = "Смещение прокрутки"
 L["Scroll speed"] = "Скорость прокрутки"
+L["%d%%"] = "%d%%"
 L["Display duration"] = "Длительность показа"
 L["Game default"] = "Игровой по умолчанию"
 L["Friz Quadrata"] = "Friz Quadrata"

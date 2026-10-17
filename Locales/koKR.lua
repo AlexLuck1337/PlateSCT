@@ -104,6 +104,19 @@ L["Click to open settings."] = "클릭하면 설정을 엽니다."
 L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."] =
     "적 이름표가 꺼져 있습니다. PlateSCT가 숫자를 표시하려면 이름표가 필요합니다.\nV 키(기본값)를 누르거나 인터페이스 → 게임 → 이름에서 켜세요."
 L["Who to show"] = "표시할 피해 출처"
+
+-- Off-target numbers
+L["Show"] = "표시"
+L["Dim"] = "흐리게"
+L["Hide"] = "숨기기"
+L["Other nameplates"] = "다른 이름표"
+L["How numbers look on enemies you are not targeting. Dim makes them smaller and fainter so your target stands out."] =
+    "대상으로 지정하지 않은 적에게 표시되는 숫자의 모양입니다. 흐리게는 숫자를 더 작고 옅게 만들어 현재 대상이 돋보이게 합니다."
+L["Only Engaged nameplates mode shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
+    "대상이 아닌 적에게 숫자를 표시하는 것은 교전 중인 적의 이름표 모드뿐입니다. 모던 API → 피해 모드에서 변경하세요."
+L["Off-target size"] = "대상 외 크기"
+L["Off-target opacity"] = "대상 외 불투명도"
+
 L["Only my damage"] = "내가 준 피해만 표시"
 L["Show hits when a recent cast or auto-attack matches the nameplate. Midnight cannot prove who dealt the hit in a group."] =
     "최근 시전이나 자동 공격이 해당 이름표와 일치하면 피해를 표시합니다. Midnight에서는 파티 내 피해를 누가 주었는지 확인할 수 없습니다."
@@ -195,6 +208,7 @@ L["Font"] = "글꼴"
 L["Font size"] = "글꼴 크기"
 L["Scroll offset"] = "스크롤 거리"
 L["Scroll speed"] = "스크롤 속도"
+L["%d%%"] = "%d%%"
 L["Display duration"] = "표시 시간"
 L["Game default"] = "게임 기본값"
 L["Friz Quadrata"] = "Friz Quadrata"

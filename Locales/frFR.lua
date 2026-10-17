@@ -88,6 +88,19 @@ L["Click to open settings."] = "Cliquez pour ouvrir les réglages."
 L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."] =
     "Les barres de nom ennemies sont désactivées. PlateSCT en a besoin pour afficher les nombres.\nAppuyez sur V (par défaut) ou activez-les dans Interface → Jeu → Noms."
 L["Who to show"] = "Qui afficher"
+
+-- Off-target numbers
+L["Show"] = "Afficher"
+L["Dim"] = "Atténuer"
+L["Hide"] = "Masquer"
+L["Other nameplates"] = "Autres barres de nom"
+L["How numbers look on enemies you are not targeting. Dim makes them smaller and fainter so your target stands out."] =
+    "Apparence des nombres sur les ennemis que vous ne ciblez pas. Atténuer les rend plus petits et plus pâles pour faire ressortir votre cible."
+L["Only Engaged nameplates mode shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
+    "Seul le mode Ennemis engagés affiche des nombres sur les ennemis que vous ne ciblez pas. Modifiez-le dans API moderne → Mode de dégâts."
+L["Off-target size"] = "Taille hors cible"
+L["Off-target opacity"] = "Opacité hors cible"
+
 L["Only my damage"] = "Uniquement mes dégâts"
 L["Show hits on your current target when you recently cast or auto-attacked. Midnight cannot prove who dealt the hit in a group."] =
     "Affiche les coups sur votre cible actuelle lorsque vous venez de lancer un sort ou d'attaquer automatiquement. Midnight ne peut pas prouver qui a infligé le coup en groupe."
@@ -142,6 +155,7 @@ L["Font"] = "Police"
 L["Font size"] = "Taille de police"
 L["Scroll offset"] = "Décalage du défilement"
 L["Scroll speed"] = "Vitesse de défilement"
+L["%d%%"] = "%d %%"
 L["Display duration"] = "Durée d'affichage"
 L["Game default"] = "Par défaut du jeu"
 L["Friz Quadrata"] = "Friz Quadrata"

@@ -88,6 +88,19 @@ L["Click to open settings."] = "Clicca per aprire le impostazioni."
 L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."] =
     "Le barre del nome nemiche sono disattivate. PlateSCT ne ha bisogno per mostrare i numeri.\nPremi V (predefinito) o attivale in Interfaccia → Gioco → Nomi."
 L["Who to show"] = "Cosa mostrare"
+
+-- Off-target numbers
+L["Show"] = "Mostra"
+L["Dim"] = "Attenua"
+L["Hide"] = "Nascondi"
+L["Other nameplates"] = "Altre barre del nome"
+L["How numbers look on enemies you are not targeting. Dim makes them smaller and fainter so your target stands out."] =
+    "Aspetto dei numeri sui nemici che non stai bersagliando. Attenua li rende più piccoli e tenui, così il tuo bersaglio risalta."
+L["Only Engaged nameplates mode shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
+    "Solo la modalità Barre in combattimento mostra numeri sui nemici che non stai bersagliando. Cambiala in API moderna → Modalità danni."
+L["Off-target size"] = "Dimensione fuori bersaglio"
+L["Off-target opacity"] = "Opacità fuori bersaglio"
+
 L["Only my damage"] = "Solo i miei danni"
 L["Show hits on your current target when you recently cast or auto-attacked. Midnight cannot prove who dealt the hit in a group."] =
     "Mostra i colpi sul bersaglio attuale quando hai lanciato o auto-attaccato di recente. Midnight non può dimostrare chi ha inflitto il colpo in gruppo."
@@ -142,6 +155,7 @@ L["Font"] = "Carattere"
 L["Font size"] = "Dimensione carattere"
 L["Scroll offset"] = "Scostamento scorrimento"
 L["Scroll speed"] = "Velocità scorrimento"
+L["%d%%"] = "%d%%"
 L["Display duration"] = "Durata visualizzazione"
 L["Game default"] = "Predefinito del gioco"
 L["Friz Quadrata"] = "Friz Quadrata"

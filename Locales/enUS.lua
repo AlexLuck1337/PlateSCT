@@ -112,6 +112,19 @@ L["Click to open settings."] = "Click to open settings."
 L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."] =
     "Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."
 L["Who to show"] = "Who to show"
+
+-- Off-target numbers
+L["Show"] = "Show"
+L["Dim"] = "Dim"
+L["Hide"] = "Hide"
+L["Other nameplates"] = "Other nameplates"
+L["How numbers look on enemies you are not targeting. Dim makes them smaller and fainter so your target stands out."] =
+    "How numbers look on enemies you are not targeting. Dim makes them smaller and fainter so your target stands out."
+L["Only Engaged nameplates mode shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
+    "Only Engaged nameplates mode shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."
+L["Off-target size"] = "Off-target size"
+L["Off-target opacity"] = "Off-target opacity"
+
 L["Only my damage"] = "Only my damage"
 L["Show hits when a recent cast or auto-attack matches the nameplate. Midnight cannot prove who dealt the hit in a group."] =
     "Show hits when a recent cast or auto-attack matches the nameplate. Midnight cannot prove who dealt the hit in a group."
@@ -217,6 +230,7 @@ L["Font"] = "Font"
 L["Font size"] = "Font size"
 L["Scroll offset"] = "Scroll offset"
 L["Scroll speed"] = "Scroll speed"
+L["%d%%"] = "%d%%"
 L["Display duration"] = "Display duration"
 L["Game default"] = "Game default"
 L["Friz Quadrata"] = "Friz Quadrata"

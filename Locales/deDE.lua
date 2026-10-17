@@ -88,6 +88,19 @@ L["Click to open settings."] = "Klicken, um die Einstellungen zu öffnen."
 L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."] =
     "Feindliche Namensplaketten sind deaktiviert. PlateSCT braucht sie, um Zahlen anzuzeigen.\nDrückt V (Standard) oder aktiviert sie unter Interface → Spiel → Namen."
 L["Who to show"] = "Wen anzeigen"
+
+-- Off-target numbers
+L["Show"] = "Anzeigen"
+L["Dim"] = "Abdunkeln"
+L["Hide"] = "Ausblenden"
+L["Other nameplates"] = "Andere Namensplaketten"
+L["How numbers look on enemies you are not targeting. Dim makes them smaller and fainter so your target stands out."] =
+    "Wie Zahlen auf Gegnern aussehen, die ihr nicht anvisiert. Abdunkeln macht sie kleiner und blasser, damit euer Ziel hervorsticht."
+L["Only Engaged nameplates mode shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
+    "Nur der Modus „Namensplaketten im Kampf“ zeigt Zahlen auf Gegnern, die ihr nicht anvisiert. Ändert ihn unter Moderne API → Schadensmodus."
+L["Off-target size"] = "Größe abseits des Ziels"
+L["Off-target opacity"] = "Deckkraft abseits des Ziels"
+
 L["Only my damage"] = "Nur mein Schaden"
 L["Show hits on your current target when you recently cast or auto-attacked. Midnight cannot prove who dealt the hit in a group."] =
     "Zeigt Treffer auf eurem aktuellen Ziel, wenn ihr kürzlich gezaubert oder auto-angegriffen habt. Midnight kann in einer Gruppe nicht beweisen, wer den Treffer verursacht hat."
@@ -142,6 +155,7 @@ L["Font"] = "Schriftart"
 L["Font size"] = "Schriftgröße"
 L["Scroll offset"] = "Scroll-Versatz"
 L["Scroll speed"] = "Scroll-Geschwindigkeit"
+L["%d%%"] = "%d %%"
 L["Display duration"] = "Anzeigedauer"
 L["Game default"] = "Spielstandard"
 L["Friz Quadrata"] = "Friz Quadrata"
