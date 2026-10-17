@@ -176,6 +176,13 @@ L["Bottom"] = "下方"
 L["Text style"] = "文字样式"
 L["Abbreviate numbers"] = "缩写数字"
 
+-- Auto-attack motion
+L["Same as normal hits"] = "与普通命中相同"
+L["Auto-attacks"] = "自动攻击"
+L["Motion used for your normal auto-attack hits, so melee swings can move differently from spells. Auto-attack crits use the Critical hits motion."] =
+    "你的普通自动攻击命中所使用的运动效果，让近战挥击与法术区分开。自动攻击暴击使用暴击的运动效果。"
+
+
 -- Spell label
 L["Label"] = "标签"
 L["Name"] = "名称"

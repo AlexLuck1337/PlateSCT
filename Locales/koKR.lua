@@ -183,6 +183,13 @@ L["Bottom"] = "아래"
 L["Text style"] = "글자 스타일"
 L["Abbreviate numbers"] = "숫자 축약"
 
+-- Auto-attack motion
+L["Same as normal hits"] = "일반 적중과 동일"
+L["Auto-attacks"] = "자동 공격"
+L["Motion used for your normal auto-attack hits, so melee swings can move differently from spells. Auto-attack crits use the Critical hits motion."] =
+    "일반 자동 공격 적중에 쓰는 움직임으로, 근접 공격을 주문과 다르게 움직이게 합니다. 자동 공격 치명타는 치명타 움직임을 사용합니다."
+
+
 -- Spell label
 L["Label"] = "표시 방식"
 L["Name"] = "이름"
