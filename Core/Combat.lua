@@ -82,6 +82,21 @@ local function RetrySplashQueue(final)
     end
 end
 
+-- One timer for the whole queue (AoE queues many hits at once), rearmed while hits wait.
+local splashRetryScheduled = false
+local function ScheduleSplashRetry()
+    if splashRetryScheduled or #splashQueue == 0 then
+        return
+    end
+    splashRetryScheduled = true
+    local wait = math.max(0.01, BD.SPLASH_QUEUE_DELAY - (GetTime() - splashQueue[1].at))
+    C_Timer.After(wait, function()
+        splashRetryScheduled = false
+        RetrySplashQueue(true)
+        ScheduleSplashRetry()
+    end)
+end
+
 local function QueueSplash(unit, plate, amount, isCrit, schoolMask)
     if #splashQueue >= 16 then
         table.remove(splashQueue, 1)
@@ -89,9 +104,7 @@ local function QueueSplash(unit, plate, amount, isCrit, schoolMask)
     splashQueue[#splashQueue + 1] = {
         unit = unit, plate = plate, amount = amount, isCrit = isCrit, schoolMask = schoolMask, at = GetTime(),
     }
-    C_Timer.After(BD.SPLASH_QUEUE_DELAY, function()
-        RetrySplashQueue(true)
-    end)
+    ScheduleSplashRetry()
 end
 
 local function ShowPersonalDamage(unit, amount, isCrit, schoolMask)
