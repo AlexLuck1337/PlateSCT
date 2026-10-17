@@ -89,6 +89,12 @@ L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress 
     "Feindliche Namensplaketten sind deaktiviert. PlateSCT braucht sie, um Zahlen anzuzeigen.\nDrückt V (Standard) oder aktiviert sie unter Interface → Spiel → Namen."
 L["Who to show"] = "Wen anzeigen"
 
+-- Crits only
+L["Crits only"] = "Nur kritische Treffer"
+L["Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."] =
+    "Zeigt nur kritische Treffer. Normale Treffer und Heilungen werden ausgeblendet; Fehltexte wie Immun erscheinen weiterhin."
+
+
 -- Off-target numbers
 L["Show"] = "Anzeigen"
 L["Dim"] = "Abdunkeln"

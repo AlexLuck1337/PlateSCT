@@ -3,6 +3,7 @@ local _, BD = ...
 BD.DEFAULTS = {
     enabled = true,
     minDamage = 0,
+    critsOnly = false,
     abbreviate = false,
     thousandSeparator = "none", -- "none" | "comma" | "dot"
     showSpellIcon = false,

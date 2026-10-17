@@ -99,6 +99,12 @@ L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress 
     "敌方姓名板已关闭。PlateSCT 需要姓名板才能显示数字。\n按 V（默认按键），或在“界面 → 游戏 → 名称”中启用。"
 L["Who to show"] = "显示来源"
 
+-- Crits only
+L["Crits only"] = "仅显示暴击"
+L["Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."] =
+    "仅显示暴击。普通命中和治疗会被隐藏；“免疫”等未命中文字仍会显示。"
+
+
 -- Off-target numbers
 L["Show"] = "显示"
 L["Dim"] = "淡化"

@@ -105,6 +105,12 @@ L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress 
     "적 이름표가 꺼져 있습니다. PlateSCT가 숫자를 표시하려면 이름표가 필요합니다.\nV 키(기본값)를 누르거나 인터페이스 → 게임 → 이름에서 켜세요."
 L["Who to show"] = "표시할 피해 출처"
 
+-- Crits only
+L["Crits only"] = "치명타만"
+L["Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."] =
+    "치명타만 표시합니다. 일반 적중과 치유는 숨겨지며, 면역 같은 빗나감 문구는 계속 표시됩니다."
+
+
 -- Off-target numbers
 L["Show"] = "표시"
 L["Dim"] = "흐리게"

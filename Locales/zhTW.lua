@@ -99,6 +99,12 @@ L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress 
     "敵方名條已關閉。PlateSCT 需要名條才能顯示數字。\n按 V（預設按鍵），或在「介面 → 遊戲 → 名稱」中啟用。"
 L["Who to show"] = "顯示來源"
 
+-- Crits only
+L["Crits only"] = "僅顯示致命一擊"
+L["Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."] =
+    "僅顯示致命一擊。一般命中和治療會被隱藏；「免疫」等未命中文字仍會顯示。"
+
+
 -- Off-target numbers
 L["Show"] = "顯示"
 L["Dim"] = "淡化"

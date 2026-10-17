@@ -113,6 +113,12 @@ L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress 
     "Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."
 L["Who to show"] = "Who to show"
 
+-- Crits only
+L["Crits only"] = "Crits only"
+L["Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."] =
+    "Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."
+
+
 -- Off-target numbers
 L["Show"] = "Show"
 L["Dim"] = "Dim"

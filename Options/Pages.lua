@@ -143,6 +143,8 @@ local function BuildCombat(parent, root)
     if IsModernAPI() then
         layout:Note(L["In raids and Mythic+ some amounts are secret, so the threshold hides those hits visually instead of skipping them."])
     end
+    layout:Checkbox("critsOnly", L["Crits only"],
+        L["Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."])
 
     layout:Checkbox("combineHits", L["Combine rapid hits"],
         L["Add hits that land in quick succession on the same nameplate into one number instead of stacking many."])
