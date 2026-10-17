@@ -4,6 +4,7 @@ local Anim = BD.Anim
 
 local ICON_GAP = 4
 local CRIT_LABEL_GAP = 3
+local NAME_GAP = 2
 
 local function GetFrameStyle(self, hitKind, isIncoming, isHeal)
     local override
@@ -112,6 +113,16 @@ local function RecordClassicBounds(frame, fontSize, iconSize, iconPosition)
         return
     end
     local width, height = AccessibleTextSize(frame.text, fontSize)
+    -- The group is recentered around the name, so grow the number's box by the name's span.
+    local extent = frame.nameExtent
+    if extent then
+        if extent.pos == "left" or extent.pos == "right" then
+            width = width + extent.w
+        else
+            height = height + extent.h
+            width = math.max(width, extent.w)
+        end
+    end
     local labelW, labelH = 0, 0
     if frame.critLabel and frame.critLabel:IsShown() then
         labelW, labelH = AccessibleTextSize(frame.critLabel, math.max(8, math.floor(fontSize * 0.55 + 0.5)))
@@ -143,6 +154,70 @@ local function PlaceFrame(frame, anchor, baseX, baseY)
     end
     frame:SetPoint("CENTER", at, frame.lingerHost and "CENTER" or (frame.anchorRelPoint or "TOP"),
         frame.startX / scale, frame.startY / scale)
+end
+
+-- Spell name label: attaches to the outermost element on its side of the number
+-- (the icon when it sits on the same side, the right-hand CRITICAL label, or the number).
+local function PlaceNameLabel(frame, pos, iconSide, critOnRight)
+    local label = frame.nameLabel
+    if not label or not label:IsShown() then
+        return
+    end
+    if pos == "left" then
+        label:SetPoint("RIGHT", iconSide == "left" and frame.icon or frame.text, "LEFT", -NAME_GAP, 0)
+    elseif pos == "right" then
+        local outer = frame.text
+        if critOnRight then
+            outer = frame.critLabel
+        end
+        if iconSide == "right" then
+            outer = frame.icon
+        end
+        label:SetPoint("LEFT", outer, "RIGHT", NAME_GAP, 0)
+    elseif pos == "below" then
+        label:SetPoint("TOP", iconSide == "bottom" and frame.icon or frame.text, "BOTTOM", 0, -NAME_GAP)
+    else
+        label:SetPoint("BOTTOM", iconSide == "top" and frame.icon or frame.text, "TOP", 0, NAME_GAP)
+    end
+end
+
+-- Sets up the name label and returns the offset that keeps number + name centered together.
+local function PrepareNameLabel(frame, fontSize, fontPath, fontFlags, preset, layoutOpts, r, g, b)
+    local label = frame.nameLabel
+    frame.nameExtent = nil
+    if not label then
+        return 0, 0
+    end
+    label:ClearAllPoints()
+    local name = layoutOpts.name
+    if not name then
+        label:SetText("")
+        label:Hide()
+        return 0, 0
+    end
+    local size = math.max(8, math.floor(fontSize * (layoutOpts.nameScale or 0.7) + 0.5))
+    BD.SafeSetFont(label, fontPath, size, fontFlags)
+    label:SetText(name)
+    label:SetTextColor(r, g, b, 1)
+    if preset.shadowOffset then
+        label:SetShadowOffset(preset.shadowOffset[1], preset.shadowOffset[2])
+        label:SetShadowColor(0, 0, 0, 1)
+    else
+        label:SetShadowOffset(0, 0)
+    end
+    label:Show()
+    local pos = layoutOpts.namePosition or BD.DEFAULTS.spellNamePosition
+    local w = (label:GetStringWidth() or 0) + NAME_GAP
+    local h = math.max(size, label:GetStringHeight() or 0) + NAME_GAP
+    frame.nameExtent = { pos = pos, w = w, h = h }
+    if pos == "left" then
+        return w * 0.5, 0
+    elseif pos == "right" then
+        return -w * 0.5, 0
+    elseif pos == "below" then
+        return 0, h * 0.5
+    end
+    return 0, -h * 0.5
 end
 
 local function ApplyTextLayout(frame, fontSize, fontPath, fontFlags, preset, layoutOpts)
@@ -194,10 +269,13 @@ local function ApplyTextLayout(frame, fontSize, fontPath, fontFlags, preset, lay
         end
     end
 
+    local nameX, nameY = PrepareNameLabel(frame, fontSize, fontPath, fontFlags, preset, layoutOpts, r, g, b)
+    local namePos = layoutOpts.namePosition or BD.DEFAULTS.spellNamePosition
+
     if frame.animMode == "impactSlam" then
         -- Top placement centers the number and side icon together.
         local textX = ImpactTextOffset(BD, resolvedIcon and size, iconPosition)
-        frame.text:SetPoint("CENTER", frame, "CENTER", textX, 0)
+        frame.text:SetPoint("CENTER", frame, "CENTER", textX + nameX, nameY)
         local labelAnchor = frame.text
         if resolvedIcon then
             frame.icon:SetVertexColor(1, 1, 1, 1)
@@ -216,17 +294,23 @@ local function ApplyTextLayout(frame, fontSize, fontPath, fontFlags, preset, lay
             frame.icon:SetTexture(nil)
             frame.icon:Hide()
         end
+        PlaceNameLabel(frame, namePos, resolvedIcon and iconPosition, false)
+        if frame.nameExtent and namePos == "above" then
+            labelAnchor = frame.nameLabel
+        end
         if showCritLabel and frame.critLabel then
             frame.critLabel:SetPoint("BOTTOM", labelAnchor, "TOP", 0, CRIT_LABEL_GAP)
         end
         return
     end
 
+    local critOnRight = showCritLabel and frame.critLabel ~= nil
     if not resolvedIcon then
         frame.icon:SetTexture(nil)
         frame.icon:Hide()
-        frame.text:SetPoint("CENTER", frame, "CENTER", -critLabelW * 0.5, 0)
+        frame.text:SetPoint("CENTER", frame, "CENTER", -critLabelW * 0.5 + nameX, nameY)
         AnchorCritLabel(frame)
+        PlaceNameLabel(frame, namePos, nil, critOnRight)
         RecordClassicBounds(frame, fontSize)
         return
     end
@@ -238,7 +322,7 @@ local function ApplyTextLayout(frame, fontSize, fontPath, fontFlags, preset, lay
     local pos = iconPosition
     if pos == "right" then
         local shift = (size + ICON_GAP + critLabelW) * 0.5
-        frame.text:SetPoint("CENTER", frame, "CENTER", -shift, 0)
+        frame.text:SetPoint("CENTER", frame, "CENTER", -shift + nameX, nameY)
         AnchorCritLabel(frame)
         if showCritLabel and frame.critLabel then
             frame.icon:SetPoint("LEFT", frame.critLabel, "RIGHT", ICON_GAP, 0)
@@ -246,19 +330,21 @@ local function ApplyTextLayout(frame, fontSize, fontPath, fontFlags, preset, lay
             frame.icon:SetPoint("LEFT", frame.text, "RIGHT", ICON_GAP, 0)
         end
     elseif pos == "top" then
-        frame.text:SetPoint("CENTER", frame, "CENTER", -critLabelW * 0.5, -(size + ICON_GAP) * 0.5)
+        frame.text:SetPoint("CENTER", frame, "CENTER", -critLabelW * 0.5 + nameX, -(size + ICON_GAP) * 0.5 + nameY)
         AnchorCritLabel(frame)
         frame.icon:SetPoint("BOTTOM", frame.text, "TOP", 0, ICON_GAP)
     elseif pos == "bottom" then
-        frame.text:SetPoint("CENTER", frame, "CENTER", -critLabelW * 0.5, (size + ICON_GAP) * 0.5)
+        frame.text:SetPoint("CENTER", frame, "CENTER", -critLabelW * 0.5 + nameX, (size + ICON_GAP) * 0.5 + nameY)
         AnchorCritLabel(frame)
         frame.icon:SetPoint("TOP", frame.text, "BOTTOM", 0, -ICON_GAP)
     else
         local shift = (size + ICON_GAP - critLabelW) * 0.5
-        frame.text:SetPoint("CENTER", frame, "CENTER", shift, 0)
+        frame.text:SetPoint("CENTER", frame, "CENTER", shift + nameX, nameY)
         frame.icon:SetPoint("RIGHT", frame.text, "LEFT", -ICON_GAP, 0)
         AnchorCritLabel(frame)
     end
+    PlaceNameLabel(frame, namePos, pos == "right" and "right" or pos == "top" and "top"
+        or pos == "bottom" and "bottom" or "left", critOnRight)
     RecordClassicBounds(frame, fontSize, size, iconPosition)
 end
 
@@ -420,11 +506,16 @@ local function NoteCombineSource(frame, icon, amount)
 end
 
 -- Fold one more hit into a live number: new total, relaid text, and a pulse.
-local function ApplyCombine(self, frame, amount, icon)
+-- name: the merged hit's spell name; a different one drops the name label as ambiguous.
+local function ApplyCombine(self, frame, amount, icon, name)
     frame.combineTotal = frame.combineTotal + amount
     frame.combineCount = frame.combineCount + 1
     NoteCombineSource(frame, icon, amount)
     local layout = frame.combineLayout
+    if name and frame.labelName and name ~= frame.labelName then
+        frame.labelName = nil
+        layout.opts.name = nil
+    end
     local onIcon = layout.opts.showIcon and layout.opts.iconTexture ~= nil
     frame.text:SetText(CombinedText(self, frame.combineTotal, frame.combineCount, onIcon))
     ApplyTextLayout(frame, layout.fontSize, layout.fontPath, layout.fontFlags, layout.preset, layout.opts)
@@ -437,7 +528,7 @@ local function ApplyCombine(self, frame, amount, icon)
     end
 end
 
-local function TryCombine(self, plate, key, amount, icon)
+local function TryCombine(self, plate, key, amount, icon, name)
     local byKey = combineTargets[plate]
     local frame = byKey and byKey[key]
     if not frame then
@@ -449,7 +540,7 @@ local function TryCombine(self, plate, key, amount, icon)
         byKey[key] = nil
         return false
     end
-    ApplyCombine(self, frame, amount, icon)
+    ApplyCombine(self, frame, amount, icon, name)
     -- Combined crits replay the crit sound only when the total reaches a higher tier.
     if frame.combineSoundTier and frame.isCrit then
         local tier = self:GetCritSoundTier(frame.combineTotal)
@@ -491,8 +582,25 @@ local function PreviewSampleText(self, sample)
     for _, extra in ipairs(PREVIEW_COMBINE_HITS) do
         total = total + math.floor(sample.amount * extra.factor + 0.5)
     end
-    -- Preview samples always resolve an icon when spell icons are on.
-    return CombinedText(self, total, #PREVIEW_COMBINE_HITS + 1, self.db.showSpellIcon)
+    -- Preview samples always resolve an icon when icon labels are on.
+    local onIcon = self:ResolveOutgoingSpellIcon(nil, sample.spellID) ~= nil
+    return CombinedText(self, total, #PREVIEW_COMBINE_HITS + 1, onIcon)
+end
+
+-- Width and height a preview sample's name label adds to its number, for preview bounds.
+local function PreviewNameGrowth(self, sample, measure, fontPath, fontSize, fontFlags)
+    local name = sample.hitKind ~= "miss" and self:ResolveOutgoingSpellName(sample.spellID)
+    if not name then
+        return 0, 0, 0
+    end
+    local size = math.max(8, math.floor(fontSize * (self.db.spellNameScale or self.DEFAULTS.spellNameScale) + 0.5))
+    local w, h = measure(name, fontPath, size, fontFlags)
+    w, h = w + NAME_GAP, math.max(size, h) + NAME_GAP
+    local pos = self.db.spellNamePosition or self.DEFAULTS.spellNamePosition
+    if pos == "left" or pos == "right" then
+        return w, 0, 0
+    end
+    return 0, h, w
 end
 
 local function PreviewSpawnY(motionStyle)
@@ -551,6 +659,9 @@ local function ClassicPreviewSamples(self, sampleKind)
             ConfigureFrameCommon(self, frame, preset, isCrit, sample.hitKind, false, true)
             local text = PreviewSampleText(self, sample)
             local width, height = MeasurePreviewText(text, fontPath, fontSize, BD:GetFontFlags(preset))
+            local growW, growH, nameW = PreviewNameGrowth(self, sample, MeasurePreviewText, fontPath, fontSize,
+                BD:GetFontFlags(preset))
+            width, height = math.max(width + growW, nameW), height + growH
             local labelW, labelH = 0, 0
             if isCrit and self:GetCritLabelSetting("classic") then
                 local critSize = math.max(8, math.floor(fontSize * 0.55 + 0.5))
@@ -628,6 +739,9 @@ local function ImpactPreviewBounds(self, sampleKind)
         if sample.hitKind ~= "miss" and MatchesPreviewKind(sample, sampleKind) then
             local text = PreviewSampleText(self, sample)
             local width, height = MeasurePreviewText(text, fontPath, fontSize, BD:GetFontFlags(preset))
+            local growW, growH, nameW = PreviewNameGrowth(self, sample, MeasurePreviewText, fontPath, fontSize,
+                BD:GetFontFlags(preset))
+            width, height = math.max(width + growW, nameW), height + growH
             local labelW, labelH = 0, 0
             if sample.hitKind == "crit" and self:GetCritLabelSetting("impact") then
                 labelW, labelH = MeasurePreviewText(L["CRITICAL"], fontPath,
@@ -686,6 +800,9 @@ function BD:GetOptionsPreviewBounds(sampleKind, styleOverride)
 
             local text = PreviewSampleText(self, sample)
             local width, height = MeasurePreviewText(text, fontPath, fontSize, BD:GetFontFlags(preset))
+            local growW, growH, nameW = PreviewNameGrowth(self, sample, MeasurePreviewText, fontPath, fontSize,
+                BD:GetFontFlags(preset))
+            width, height = math.max(width + growW, nameW), height + growH
             local critLabelWidth = 0
             local iconYOffset = 0
             if isCrit and self:GetCritLabelSetting(numberStyle) then
@@ -803,6 +920,7 @@ local function SpawnMotionPreviewFrame(anchor, sample)
             r, g, b = BD:GetNumberColor("miss", preset)
         end
     else
+        frame.labelName = BD:ResolveOutgoingSpellName(sample.spellID)
         frame.text:SetText(BD.FormatAmount(sample.amount, BD.db.abbreviate))
         if BD:ShouldUseSchoolColors() then
             r, g, b = BD.GetSchoolColor(sample.school)
@@ -823,6 +941,9 @@ local function SpawnMotionPreviewFrame(anchor, sample)
         iconTexture = resolvedIcon,
         iconPosition = BD.db.iconPosition or "left",
         showCritLabel = showCritLabel,
+        name = frame.labelName,
+        namePosition = BD.db.spellNamePosition,
+        nameScale = BD.db.spellNameScale,
         r = r,
         g = g,
         b = b,
@@ -1039,6 +1160,8 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
         return
     end
 
+    local labelName = hitKind ~= "miss" and self:ResolveOutgoingSpellName(spellId) or nil
+
     local kind = hitKind
     if not kind then
         kind = isCrit and "crit" or "hit"
@@ -1062,7 +1185,7 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
     if self.db.combineHits and kind ~= "miss" and CombinableAmount(amountForThreshold) then
         combineKey = CombineKey(self, kind, isHeal, spellIcon, spellId)
         local icon = self.db.combineMode == "target" and self:ResolveOutgoingSpellIcon(spellIcon, spellId) or nil
-        if TryCombine(self, plate, combineKey, amountForThreshold, icon) then
+        if TryCombine(self, plate, combineKey, amountForThreshold, icon, labelName) then
             return
         end
     end
@@ -1117,6 +1240,7 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
     else
         frame.text:SetShadowOffset(0, 0)
     end
+    frame.labelName = labelName
     frame.text:SetText(text)
 
     local resolvedIcon = self:ResolveOutgoingSpellIcon(spellIcon, spellId)
@@ -1146,6 +1270,9 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
         iconTexture = resolvedIcon,
         iconPosition = self.db.iconPosition or "left",
         showCritLabel = showCritLabel,
+        name = labelName,
+        namePosition = self.db.spellNamePosition,
+        nameScale = self.db.spellNameScale,
         r = r,
         g = g,
         b = b,

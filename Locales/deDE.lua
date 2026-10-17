@@ -170,6 +170,32 @@ L["Uses your last spell in Only my damage mode. Left of the number."] =
 L["Text style"] = "Textstil"
 L["Abbreviate numbers"] = "Zahlen abkürzen"
 
+-- Spell label
+L["Label"] = "Beschriftung"
+L["Top"] = "Oben"
+L["Bottom"] = "Unten"
+L["Name"] = "Name"
+L["Left"] = "Links"
+L["Icon"] = "Symbol"
+L["Right"] = "Rechts"
+L["Icon and name"] = "Symbol und Name"
+L["Spell label"] = "Zauberbeschriftung"
+L["Show spell label"] = "Zauberbeschriftung anzeigen"
+L["Show which spell dealt each hit. Uses the matched cast or auto-attack."] =
+    "Zeigt, welcher Zauber jeden Treffer verursacht hat. Nutzt den zugeordneten Zauber oder den automatischen Angriff."
+L["Show which spell dealt each hit. Uses the spell from the combat log."] =
+    "Zeigt, welcher Zauber jeden Treffer verursacht hat. Nutzt den Zauber aus dem Kampflog."
+L["Show the spell's icon, its name, or both."] = "Zeigt das Symbol des Zaubers, seinen Namen oder beides."
+L["Enable Show spell label to choose the label."] = "Aktiviert „Zauberbeschriftung anzeigen“, um die Beschriftung zu wählen."
+L["Name position"] = "Namensposition"
+L["Where the spell name sits relative to the number."] = "Wo der Zaubername relativ zur Zahl steht."
+L["Name size"] = "Namensgröße"
+L["Shorten long names"] = "Lange Namen kürzen"
+L["After %d characters"] = "Nach %d Zeichen"
+L["The Name label has no icon to place."] = "Die Beschriftung „Name“ hat kein Symbol zum Platzieren."
+L["Enable Show spell label to choose its position."] = "Aktiviert „Zauberbeschriftung anzeigen“, um die Position zu wählen."
+
+
 -- Custom colors
 L["Normal hits"] = "Normale Treffer"
 L["Custom colors"] = "Eigene Farben"

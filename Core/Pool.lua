@@ -477,6 +477,10 @@ local function ReleaseFrame(frame)
         frame.critLabel:Hide()
         frame.critLabel:ClearAllPoints()
     end
+    frame.nameLabel:SetText("")
+    frame.nameLabel:Hide()
+    frame.nameLabel:ClearAllPoints()
+    frame.nameExtent = nil
     frame.isPreview = nil
     frame.anchor = nil
     frame.unitToken = nil
@@ -509,6 +513,7 @@ local function ReleaseFrame(frame)
     frame.combineSources = nil
     frame.combineTopIcon = nil
     frame.combineSoundTier = nil
+    frame.labelName = nil
     if frame.lingerHost then
         ReleaseLingerHost(frame.lingerHost)
         frame.lingerHost = nil
@@ -1077,6 +1082,12 @@ local function CreatePooledFrame()
     local critLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalHuge")
     critLabel:Hide()
     frame.critLabel = critLabel
+
+    -- Spell name label, sized and placed apart from the number.
+    local nameLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalHuge")
+    nameLabel:SetWordWrap(false)
+    nameLabel:Hide()
+    frame.nameLabel = nameLabel
 
     frame.elapsed = 0
     frame.duration = 1

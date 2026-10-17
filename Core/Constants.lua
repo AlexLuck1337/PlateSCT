@@ -10,6 +10,10 @@ BD.DEFAULTS = {
     abbreviate = false,
     thousandSeparator = "none", -- "none" | "comma" | "dot"
     showSpellIcon = false,
+    spellLabel = "icon", -- "icon" | "name" | "both"
+    spellNamePosition = "left", -- "above" | "below" | "left" | "right"
+    spellNameScale = 0.7, -- name size relative to the number
+    spellNameMaxLength = 0, -- characters before a name is shortened; 0 = never
     iconPosition = "left",
     fontSize = 14,
     duration = 1.0,
@@ -134,6 +138,19 @@ BD.COMBINE_PULSE_SCALE = 0.2
 BD.COMBINE_MODES = {
     { id = "spell", labelKey = "Same spell" },
     { id = "target", labelKey = "All hits" },
+}
+
+BD.SPELL_LABEL_OPTIONS = {
+    { id = "icon", labelKey = "Icon" },
+    { id = "name", labelKey = "Name" },
+    { id = "both", labelKey = "Icon and name" },
+}
+
+BD.SPELL_NAME_POSITIONS = {
+    { id = "above", labelKey = "Top" },
+    { id = "below", labelKey = "Bottom" },
+    { id = "left", labelKey = "Left", recommended = true },
+    { id = "right", labelKey = "Right" },
 }
 
 BD.OUTLINE_OPTIONS = {

@@ -170,6 +170,32 @@ L["Uses your last spell in Only my damage mode. Left of the number."] =
 L["Text style"] = "Style du texte"
 L["Abbreviate numbers"] = "Abréger les nombres"
 
+-- Spell label
+L["Label"] = "Étiquette"
+L["Top"] = "Haut"
+L["Bottom"] = "Bas"
+L["Name"] = "Nom"
+L["Left"] = "Gauche"
+L["Icon"] = "Icône"
+L["Right"] = "Droite"
+L["Icon and name"] = "Icône et nom"
+L["Spell label"] = "Étiquette du sort"
+L["Show spell label"] = "Afficher l'étiquette du sort"
+L["Show which spell dealt each hit. Uses the matched cast or auto-attack."] =
+    "Indique quel sort a infligé chaque coup. Utilise le sort associé ou l'attaque automatique."
+L["Show which spell dealt each hit. Uses the spell from the combat log."] =
+    "Indique quel sort a infligé chaque coup. Utilise le sort du journal de combat."
+L["Show the spell's icon, its name, or both."] = "Affiche l'icône du sort, son nom, ou les deux."
+L["Enable Show spell label to choose the label."] = "Activez Afficher l'étiquette du sort pour choisir l'étiquette."
+L["Name position"] = "Position du nom"
+L["Where the spell name sits relative to the number."] = "Position du nom du sort par rapport au nombre."
+L["Name size"] = "Taille du nom"
+L["Shorten long names"] = "Raccourcir les noms longs"
+L["After %d characters"] = "Après %d caractères"
+L["The Name label has no icon to place."] = "L'étiquette Nom n'a pas d'icône à placer."
+L["Enable Show spell label to choose its position."] = "Activez Afficher l'étiquette du sort pour choisir sa position."
+
+
 -- Custom colors
 L["Normal hits"] = "Coups normaux"
 L["Custom colors"] = "Couleurs personnalisées"

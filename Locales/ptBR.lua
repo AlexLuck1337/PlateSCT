@@ -170,6 +170,32 @@ L["Uses your last spell in Only my damage mode. Left of the number."] =
 L["Text style"] = "Estilo do texto"
 L["Abbreviate numbers"] = "Abreviar números"
 
+-- Spell label
+L["Label"] = "Rótulo"
+L["Top"] = "Acima"
+L["Bottom"] = "Abaixo"
+L["Name"] = "Nome"
+L["Left"] = "Esquerda"
+L["Icon"] = "Ícone"
+L["Right"] = "Direita"
+L["Icon and name"] = "Ícone e nome"
+L["Spell label"] = "Rótulo do feitiço"
+L["Show spell label"] = "Mostrar rótulo do feitiço"
+L["Show which spell dealt each hit. Uses the matched cast or auto-attack."] =
+    "Mostra qual feitiço causou cada golpe. Usa o lançamento associado ou o ataque automático."
+L["Show which spell dealt each hit. Uses the spell from the combat log."] =
+    "Mostra qual feitiço causou cada golpe. Usa o feitiço do registro de combate."
+L["Show the spell's icon, its name, or both."] = "Mostra o ícone do feitiço, seu nome ou ambos."
+L["Enable Show spell label to choose the label."] = "Ative Mostrar rótulo do feitiço para escolher o rótulo."
+L["Name position"] = "Posição do nome"
+L["Where the spell name sits relative to the number."] = "Onde o nome do feitiço fica em relação ao número."
+L["Name size"] = "Tamanho do nome"
+L["Shorten long names"] = "Encurtar nomes longos"
+L["After %d characters"] = "Após %d caracteres"
+L["The Name label has no icon to place."] = "O rótulo Nome não tem ícone para posicionar."
+L["Enable Show spell label to choose its position."] = "Ative Mostrar rótulo do feitiço para escolher a posição."
+
+
 -- Custom colors
 L["Normal hits"] = "Golpes normais"
 L["Custom colors"] = "Cores personalizadas"

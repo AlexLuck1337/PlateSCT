@@ -222,16 +222,31 @@ local function BuildAppearance(parent, root)
         L["Group digits by thousands."], function() return not BD.db.abbreviate end,
         nil, L["Unavailable while Abbreviate numbers is on."])
 
-    layout:Heading(L["Spell icons"])
-    layout:Checkbox("showSpellIcon", L["Show spell icon"],
-        IsModernAPI() and L["Display the spell's icon next to the damage number. Uses the matched cast or auto-attack."]
-            or L["Display the spell's icon next to the damage number. Uses the spell from the combat log."],
+    layout:Heading(L["Spell label"])
+    layout:Checkbox("showSpellIcon", L["Show spell label"],
+        IsModernAPI() and L["Show which spell dealt each hit. Uses the matched cast or auto-attack."]
+            or L["Show which spell dealt each hit. Uses the spell from the combat log."],
         PersonalModeAvailable, nil,
         L["Choose Personal - experimental under Modern API → Damage mode to use spell icons."])
+    local labelsOn = function() return PersonalModeAvailable() and BD.db.showSpellIcon end
+    layout:Choice("spellLabel", L["Label"], BD.SPELL_LABEL_OPTIONS,
+        L["Show the spell's icon, its name, or both."],
+        labelsOn, nil, L["Enable Show spell label to choose the label."])
+    layout:When(function() return labelsOn() and BD.db.spellLabel ~= "icon" end, function()
+        layout:Choice("spellNamePosition", L["Name position"], BD.SPELL_NAME_POSITIONS,
+            L["Where the spell name sits relative to the number."])
+        layout:Slider("spellNameScale", L["Name size"], 0.4, 1, 0.05, PercentValue)
+        layout:Slider("spellNameMaxLength", L["Shorten long names"], 0, 30, 1, function(value)
+            return value <= 0 and L["Off"] or string.format(L["After %d characters"], value)
+        end)
+    end)
     layout:Choice("iconPosition", L["Icon position"], BD.ICON_POSITIONS,
         L["Place the spell icon beside, above, or below the number."], function()
-            return PersonalModeAvailable() and BD.db.showSpellIcon
-        end, nil, L["Enable Show spell icon to choose its position."])
+            return labelsOn() and BD.db.spellLabel ~= "name"
+        end, nil, function()
+            return labelsOn() and L["The Name label has no icon to place."]
+                or L["Enable Show spell label to choose its position."]
+        end)
     layout:Note(IsModernAPI()
         and L["Spell icons use matched casts in Personal mode; Modern API cannot identify a spell for every hit."]
         or L["Spell icons use the spell from the combat log."])

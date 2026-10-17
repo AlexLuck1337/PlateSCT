@@ -170,6 +170,32 @@ L["Uses your last spell in Only my damage mode. Left of the number."] =
 L["Text style"] = "Стиль текста"
 L["Abbreviate numbers"] = "Сокращать числа"
 
+-- Spell label
+L["Label"] = "Подпись"
+L["Top"] = "Сверху"
+L["Bottom"] = "Снизу"
+L["Name"] = "Название"
+L["Left"] = "Слева"
+L["Icon"] = "Иконка"
+L["Right"] = "Справа"
+L["Icon and name"] = "Иконка и название"
+L["Spell label"] = "Подпись заклинания"
+L["Show spell label"] = "Показывать подпись заклинания"
+L["Show which spell dealt each hit. Uses the matched cast or auto-attack."] =
+    "Показывает, какое заклинание нанесло каждый удар. Использует сопоставленное применение или автоатаку."
+L["Show which spell dealt each hit. Uses the spell from the combat log."] =
+    "Показывает, какое заклинание нанесло каждый удар. Использует заклинание из журнала боя."
+L["Show the spell's icon, its name, or both."] = "Показывать иконку заклинания, его название или и то и другое."
+L["Enable Show spell label to choose the label."] = "Включите «Показывать подпись заклинания», чтобы выбрать подпись."
+L["Name position"] = "Положение названия"
+L["Where the spell name sits relative to the number."] = "Где находится название заклинания относительно числа."
+L["Name size"] = "Размер названия"
+L["Shorten long names"] = "Сокращать длинные названия"
+L["After %d characters"] = "После %d символов"
+L["The Name label has no icon to place."] = "У подписи «Название» нет иконки для размещения."
+L["Enable Show spell label to choose its position."] = "Включите «Показывать подпись заклинания», чтобы выбрать положение."
+
+
 -- Custom colors
 L["Normal hits"] = "Обычные удары"
 L["Custom colors"] = "Свои цвета"

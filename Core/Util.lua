@@ -574,8 +574,39 @@ function BD.GetPetIconTexture(sourceGUID)
     return BD.GENERIC_PET_ICON
 end
 
-function BD:ResolveOutgoingSpellIcon(spellIcon, spellId)
+-- Spell label shown with each number: "icon", "name", or "both"; nil when labels are off.
+function BD:GetSpellLabelMode()
     if not self.db.showSpellIcon then
+        return nil
+    end
+    return self.db.spellLabel or "icon"
+end
+
+-- Cut a name to maxChars characters. UTF-8 aware: multibyte names are never split mid-character.
+function BD.ShortenName(name, maxChars)
+    if not name or not maxChars or maxChars <= 0 then
+        return name
+    end
+    local count = 0
+    for start in name:gmatch("()[%z\1-\127\194-\244][\128-\191]*") do
+        count = count + 1
+        if count > maxChars then
+            return name:sub(1, start - 1) .. "..."
+        end
+    end
+    return name
+end
+
+function BD:ResolveOutgoingSpellName(spellId)
+    local mode = self:GetSpellLabelMode()
+    if mode ~= "name" and mode ~= "both" then
+        return nil
+    end
+    return BD.ShortenName(BD.GetSpellName(spellId), self.db.spellNameMaxLength)
+end
+
+function BD:ResolveOutgoingSpellIcon(spellIcon, spellId)
+    if not self.db.showSpellIcon or self.db.spellLabel == "name" then
         return nil
     end
     if spellIcon and BD.ValuePresent(spellIcon) then
