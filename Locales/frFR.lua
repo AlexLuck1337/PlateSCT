@@ -170,6 +170,12 @@ L["Uses your last spell in Only my damage mode. Left of the number."] =
 L["Text style"] = "Style du texte"
 L["Abbreviate numbers"] = "Abréger les nombres"
 
+-- What's new: labels and colors
+L["Labels and colors"] = "Étiquettes et couleurs"
+L["Spell names next to numbers, a text outline choice, custom hit, crit, and miss colors, and a separate auto-attack motion."] =
+    "Noms des sorts à côté des nombres, choix du contour du texte, couleurs personnalisées pour les coups, critiques et échecs, et mouvement distinct pour les attaques automatiques."
+
+
 -- Auto-attack motion
 L["Same as normal hits"] = "Comme les coups normaux"
 L["Auto-attacks"] = "Attaques automatiques"

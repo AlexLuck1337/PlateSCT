@@ -10,8 +10,10 @@ PlateSCT displays outgoing combat numbers on nameplates and supports incoming pl
 
 - Outgoing combat text anchored to nameplates.
 - Incoming player combat text.
+- Spell labels: show the spell's icon, its name, or both next to each number, with name position, size, and length options.
+- Separate motion for auto-attacks.
 - Classic style with a grow-and-settle animation and Modern style with a pop animation.
-- Configurable fonts, colors, critical-hit presentation, and damage thresholds.
+- Configurable fonts, outlines, custom colors, critical-hit presentation, and damage thresholds.
 - Animation options, including fountain and rainfall motion, with settings previews.
 - Optional hit combining: rapid hits on the same nameplate merge into one growing number with a hit count, grouped by spell or by target.
 - Clutter controls: dim or hide numbers on enemies you are not targeting, show crits only, shrink small hits, and ignore chosen spells.

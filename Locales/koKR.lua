@@ -224,6 +224,12 @@ L["Bottom"] = "아래"
 L["Text style"] = "글자 스타일"
 L["Abbreviate numbers"] = "숫자 축약"
 
+-- What's new: labels and colors
+L["Labels and colors"] = "표시와 색상"
+L["Spell names next to numbers, a text outline choice, custom hit, crit, and miss colors, and a separate auto-attack motion."] =
+    "숫자 옆 주문 이름, 글자 외곽선 선택, 적중·치명타·빗나감 사용자 지정 색상, 그리고 자동 공격 전용 움직임을 추가했습니다."
+
+
 -- Auto-attack motion
 L["Same as normal hits"] = "일반 적중과 동일"
 L["Auto-attacks"] = "자동 공격"

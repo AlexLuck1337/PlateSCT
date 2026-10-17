@@ -170,6 +170,12 @@ L["Uses your last spell in Only my damage mode. Left of the number."] =
 L["Text style"] = "Стиль текста"
 L["Abbreviate numbers"] = "Сокращать числа"
 
+-- What's new: labels and colors
+L["Labels and colors"] = "Подписи и цвета"
+L["Spell names next to numbers, a text outline choice, custom hit, crit, and miss colors, and a separate auto-attack motion."] =
+    "Названия заклинаний рядом с числами, выбор обводки текста, свои цвета для ударов, критов и промахов и отдельное движение для автоатак."
+
+
 -- Auto-attack motion
 L["Same as normal hits"] = "Как обычные удары"
 L["Auto-attacks"] = "Автоатаки"
