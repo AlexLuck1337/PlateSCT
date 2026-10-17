@@ -327,6 +327,22 @@ BD.SWING_TOLERANCE = 0.15
 BD.SWING_MAX_BEATS = 3
 -- Casts in a row without any hit before a spell counts as dealing no damage.
 BD.NO_DAMAGE_AFTER = 2
+-- Damage meter check (Meter.lua): how often to read the meter while hits wait, how long a hit
+-- may wait (seconds, scaled from the measured meter delay), the delay to assume at first, and
+-- how many unconfirmed hits in a row pause the check (for METER_PAUSE seconds).
+BD.METER_POLL = 0.1
+BD.METER_HOLD_MIN = 0.2
+BD.METER_HOLD_MAX = 0.8
+BD.METER_LATENCY_START = 0.25
+BD.METER_MAX_HELD = 32
+BD.METER_MAX_MISSES = 12
+BD.METER_PAUSE = 30
+-- Seconds since the meter last grew within which it counts as working.
+BD.METER_QUIET = 5
+-- Hits are held only if the meter counted your damage in the last METER_RECENT seconds; after a
+-- failed read (restricted, values secret) it is not read again for METER_RETRY seconds.
+BD.METER_RECENT = 300
+BD.METER_RETRY = 2
 
 BD.STRICTNESS = {
     loose = {

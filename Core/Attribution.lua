@@ -1,4 +1,4 @@
-local _, BD = ...
+local addonName, BD = ...
 
 local pending = {}
 local pendingPool = {}
@@ -15,6 +15,9 @@ local learnedSchoolMiss = {}
 -- Casts of a spell in a row that got no hit at all (Death Grip, taunts, interrupts): from
 -- NO_DAMAGE_AFTER on, the spell ranks like a buff until one of its hits is certain.
 local learnedNoHit = {}
+-- Damage spell IDs often differ from the cast's (Obliterate's two weapon hits, say): the cast a
+-- damage spell the damage meter confirmed belongs to, when only one cast could explain it.
+local learnedCastFor = {}
 
 local function NoteFinishedCast(entry)
     local spellID = entry.spellID
@@ -453,7 +456,13 @@ local function TryMatchPending(unit, now, strict)
     return spellID
 end
 
+-- PLAYER_ENTER_COMBAT / PLAYER_LEAVE_COMBAT: melee auto-attack switched on or off.
+local autoAttackOn = false
+
 local function IsAutoAttacking()
+    if autoAttackOn then
+        return true
+    end
     local isCurrent = (C_Spell and C_Spell.IsCurrentSpell) or IsCurrentSpell
     if type(isCurrent) ~= "function" then
         return false
@@ -483,9 +492,15 @@ local swingBeat = {}        -- source (1 main hand, 2 off hand, 3 pet) -> time o
 local swingSpeed = {}       -- source -> current attack speed (reused)
 local swingCandidates = {}  -- times of recent likely white hits no beat explains yet
 
+-- Attack speeds turn secret under combat restrictions: then the last readable ones are used.
+local cachedSpeed = {}
+
 local function ReadSpeed(unit)
     local ok, main, off = pcall(function()
         local m, o = UnitAttackSpeed(unit)
+        if BD.IsSecret(m) or BD.IsSecret(o) then
+            error("secret")
+        end
         if type(m) ~= "number" or m <= 0 then
             return nil
         end
@@ -495,7 +510,14 @@ local function ReadSpeed(unit)
         return m, o
     end)
     if ok then
+        local cache = cachedSpeed[unit] or {}
+        cachedSpeed[unit] = cache
+        cache[1], cache[2] = main, off
         return main, off
+    end
+    local cache = cachedSpeed[unit]
+    if cache then
+        return cache[1], cache[2]
     end
     return nil
 end
@@ -634,6 +656,83 @@ end
 
 -- One auto-attack label per swing gap, per hand when dual wielding, so other physical hits on
 -- your target cannot all pass as your swings.
+-- A swing the damage meter confirmed: it sets the beat of the hand it is on, or of an open one.
+local function FeedSwing(now, firstSource, lastSource)
+    if not ReadSwingSpeeds() then
+        return
+    end
+    for source = firstSource, lastSource do
+        local at, speed = swingBeat[source], swingSpeed[source]
+        local offset = at and speed and BeatOffset(at, speed, now)
+        if offset and offset <= BD.SWING_TOLERANCE then
+            swingBeat[source] = now
+            return
+        end
+    end
+    for source = firstSource, lastSource do
+        if swingSpeed[source] and not BeatFresh(source, now) then
+            swingBeat[source] = now
+            return
+        end
+    end
+end
+
+--- Your pet's swing, confirmed by the damage meter (Meter.lua).
+function BD:NoteConfirmedPetSwing(at)
+    FeedSwing(at, SOURCE_PET, SOURCE_PET)
+end
+
+-- A hit the damage meter confirmed (Meter.lua): it uses up the cast it came from and teaches
+-- that cast's delay and school, or sets your swing beat.
+local function ConfirmHit(verdict, school, now)
+    if verdict.auto then
+        previousAutoFallbackTime, lastAutoAttackFallbackTime = lastAutoAttackFallbackTime, now
+        FeedSwing(now, 1, 2)
+        return BD.AUTO_ATTACK_SPELL_ID, true
+    end
+    local spellID = verdict.spellID
+    if not Learnable(spellID) then
+        return spellID, false
+    end
+    local castID = learnedCastFor[spellID] or spellID
+    local entry, waiting, lone = nil, 0, nil
+    for index = #pending, 1, -1 do
+        local candidate = pending[index]
+        local age = now - (candidate.t0 or 0)
+        if age >= 0 and Learnable(candidate.spellID) then
+            if not entry and candidate.spellID == castID then
+                entry = candidate
+            end
+            if (candidate.hits or 0) == 0 and age <= (candidate.window or 0) then
+                waiting, lone = waiting + 1, candidate
+            end
+        end
+    end
+    -- No cast of that ID: if exactly one cast is waiting for its first hit, this is its damage.
+    if not entry and waiting == 1 then
+        entry = lone
+        learnedCastFor[spellID] = lone.spellID
+    end
+    if entry then
+        castID = entry.spellID
+        if (entry.hits or 0) == 0 then
+            local age = math.min(now - (entry.t0 or now), entry.window or 0)
+            local delay = learnedDelay[castID]
+            learnedDelay[castID] = delay and (delay + (age - delay) * LEARN_RATE) or age
+        end
+        entry.hits = (entry.hits or 0) + 1
+        entry.lastHitAt = now
+        if (entry.hitsLeft or 0) > 0 then
+            entry.hitsLeft = entry.hitsLeft - 1
+        end
+        if school then
+            learnedSchool[castID], learnedSchoolMiss[castID] = school, nil
+        end
+        learnedNoHit[castID] = nil
+    end
+    return spellID, false
+end
+
 local function CanUseAutoAttackFallback(now, strict)
     if not strict.autoFallback then
         return false
@@ -649,8 +748,12 @@ end
 -- isHeal: the hit is a heal, which a buff cast may explain and the auto-attack fallback never does.
 function BD:MatchOutgoingHit(unit, schoolMask, isHeal)
     BD.API.AssertModern("Attribution.MatchOutgoingHit")
-    local now = GetTime()
+    -- A hit held for the damage meter is matched at the time it landed.
+    local now = BD.hitTimeOverride or GetTime()
     local strict = self:GetActiveStrictness()
+    if BD.meterVerdict and not isHeal then
+        return ConfirmHit(BD.meterVerdict, KnownSchool(schoolMask), now)
+    end
     local autoCandidate = not isHeal and not IsLikelySpellSchool(schoolMask)
         and (BD.UnitsMatch(unit, "target") or unit == "target")
     hitSchool, hitIsHeal = KnownSchool(schoolMask), isHeal
@@ -715,6 +818,7 @@ function BD:ClearAttributionState()
     wipe(learnedDelay)
     wipe(learnedSchool)
     wipe(learnedSchoolMiss)
+    wipe(learnedCastFor)
     for index = #pending, 1, -1 do
         ReleasePending(pending[index])
         pending[index] = nil
@@ -722,3 +826,44 @@ function BD:ClearAttributionState()
     wipe(castMeta)
     lastAutoAttackFallbackTime = 0
 end
+
+-- What was learned is kept between sessions (PlateSCTDB.attributionLearned), so the guesswork
+-- in instances, where the damage meter cannot be read, starts from what the open world taught.
+local LEARNED_TABLES = {
+    delay = learnedDelay, school = learnedSchool, noHit = learnedNoHit, castFor = learnedCastFor,
+}
+
+local stateFrame = CreateFrame("Frame")
+stateFrame:RegisterEvent("ADDON_LOADED")
+stateFrame:RegisterEvent("PLAYER_LOGOUT")
+stateFrame:RegisterEvent("PLAYER_ENTER_COMBAT")
+stateFrame:RegisterEvent("PLAYER_LEAVE_COMBAT")
+stateFrame:SetScript("OnEvent", function(_, event, name)
+    if event == "PLAYER_ENTER_COMBAT" then
+        autoAttackOn = true
+    elseif event == "PLAYER_LEAVE_COMBAT" then
+        autoAttackOn = false
+    elseif event == "ADDON_LOADED" and name == addonName then
+        local saved = type(PlateSCTDB) == "table" and PlateSCTDB.attributionLearned
+        if type(saved) == "table" then
+            for key, into in pairs(LEARNED_TABLES) do
+                if type(saved[key]) == "table" then
+                    for spellID, value in pairs(saved[key]) do
+                        if type(spellID) == "number" and type(value) == "number" then
+                            into[spellID] = value
+                        end
+                    end
+                end
+            end
+        end
+    elseif event == "PLAYER_LOGOUT" and type(PlateSCTDB) == "table" then
+        local saved = {}
+        for key, from in pairs(LEARNED_TABLES) do
+            saved[key] = {}
+            for spellID, value in pairs(from) do
+                saved[key][spellID] = value
+            end
+        end
+        PlateSCTDB.attributionLearned = saved
+    end
+end)

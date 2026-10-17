@@ -56,6 +56,11 @@ local function ShowPersonalDamage(unit, amount, isCrit, schoolMask)
         return false
     end
 
+    -- Open world: wait a moment for the damage meter to confirm whose hit this is (Meter.lua).
+    if BD.HoldForMeter and BD:HoldForMeter(unit, plate, amount, isCrit, schoolMask) then
+        return false
+    end
+
     local spellID, usedAuto = BD:MatchOutgoingHit(unit, schoolMask)
     if not spellID then
         BD:DebugPrint("personal skip, no outgoing match")
@@ -236,3 +241,6 @@ function BD:HandleUnitCombat(unit, action, flagText, amount, schoolMask)
         self:ShowOnNameplate(unit, action, 1, 0.85, 0.2, nil, false, false, nil, "miss")
     end
 end
+
+-- Meter.lua shows held hits through the same path once the damage meter decided.
+BD.ShowPersonalDamageNow = ShowPersonalDamage
