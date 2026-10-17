@@ -126,8 +126,6 @@ L["Hide"] = "Скрыть"
 L["Other nameplates"] = "Другие индикаторы"
 L["How numbers look on enemies you are not targeting. Dim makes them smaller and fainter so your target stands out."] =
     "Как выглядят числа на врагах, которые не являются вашей целью. «Приглушить» делает их меньше и бледнее, чтобы цель выделялась."
-L["Only Engaged nameplates mode shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
-    "Числа на врагах, которые не являются вашей целью, показывает только режим «Индикаторы в бою». Измените его в разделе Современный API → Режим урона."
 L["Off-target size"] = "Размер вне цели"
 L["Off-target opacity"] = "Непрозрачность вне цели"
 
@@ -241,6 +239,18 @@ L["Test on Target"] = "Тест на цели"
 L["Show sample damage numbers on your target."] = "Показывает примеры чисел урона на вашей цели."
 L["Maintenance"] = "Обслуживание"
 L["Debug mode"] = "Режим отладки"
+
+-- Personal splash
+L["Only Engaged nameplates mode, or Personal with Show splash from my casts, shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
+    "Числа на врагах, которые не являются вашей целью, показывают только режим «Индикаторы в бою» или «Личный» с параметром «Показывать задевающий урон моих заклинаний». Измените это в разделе Современный API → Режим урона."
+L["Show splash from my casts"] = "Показывать задевающий урон моих заклинаний"
+L["In Personal mode, also show hits on other enemies that land right after your cast hits its target, with the same damage school, on enemies you have threat on."] =
+    "В личном режиме также показывать удары по другим врагам сразу после попадания вашего заклинания в цель, той же школы урона и по врагам, у которых есть ваша угроза."
+L["Choose Personal - experimental to show splash from your casts."] =
+    "Выберите «Личный - экспериментальный», чтобы видеть задевающий урон своих заклинаний."
+L["Splash is best effort: another player's same-school hit in that split second can still appear. DoT ticks spread to other enemies and unreadable damage schools are not shown."] =
+    "Задевающий урон определяется приблизительно: удар другого игрока той же школы в то же мгновение всё ещё может появиться. Тики периодического урона на других врагах и нечитаемые школы урона не показываются."
+
 L["Print combat events to chat for troubleshooting."] =
     "Выводит события боя в чат для диагностики."
 L["Dump meter now"] = "Дамп счётчика"

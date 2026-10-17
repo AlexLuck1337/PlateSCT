@@ -126,8 +126,6 @@ L["Hide"] = "Ocultar"
 L["Other nameplates"] = "Outras placas de nome"
 L["How numbers look on enemies you are not targeting. Dim makes them smaller and fainter so your target stands out."] =
     "Como os números aparecem em inimigos que você não está mirando. Esmaecer os deixa menores e mais apagados para seu alvo se destacar."
-L["Only Engaged nameplates mode shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
-    "Só o modo Placas em combate mostra números em inimigos que não são seu alvo. Altere em API moderna → Modo de dano."
 L["Off-target size"] = "Tamanho fora do alvo"
 L["Off-target opacity"] = "Opacidade fora do alvo"
 
@@ -241,6 +239,18 @@ L["Test on Target"] = "Testar no alvo"
 L["Show sample damage numbers on your target."] = "Mostra números de dano de exemplo no seu alvo."
 L["Maintenance"] = "Manutenção"
 L["Debug mode"] = "Modo de depuração"
+
+-- Personal splash
+L["Only Engaged nameplates mode, or Personal with Show splash from my casts, shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
+    "Só o modo Placas em combate, ou Pessoal com Mostrar respingos dos meus feitiços, mostra números em inimigos que não são seu alvo. Altere em API moderna → Modo de dano."
+L["Show splash from my casts"] = "Mostrar respingos dos meus feitiços"
+L["In Personal mode, also show hits on other enemies that land right after your cast hits its target, with the same damage school, on enemies you have threat on."] =
+    "No modo Pessoal, mostra também golpes em outros inimigos que chegam logo depois de seu feitiço atingir o alvo, com a mesma escola de dano, em inimigos onde você tem ameaça."
+L["Choose Personal - experimental to show splash from your casts."] =
+    "Escolha Pessoal - experimental para mostrar os respingos dos seus feitiços."
+L["Splash is best effort: another player's same-school hit in that split second can still appear. DoT ticks spread to other enemies and unreadable damage schools are not shown."] =
+    "Os respingos são aproximados: um golpe de outro jogador da mesma escola no mesmo instante ainda pode aparecer. Ticks de dano periódico em outros inimigos e escolas ilegíveis não são exibidos."
+
 L["Print combat events to chat for troubleshooting."] =
     "Imprime eventos de combate no chat para diagnóstico."
 L["Dump meter now"] = "Despejar medidor agora"

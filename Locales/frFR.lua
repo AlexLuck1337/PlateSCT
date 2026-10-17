@@ -126,8 +126,6 @@ L["Hide"] = "Masquer"
 L["Other nameplates"] = "Autres barres de nom"
 L["How numbers look on enemies you are not targeting. Dim makes them smaller and fainter so your target stands out."] =
     "Apparence des nombres sur les ennemis que vous ne ciblez pas. Atténuer les rend plus petits et plus pâles pour faire ressortir votre cible."
-L["Only Engaged nameplates mode shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
-    "Seul le mode Ennemis engagés affiche des nombres sur les ennemis que vous ne ciblez pas. Modifiez-le dans API moderne → Mode de dégâts."
 L["Off-target size"] = "Taille hors cible"
 L["Off-target opacity"] = "Opacité hors cible"
 
@@ -241,6 +239,18 @@ L["Test on Target"] = "Tester sur la cible"
 L["Show sample damage numbers on your target."] = "Affiche des nombres de dégâts d'exemple sur votre cible."
 L["Maintenance"] = "Maintenance"
 L["Debug mode"] = "Mode débogage"
+
+-- Personal splash
+L["Only Engaged nameplates mode, or Personal with Show splash from my casts, shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
+    "Seul le mode Ennemis engagés, ou Personnel avec Afficher les éclaboussures de mes sorts, affiche des nombres sur les ennemis que vous ne ciblez pas. Modifiez-le dans API moderne → Mode de dégâts."
+L["Show splash from my casts"] = "Afficher les éclaboussures de mes sorts"
+L["In Personal mode, also show hits on other enemies that land right after your cast hits its target, with the same damage school, on enemies you have threat on."] =
+    "En mode Personnel, affiche aussi les coups sur d'autres ennemis qui arrivent juste après que votre sort a touché sa cible, de la même école de dégâts, sur les ennemis où vous avez de la menace."
+L["Choose Personal - experimental to show splash from your casts."] =
+    "Choisissez Personnel - expérimental pour afficher les éclaboussures de vos sorts."
+L["Splash is best effort: another player's same-school hit in that split second can still appear. DoT ticks spread to other enemies and unreadable damage schools are not shown."] =
+    "Les éclaboussures sont approximatives : un coup d'un autre joueur de la même école au même instant peut encore apparaître. Les dégâts périodiques répartis sur d'autres ennemis et les écoles illisibles ne sont pas affichés."
+
 L["Print combat events to chat for troubleshooting."] =
     "Affiche les événements de combat dans le chat pour le dépannage."
 L["Dump meter now"] = "Dumper le compteur"

@@ -126,8 +126,6 @@ L["Hide"] = "Nascondi"
 L["Other nameplates"] = "Altre barre del nome"
 L["How numbers look on enemies you are not targeting. Dim makes them smaller and fainter so your target stands out."] =
     "Aspetto dei numeri sui nemici che non stai bersagliando. Attenua li rende più piccoli e tenui, così il tuo bersaglio risalta."
-L["Only Engaged nameplates mode shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
-    "Solo la modalità Barre in combattimento mostra numeri sui nemici che non stai bersagliando. Cambiala in API moderna → Modalità danni."
 L["Off-target size"] = "Dimensione fuori bersaglio"
 L["Off-target opacity"] = "Opacità fuori bersaglio"
 
@@ -241,6 +239,18 @@ L["Test on Target"] = "Prova sul bersaglio"
 L["Show sample damage numbers on your target."] = "Mostra numeri di danno di esempio sul bersaglio."
 L["Maintenance"] = "Manutenzione"
 L["Debug mode"] = "Modalità debug"
+
+-- Personal splash
+L["Only Engaged nameplates mode, or Personal with Show splash from my casts, shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
+    "Solo la modalità Barre in combattimento, o Personale con Mostra i danni ad area dei miei incantesimi, mostra numeri sui nemici che non stai bersagliando. Cambiala in API moderna → Modalità danni."
+L["Show splash from my casts"] = "Mostra i danni ad area dei miei incantesimi"
+L["In Personal mode, also show hits on other enemies that land right after your cast hits its target, with the same damage school, on enemies you have threat on."] =
+    "In modalità Personale, mostra anche i colpi su altri nemici che arrivano subito dopo che il tuo incantesimo colpisce il bersaglio, con la stessa scuola di danno, sui nemici su cui hai minaccia."
+L["Choose Personal - experimental to show splash from your casts."] =
+    "Scegli Personale - sperimentale per mostrare i danni ad area dei tuoi incantesimi."
+L["Splash is best effort: another player's same-school hit in that split second can still appear. DoT ticks spread to other enemies and unreadable damage schools are not shown."] =
+    "I danni ad area sono approssimativi: un colpo di un altro giocatore della stessa scuola nello stesso istante può comunque comparire. I tick periodici su altri nemici e le scuole illeggibili non vengono mostrati."
+
 L["Print combat events to chat for troubleshooting."] =
     "Stampa gli eventi di combattimento in chat per la diagnostica."
 L["Dump meter now"] = "Dump del misuratore"

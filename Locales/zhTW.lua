@@ -136,8 +136,6 @@ L["Hide"] = "隱藏"
 L["Other nameplates"] = "其他名條"
 L["How numbers look on enemies you are not targeting. Dim makes them smaller and fainter so your target stands out."] =
     "非目前目標敵人身上的數字顯示方式。「淡化」會讓它們更小更淡，使目前目標更突出。"
-L["Only Engaged nameplates mode shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
-    "只有「交戰中的名條」模式會在非目標敵人身上顯示數字。請在「現代 API」→「傷害模式」中更改。"
 L["Off-target size"] = "非目標大小"
 L["Off-target opacity"] = "非目標不透明度"
 
@@ -307,6 +305,18 @@ L["Test on Target"] = "在目標上測試"
 L["Show sample damage numbers on your target."] = "在目前目標上顯示範例傷害數字。"
 L["Maintenance"] = "維護"
 L["Debug mode"] = "除錯模式"
+
+-- Personal splash
+L["Only Engaged nameplates mode, or Personal with Show splash from my casts, shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
+    "只有「交戰中的名條」模式，或開啟「顯示我施法的濺射傷害」的個人模式，會在非目標敵人身上顯示數字。請在「現代 API」→「傷害模式」中更改。"
+L["Show splash from my casts"] = "顯示我施法的濺射傷害"
+L["In Personal mode, also show hits on other enemies that land right after your cast hits its target, with the same damage school, on enemies you have threat on."] =
+    "在個人模式下，也顯示你的法術命中目標後緊接著落在其他敵人身上、傷害類型相同、且你在其仇恨列表中的命中。"
+L["Choose Personal - experimental to show splash from your casts."] =
+    "選擇「個人傷害 - 實驗性」後才能顯示你施法的濺射傷害。"
+L["Splash is best effort: another player's same-school hit in that split second can still appear. DoT ticks spread to other enemies and unreadable damage schools are not shown."] =
+    "濺射為盡力配對：同一瞬間其他玩家相同類型的命中仍可能出現。擴散到其他敵人的持續傷害跳數和無法讀取的傷害類型不會顯示。"
+
 L["Print combat events to chat for troubleshooting."] = "將戰鬥事件輸出到聊天欄，以便排查問題。"
 L["Dump meter now"] = "立即匯出傷害統計"
 L["Open a copyable snapshot of C_DamageMeter fields. Use this in combat while hitting a target."] = "開啟 C_DamageMeter 欄位的可複製快照。請在戰鬥中攻擊目標時使用。"

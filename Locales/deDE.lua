@@ -126,8 +126,6 @@ L["Hide"] = "Ausblenden"
 L["Other nameplates"] = "Andere Namensplaketten"
 L["How numbers look on enemies you are not targeting. Dim makes them smaller and fainter so your target stands out."] =
     "Wie Zahlen auf Gegnern aussehen, die ihr nicht anvisiert. Abdunkeln macht sie kleiner und blasser, damit euer Ziel hervorsticht."
-L["Only Engaged nameplates mode shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
-    "Nur der Modus „Namensplaketten im Kampf“ zeigt Zahlen auf Gegnern, die ihr nicht anvisiert. Ändert ihn unter Moderne API → Schadensmodus."
 L["Off-target size"] = "Größe abseits des Ziels"
 L["Off-target opacity"] = "Deckkraft abseits des Ziels"
 
@@ -241,6 +239,18 @@ L["Test on Target"] = "Am Ziel testen"
 L["Show sample damage numbers on your target."] = "Zeigt Beispiel-Schadenszahlen auf eurem Ziel."
 L["Maintenance"] = "Wartung"
 L["Debug mode"] = "Debug-Modus"
+
+-- Personal splash
+L["Only Engaged nameplates mode, or Personal with Show splash from my casts, shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
+    "Nur der Modus „Namensplaketten im Kampf“ oder „Persönlich“ mit „Flächenschaden eigener Zauber zeigen“ zeigt Zahlen auf Gegnern, die ihr nicht anvisiert. Ändert ihn unter Moderne API → Schadensmodus."
+L["Show splash from my casts"] = "Flächenschaden eigener Zauber zeigen"
+L["In Personal mode, also show hits on other enemies that land right after your cast hits its target, with the same damage school, on enemies you have threat on."] =
+    "Zeigt im persönlichen Modus auch Treffer auf anderen Gegnern, die direkt nach dem Treffer eures Zaubers auf sein Ziel landen, mit derselben Schadensschule und auf Gegnern, bei denen ihr Bedrohung habt."
+L["Choose Personal - experimental to show splash from your casts."] =
+    "Wählt „Persönlich - experimentell“, um Flächenschaden eurer Zauber zu zeigen."
+L["Splash is best effort: another player's same-school hit in that split second can still appear. DoT ticks spread to other enemies and unreadable damage schools are not shown."] =
+    "Flächenschaden ist eine Annäherung: Ein Treffer eines anderen Spielers derselben Schule im selben Augenblick kann trotzdem erscheinen. Auf andere Gegner verteilte DoT-Ticks und nicht lesbare Schadensschulen werden nicht angezeigt."
+
 L["Print combat events to chat for troubleshooting."] =
     "Gibt Kampfereignisse zum Troubleshooting im Chat aus."
 L["Dump meter now"] = "Meter jetzt dumpen"

@@ -69,7 +69,13 @@ end
 -- On Modern only Engaged nameplates shows other enemies: Current target never does, and Personal
 -- attributes hits only to the cast's target, so off-target styling would have nothing to style.
 local function OffTargetAvailable()
-    return not IsModernAPI() or (not BD.db.onlyMyDamage and BD.db.allNameplates)
+    if not IsModernAPI() then
+        return true
+    end
+    if BD.db.onlyMyDamage then
+        return BD.db.personalSplash and true or false
+    end
+    return BD.db.allNameplates and true or false
 end
 
 local function BuildCombat(parent, root)
@@ -111,7 +117,7 @@ local function BuildCombat(parent, root)
         L["Choose Personal - experimental under Modern API → Damage mode to use pet matching."])
     layout:Choice("offTargetMode", L["Other nameplates"], BD.OFF_TARGET_MODES,
         L["How numbers look on enemies you are not targeting. Dim makes them smaller and fainter so your target stands out."],
-        OffTargetAvailable, nil, L["Only Engaged nameplates mode shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."])
+        OffTargetAvailable, nil, L["Only Engaged nameplates mode, or Personal with Show splash from my casts, shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."])
     layout:When(function() return BD.db.offTargetMode == "dim" and OffTargetAvailable() end, function()
         layout:Slider("offTargetScale", L["Off-target size"], 0.4, 1, 0.05, PercentValue)
         layout:Slider("offTargetAlpha", L["Off-target opacity"], 0.1, 1, 0.05, PercentValue)
@@ -360,6 +366,10 @@ local function BuildModernMode(layout)
     control.searchAliases = { L["Only my damage"], L["All engaged nameplates"] }
     layout:Note(L["Personal - experimental: best-effort matching by destination and timing. Other players' hits on the same target can appear."])
     layout:Note(L["Current target: all-source numbers on your target. Engaged nameplates: all-source numbers on engaged enemies."])
+    layout:Checkbox("personalSplash", L["Show splash from my casts"],
+        L["In Personal mode, also show hits on other enemies that land right after your cast hits its target, with the same damage school, on enemies you have threat on."],
+        function() return BD.db.onlyMyDamage end, nil, L["Choose Personal - experimental to show splash from your casts."])
+    layout:Note(L["Splash is best effort: another player's same-school hit in that split second can still appear. DoT ticks spread to other enemies and unreadable damage schools are not shown."])
     layout:Heading(L["Attribution limitations"])
     layout:Note(L["Best effort: matches your casts to nameplates by destination and timing. Dest-matched cleave can show. Other players on the same target can still appear. Mythic+ uses the Dungeon profile."])
     layout:Note(L["Pet matching and spell icons require Personal mode. Choose their appearance and visibility under Combat and Appearance."])

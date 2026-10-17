@@ -126,8 +126,6 @@ L["Hide"] = "Ocultar"
 L["Other nameplates"] = "Otras placas de nombre"
 L["How numbers look on enemies you are not targeting. Dim makes them smaller and fainter so your target stands out."] =
     "Cómo se ven los números en enemigos que no tienes como objetivo. Atenuar los hace más pequeños y tenues para que tu objetivo destaque."
-L["Only Engaged nameplates mode shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
-    "Solo el modo Placas en combate muestra números en enemigos que no son tu objetivo. Cámbialo en API moderna → Modo de daño."
 L["Off-target size"] = "Tamaño fuera del objetivo"
 L["Off-target opacity"] = "Opacidad fuera del objetivo"
 
@@ -241,6 +239,18 @@ L["Test on Target"] = "Probar en el objetivo"
 L["Show sample damage numbers on your target."] = "Muestra números de daño de ejemplo en tu objetivo."
 L["Maintenance"] = "Mantenimiento"
 L["Debug mode"] = "Modo depuración"
+
+-- Personal splash
+L["Only Engaged nameplates mode, or Personal with Show splash from my casts, shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
+    "Solo el modo Placas en combate, o Personal con Mostrar salpicaduras de mis hechizos, muestra números en enemigos que no son tu objetivo. Cámbialo en API moderna → Modo de daño."
+L["Show splash from my casts"] = "Mostrar salpicaduras de mis hechizos"
+L["In Personal mode, also show hits on other enemies that land right after your cast hits its target, with the same damage school, on enemies you have threat on."] =
+    "En el modo Personal, muestra también los golpes en otros enemigos que llegan justo después de que tu hechizo impacte en su objetivo, con la misma escuela de daño, en enemigos sobre los que tienes amenaza."
+L["Choose Personal - experimental to show splash from your casts."] =
+    "Elige Personal - experimental para mostrar las salpicaduras de tus hechizos."
+L["Splash is best effort: another player's same-school hit in that split second can still appear. DoT ticks spread to other enemies and unreadable damage schools are not shown."] =
+    "Las salpicaduras son aproximadas: un golpe de otro jugador de la misma escuela en ese instante aún puede aparecer. Los ticks de daño periódico en otros enemigos y las escuelas ilegibles no se muestran."
+
 L["Print combat events to chat for troubleshooting."] =
     "Imprime eventos de combate en el chat para solucionar problemas."
 L["Dump meter now"] = "Volcar medidor ahora"

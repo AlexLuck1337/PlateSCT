@@ -150,8 +150,6 @@ L["Hide"] = "Hide"
 L["Other nameplates"] = "Other nameplates"
 L["How numbers look on enemies you are not targeting. Dim makes them smaller and fainter so your target stands out."] =
     "How numbers look on enemies you are not targeting. Dim makes them smaller and fainter so your target stands out."
-L["Only Engaged nameplates mode shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
-    "Only Engaged nameplates mode shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."
 L["Off-target size"] = "Off-target size"
 L["Off-target opacity"] = "Off-target opacity"
 
@@ -349,6 +347,18 @@ L["Test on Target"] = "Test on Target"
 L["Show sample damage numbers on your target."] = "Show sample damage numbers on your target."
 L["Maintenance"] = "Maintenance"
 L["Debug mode"] = "Debug mode"
+
+-- Personal splash
+L["Only Engaged nameplates mode, or Personal with Show splash from my casts, shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
+    "Only Engaged nameplates mode, or Personal with Show splash from my casts, shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."
+L["Show splash from my casts"] = "Show splash from my casts"
+L["In Personal mode, also show hits on other enemies that land right after your cast hits its target, with the same damage school, on enemies you have threat on."] =
+    "In Personal mode, also show hits on other enemies that land right after your cast hits its target, with the same damage school, on enemies you have threat on."
+L["Choose Personal - experimental to show splash from your casts."] =
+    "Choose Personal - experimental to show splash from your casts."
+L["Splash is best effort: another player's same-school hit in that split second can still appear. DoT ticks spread to other enemies and unreadable damage schools are not shown."] =
+    "Splash is best effort: another player's same-school hit in that split second can still appear. DoT ticks spread to other enemies and unreadable damage schools are not shown."
+
 L["Print combat events to chat for troubleshooting."] = "Print combat events to chat for troubleshooting."
 L["Dump meter now"] = "Dump meter now"
 L["Open a copyable snapshot of C_DamageMeter fields. Use this in combat while hitting a target."] =

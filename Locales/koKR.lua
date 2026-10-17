@@ -142,8 +142,6 @@ L["Hide"] = "숨기기"
 L["Other nameplates"] = "다른 이름표"
 L["How numbers look on enemies you are not targeting. Dim makes them smaller and fainter so your target stands out."] =
     "대상으로 지정하지 않은 적에게 표시되는 숫자의 모양입니다. 흐리게는 숫자를 더 작고 옅게 만들어 현재 대상이 돋보이게 합니다."
-L["Only Engaged nameplates mode shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
-    "대상이 아닌 적에게 숫자를 표시하는 것은 교전 중인 적의 이름표 모드뿐입니다. 모던 API → 피해 모드에서 변경하세요."
 L["Off-target size"] = "대상 외 크기"
 L["Off-target opacity"] = "대상 외 불투명도"
 
@@ -315,6 +313,18 @@ L["Test on Target"] = "대상에서 테스트"
 L["Show sample damage numbers on your target."] = "현재 대상에 예시 피해 숫자를 표시합니다."
 L["Maintenance"] = "관리"
 L["Debug mode"] = "디버그 모드"
+
+-- Personal splash
+L["Only Engaged nameplates mode, or Personal with Show splash from my casts, shows numbers on enemies you are not targeting. Change it under Modern API → Damage mode."] =
+    "대상이 아닌 적에게 숫자를 표시하는 것은 교전 중인 적의 이름표 모드, 또는 내 주문의 광역 피해 표시를 켠 개인 모드뿐입니다. 모던 API → 피해 모드에서 변경하세요."
+L["Show splash from my casts"] = "내 주문의 광역 피해 표시"
+L["In Personal mode, also show hits on other enemies that land right after your cast hits its target, with the same damage school, on enemies you have threat on."] =
+    "개인 모드에서 주문이 대상에 적중한 직후 다른 적에게 들어온 같은 피해 계열의 적중도, 위협 수준이 있는 적이라면 표시합니다."
+L["Choose Personal - experimental to show splash from your casts."] =
+    "주문의 광역 피해를 표시하려면 개인 피해 - 실험 기능을 선택하세요."
+L["Splash is best effort: another player's same-school hit in that split second can still appear. DoT ticks spread to other enemies and unreadable damage schools are not shown."] =
+    "광역 피해는 최선의 추정입니다. 같은 순간 다른 플레이어의 같은 계열 적중이 표시될 수 있습니다. 다른 적에게 퍼진 지속 피해와 읽을 수 없는 피해 계열은 표시되지 않습니다."
+
 L["Print combat events to chat for troubleshooting."] = "문제 해결을 위해 전투 이벤트를 대화창에 출력합니다."
 L["Dump meter now"] = "측정기 정보 내보내기"
 L["Open a copyable snapshot of C_DamageMeter fields. Use this in combat while hitting a target."] = "복사할 수 있는 C_DamageMeter 필드의 스냅샷을 엽니다. 전투 중 대상을 공격하면서 사용하세요."

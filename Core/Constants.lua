@@ -18,6 +18,7 @@ BD.DEFAULTS = {
     fontFace = "game",
     hideBlizzardFCT = true,
     onlyMyDamage = true,
+    personalSplash = false,
     allNameplates = false,
     includePetDamage = true,
     offTargetMode = "show", -- "show" | "dim" | "hide"
@@ -343,6 +344,12 @@ BD.GENERIC_PET_ICON = "Interface\\Icons\\Ability_Hunter_BeastTaming"
 BD.POOL_SIZE = 24
 BD.METER_PROBE_MAX_SPELLS = 6
 BD.PENDING_CAP = 8
+
+-- Personal splash (Modern): how long after a confirmed hit a same-school hit on another enemy
+-- counts as yours, how many such hits one cast covers, and how long an early hit waits for its cast.
+BD.SPLASH_WINDOW = 0.4
+BD.SPLASH_HITS = 8
+BD.SPLASH_QUEUE_DELAY = 0.15
 
 BD.STRICTNESS = {
     loose = {
