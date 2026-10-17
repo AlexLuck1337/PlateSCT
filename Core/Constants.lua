@@ -6,6 +6,7 @@ BD.DEFAULTS = {
     critsOnly = false,
     shrinkSmallHits = false,
     smallHitPercent = 0.5, -- share of the recent average below which a hit is small
+    ignoredSpells = "", -- comma-separated spell IDs or names
     abbreviate = false,
     thousandSeparator = "none", -- "none" | "comma" | "dot"
     showSpellIcon = false,

@@ -1040,6 +1040,10 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
         kind = isCrit and "crit" or "hit"
     end
 
+    if self:IsSpellIgnored(spellId) then
+        return
+    end
+
     -- Crits only keeps crits and miss text (Immune, Dodge, ...); normal hits and heals are dropped.
     if self.db.critsOnly and kind == "hit" then
         return

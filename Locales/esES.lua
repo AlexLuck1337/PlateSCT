@@ -89,6 +89,16 @@ L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress 
     "Las placas de nombre enemigas están desactivadas. PlateSCT las necesita para mostrar números.\nPulsa V (predeterminado) o actívalas en Interfaz → Juego → Nombres."
 L["Who to show"] = "Qué mostrar"
 
+-- Ignored spells
+L["Ignored spells"] = "Hechizos ignorados"
+L["Ignore these spells"] = "Ignorar estos hechizos"
+L["Spell names or IDs, separated by commas. Their hits, crits, and misses are not shown."] =
+    "Nombres o ID de hechizos, separados por comas. Sus golpes, críticos y fallos no se muestran."
+L["Example: Auto Attack, 133."] = "Ejemplo: Ataque automático, 133."
+L["Example: Auto Attack, 133. Modern API knows the spell only in Personal - experimental mode."] =
+    "Ejemplo: Ataque automático, 133. La API Modern solo conoce el hechizo en el modo Personal - experimental."
+
+
 -- Shrink small hits
 L["Shrink small hits"] = "Encoger golpes pequeños"
 L["Show hits well below your recent average smaller instead of hiding them."] =

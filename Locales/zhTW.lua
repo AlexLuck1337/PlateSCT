@@ -99,6 +99,16 @@ L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress 
     "敵方名條已關閉。PlateSCT 需要名條才能顯示數字。\n按 V（預設按鍵），或在「介面 → 遊戲 → 名稱」中啟用。"
 L["Who to show"] = "顯示來源"
 
+-- Ignored spells
+L["Ignored spells"] = "忽略的法術"
+L["Ignore these spells"] = "忽略這些法術"
+L["Spell names or IDs, separated by commas. Their hits, crits, and misses are not shown."] =
+    "法術名稱或 ID，以逗號分隔。這些法術的命中、致命一擊和未命中都不會顯示。"
+L["Example: Auto Attack, 133."] = "範例：自動攻擊, 133。"
+L["Example: Auto Attack, 133. Modern API knows the spell only in Personal - experimental mode."] =
+    "範例：自動攻擊, 133。現代 API 僅在「個人傷害 - 實驗性」模式下能識別法術。"
+
+
 -- Shrink small hits
 L["Shrink small hits"] = "縮小小額命中"
 L["Show hits well below your recent average smaller instead of hiding them."] =

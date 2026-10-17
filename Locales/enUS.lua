@@ -113,6 +113,16 @@ L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress 
     "Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."
 L["Who to show"] = "Who to show"
 
+-- Ignored spells
+L["Ignored spells"] = "Ignored spells"
+L["Ignore these spells"] = "Ignore these spells"
+L["Spell names or IDs, separated by commas. Their hits, crits, and misses are not shown."] =
+    "Spell names or IDs, separated by commas. Their hits, crits, and misses are not shown."
+L["Example: Auto Attack, 133."] = "Example: Auto Attack, 133."
+L["Example: Auto Attack, 133. Modern API knows the spell only in Personal - experimental mode."] =
+    "Example: Auto Attack, 133. Modern API knows the spell only in Personal - experimental mode."
+
+
 -- Shrink small hits
 L["Shrink small hits"] = "Shrink small hits"
 L["Show hits well below your recent average smaller instead of hiding them."] =

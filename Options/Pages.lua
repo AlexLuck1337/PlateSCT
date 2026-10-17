@@ -168,6 +168,13 @@ local function BuildCombat(parent, root)
             and L["Crits, normal hits, and heals combine separately. Secret amounts cannot be added, so those hits still show individually."]
             or L["Crits, normal hits, and heals combine separately."])
     end)
+
+    layout:Heading(L["Ignored spells"])
+    layout:TextInput("ignoredSpells", L["Ignore these spells"],
+        L["Spell names or IDs, separated by commas. Their hits, crits, and misses are not shown."])
+    layout:Note(IsModernAPI()
+        and L["Example: Auto Attack, 133. Modern API knows the spell only in Personal - experimental mode."]
+        or L["Example: Auto Attack, 133."])
     layout:Finish()
 end
 

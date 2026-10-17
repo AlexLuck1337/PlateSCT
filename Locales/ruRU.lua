@@ -89,6 +89,16 @@ L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress 
     "Индикаторы врагов выключены. PlateSCT нужны они, чтобы показывать числа.\nНажмите V (по умолчанию) или включите их в Интерфейс → Игра → Имена."
 L["Who to show"] = "Что показывать"
 
+-- Ignored spells
+L["Ignored spells"] = "Игнорируемые заклинания"
+L["Ignore these spells"] = "Игнорировать заклинания"
+L["Spell names or IDs, separated by commas. Their hits, crits, and misses are not shown."] =
+    "Названия или ID заклинаний через запятую. Их удары, криты и промахи не показываются."
+L["Example: Auto Attack, 133."] = "Пример: Автоматическая атака, 133."
+L["Example: Auto Attack, 133. Modern API knows the spell only in Personal - experimental mode."] =
+    "Пример: Автоматическая атака, 133. Modern API знает заклинание только в режиме «Личный - экспериментальный»."
+
+
 -- Shrink small hits
 L["Shrink small hits"] = "Уменьшать слабые удары"
 L["Show hits well below your recent average smaller instead of hiding them."] =

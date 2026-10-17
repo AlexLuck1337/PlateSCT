@@ -105,6 +105,16 @@ L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress 
     "적 이름표가 꺼져 있습니다. PlateSCT가 숫자를 표시하려면 이름표가 필요합니다.\nV 키(기본값)를 누르거나 인터페이스 → 게임 → 이름에서 켜세요."
 L["Who to show"] = "표시할 피해 출처"
 
+-- Ignored spells
+L["Ignored spells"] = "무시할 주문"
+L["Ignore these spells"] = "이 주문 무시"
+L["Spell names or IDs, separated by commas. Their hits, crits, and misses are not shown."] =
+    "주문 이름 또는 ID를 쉼표로 구분해 입력합니다. 해당 주문의 적중, 치명타, 빗나감은 표시되지 않습니다."
+L["Example: Auto Attack, 133."] = "예: 자동 공격, 133."
+L["Example: Auto Attack, 133. Modern API knows the spell only in Personal - experimental mode."] =
+    "예: 자동 공격, 133. 모던 API는 개인 피해 - 실험 기능 모드에서만 주문을 알 수 있습니다."
+
+
 -- Shrink small hits
 L["Shrink small hits"] = "작은 적중 축소"
 L["Show hits well below your recent average smaller instead of hiding them."] =
