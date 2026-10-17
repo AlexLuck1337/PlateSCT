@@ -4,6 +4,7 @@ local pending = {}
 local pendingPool = {}
 local castMeta = {}
 local lastAutoAttackFallbackTime = 0
+local previousAutoFallbackTime = 0 -- the one before it, for the off hand when dual wielding
 
 -- Learned per spell from hits that only one pending cast could explain: the usual delay from
 -- the cast to its first hit (travel time), and the hit's damage school when it is readable.
@@ -313,6 +314,7 @@ local function RankCandidate(entry, unit, now, strict, school, isHeal)
     entry.rankMismatch = (school and known and known ~= school) and 1 or 0
     entry.rankBuff = (not isHeal and entry.helpfulOnly) and 1 or 0
     entry.rankStage = stage
+    entry.rankPet = entry.source == "pet" and 1 or 0
     entry.rankOther = DestMatches(entry, unit) and 0 or 1
     if stage == 1 then
         -- When its hit is due: casts in flight resolve in the order their hits arrive.
@@ -325,7 +327,8 @@ local function RankCandidate(entry, unit, now, strict, school, isHeal)
 end
 
 -- The first difference decides: a learned school that differs from the hit's, a buff that
--- cannot deal damage, the stage, a cast on another plate (allowed only on your target), order.
+-- cannot deal damage, the stage, a pet's cast, a cast on another plate (allowed only on your
+-- target), order.
 local function RanksBefore(a, b)
     if a.rankMismatch ~= b.rankMismatch then
         return a.rankMismatch < b.rankMismatch
@@ -336,6 +339,9 @@ local function RanksBefore(a, b)
     if a.rankStage ~= b.rankStage then
         return a.rankStage < b.rankStage
     end
+    if a.rankPet ~= b.rankPet then
+        return a.rankPet < b.rankPet
+    end
     if a.rankOther ~= b.rankOther then
         return a.rankOther < b.rankOther
     end
@@ -344,14 +350,26 @@ end
 
 -- Learn only from the first hit of a cast no other waiting cast could explain. A school is
 -- replaced only after two such hits in a row disagree, so one stray hit cannot unlearn it.
-local function Learn(entry, age, school, waiting, schoolTaken)
+-- maybeWhite: a physical hit while you auto-attack may be a swing that landed first, so it
+-- teaches no delay, and a first school from it needs a second agreeing hit.
+local function Learn(entry, age, school, waiting, maybeWhite)
     local spellID = entry.spellID
     if entry.rankStage ~= 1 or waiting ~= 1 or not Learnable(spellID) then
         return
     end
-    local delay = learnedDelay[spellID]
-    learnedDelay[spellID] = delay and (delay + (age - delay) * LEARN_RATE) or age
-    if not school or schoolTaken then
+    if not maybeWhite then
+        local delay = learnedDelay[spellID]
+        learnedDelay[spellID] = delay and (delay + (age - delay) * LEARN_RATE) or age
+    end
+    if not school then
+        return
+    end
+    if maybeWhite and learnedSchool[spellID] == nil then
+        if learnedSchoolMiss[spellID] == school then
+            learnedSchool[spellID], learnedSchoolMiss[spellID] = school, nil
+        else
+            learnedSchoolMiss[spellID] = school
+        end
         return
     end
     if learnedSchool[spellID] == nil or learnedSchool[spellID] == school then
@@ -363,25 +381,32 @@ local function Learn(entry, age, school, waiting, schoolTaken)
     end
 end
 
--- The hit being matched, set by MatchOutgoingHit: its readable school, whether it is a heal, and
--- whether it may be a white hit (you auto-attack, and it is physical on your target). A white
--- hit that only a lingering, other-school or buff cast could explain goes to the auto fallback.
-local hitSchool, hitIsHeal, hitPreferAuto
+-- The hit being matched, set by MatchOutgoingHit: its readable school, whether it is a heal,
+-- whether it may be a white hit (you auto-attack, and it is physical on your target), and
+-- whether the auto-attack fallback can take it now.
+local hitSchool, hitIsHeal, hitMaybeWhite, hitPreferAuto
+
+-- Whether a likely white hit goes to the auto-attack fallback instead of this cast: one only
+-- lingering, of another school, a buff or a pet's cast; or one that already hit and is not
+-- delivering a burst (multi-hit instants land within WHITE_BURST of each other).
+local function LeaveToAuto(best, now)
+    if best.rankStage == 3 or best.rankMismatch == 1 or best.rankBuff == 1 or best.rankPet == 1 then
+        return true
+    end
+    return best.rankStage == 2 and (now - (best.lastHitAt or best.t0 or 0)) > BD.WHITE_BURST
+end
 
 local function TryMatchPending(unit, now, strict)
     local school, isHeal, preferAuto = hitSchool, hitIsHeal, hitPreferAuto
     ExpireStale(now)
     local best, bestIndex
-    local waiting, schoolTaken = 0, false
+    local waiting = 0
 
     for index = 1, #pending do
         local entry = pending[index]
         if RankCandidate(entry, unit, now, strict, school, isHeal) then
             if entry.rankStage == 1 then
                 waiting = waiting + 1
-            end
-            if school and Learnable(entry.spellID) and learnedSchool[entry.spellID] == school then
-                schoolTaken = true
             end
             if not best or RanksBefore(entry, best) then
                 best, bestIndex = entry, index
@@ -392,15 +417,15 @@ local function TryMatchPending(unit, now, strict)
     if not best then
         return nil
     end
-    if preferAuto and (best.rankStage == 3 or best.rankMismatch == 1 or best.rankBuff == 1) then
+    if preferAuto and LeaveToAuto(best, now) then
         return nil
     end
 
     local spellID = best.spellID
     local age = now - (best.t0 or 0)
-    Learn(best, math.min(age, best.window or age), school,
-        waiting, schoolTaken and learnedSchool[spellID] ~= school)
+    Learn(best, math.min(age, best.window or age), school, waiting, hitMaybeWhite and school == 1)
     best.hits = (best.hits or 0) + 1
+    best.lastHitAt = now
     if best.rankStage <= 2 and (best.hitsLeft or 0) > 0 then
         best.hitsLeft = best.hitsLeft - 1
         if best.hitsLeft <= 0 and not ((best.linger or 0) > (best.window or 0)) then
@@ -431,13 +456,32 @@ function BD:HasRecentOutgoingCast()
     return IsAutoAttacking()
 end
 
+-- Shortest plausible time between two swings of one hand, and whether you dual wield. Falls
+-- back to the strictness gap when the attack speed cannot be read.
+local function SwingGap(strict)
+    local ok, gap, dualWield = pcall(function()
+        local main, off = UnitAttackSpeed("player")
+        if type(main) ~= "number" or main <= 0 then
+            return nil
+        end
+        local hasOff = type(off) == "number" and off > 0
+        return (hasOff and math.min(main, off) or main) * BD.SWING_GAP_SHARE, hasOff
+    end)
+    if ok and gap then
+        return gap, dualWield
+    end
+    return strict.autoFallbackGap or 0.9, false
+end
+
+-- One auto-attack label per swing gap, per hand when dual wielding, so other physical hits on
+-- your target cannot all pass as your swings.
 local function CanUseAutoAttackFallback(now, strict)
     if not strict.autoFallback then
         return false
     end
-    local gap = strict.autoFallbackGap or 0.9
+    local gap, dualWield = SwingGap(strict)
     if lastAutoAttackFallbackTime > 0 and (now - lastAutoAttackFallbackTime) < gap then
-        return false
+        return dualWield and (now - previousAutoFallbackTime) >= gap
     end
     return true
 end
@@ -451,14 +495,15 @@ function BD:MatchOutgoingHit(unit, schoolMask, isHeal)
     local autoCandidate = not isHeal and not IsLikelySpellSchool(schoolMask)
         and (BD.UnitsMatch(unit, "target") or unit == "target")
     hitSchool, hitIsHeal = KnownSchool(schoolMask), isHeal
-    hitPreferAuto = autoCandidate and IsAutoAttacking() and CanUseAutoAttackFallback(now, strict)
+    hitMaybeWhite = autoCandidate and IsAutoAttacking()
+    hitPreferAuto = hitMaybeWhite and CanUseAutoAttackFallback(now, strict)
     local spellID = TryMatchPending(unit, now, strict)
     if spellID then
         return spellID, false
     end
 
     if autoCandidate and CanUseAutoAttackFallback(now, strict) then
-        lastAutoAttackFallbackTime = now
+        previousAutoFallbackTime, lastAutoAttackFallbackTime = lastAutoAttackFallbackTime, now
         return BD.AUTO_ATTACK_SPELL_ID, true
     end
 
@@ -487,6 +532,7 @@ function BD:PlayerIsEngagedWith(unit)
 end
 
 function BD:ClearAttributionState()
+    previousAutoFallbackTime = 0
     wipe(learnedDelay)
     wipe(learnedSchool)
     wipe(learnedSchoolMiss)

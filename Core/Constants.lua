@@ -316,6 +316,11 @@ BD.METER_PROBE_MAX_SPELLS = 6
 BD.PENDING_CAP = 8
 -- Seconds after one of your casts in which its hit is shown even before the client reports combat.
 BD.PULL_GRACE = 2.0
+-- While auto-attacking, a cast that already hit keeps a physical hit only within this many seconds
+-- of its last hit (a multi-hit burst); later ones are white hits.
+BD.WHITE_BURST = 0.25
+-- Share of your current swing time that must pass before another auto-attack label on one hand.
+BD.SWING_GAP_SHARE = 0.6
 
 BD.STRICTNESS = {
     loose = {
