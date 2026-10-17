@@ -13,8 +13,9 @@ end
 
 local held = {}     -- hits waiting for the meter: { unit, plate, amount, isCrit, schoolMask, at }
 local growth = {}   -- meter growth no hit explained yet: { spellID, creature, amount, overkill, at }
-local totals = {}   -- spell key -> last total
-local overkills = {} -- spell key -> last overkill total
+local totals = {}   -- creature name ("" for you) -> spellID -> last total
+local overkills = {} -- creature name -> spellID -> last overkill total
+local readAt, lastReadOk -- the meter is read at most every METER_MIN_READ seconds
 local baselined = false
 local readableAt
 local latency = BD.METER_LATENCY_START
@@ -43,10 +44,15 @@ end
 
 -- Reads your spells' totals and records how much each grew since the last read. False when the
 -- meter cannot be read now (missing, or its values are secret).
-local function ReadMeter(now)
+-- force: a meter update event, always read; per-hit reads are throttled.
+local function ReadMeter(now, force)
     if now < unreadableUntil then
         return false
     end
+    if not force and readAt and now - readAt < BD.METER_MIN_READ then
+        return lastReadOk
+    end
+    readAt, lastReadOk = now, false
     local guid = UnitGUID("player")
     if type(guid) ~= "string" or BD.IsSecret(guid) then
         return false
@@ -75,7 +81,6 @@ local function ReadMeter(now)
                     scratch[count] = row
                 end
                 row.spellID, row.total, row.overkill, row.creature = spellID, total, overkill, creature
-                row.key = spellID .. ":" .. creature
             end
         end
     end)
@@ -83,13 +88,14 @@ local function ReadMeter(now)
         unreadableUntil = now + BD.METER_RETRY
         return false
     end
-    readableAt = now
+    readableAt, lastReadOk = now, true
 
     -- A total that shrank means the meter was reset: start over from these totals.
     if baselined then
         for index = 1, count do
             local row = scratch[index]
-            if totals[row.key] and row.total < totals[row.key] then
+            local last = totals[row.creature] and totals[row.creature][row.spellID]
+            if last and row.total < last then
                 Rebaseline()
                 break
             end
@@ -97,19 +103,24 @@ local function ReadMeter(now)
     end
     for index = 1, count do
         local row = scratch[index]
-        local last = totals[row.key]
+        local byCreature = totals[row.creature]
+        if not byCreature then
+            byCreature = {}
+            totals[row.creature], overkills[row.creature] = byCreature, {}
+        end
+        local last = byCreature[row.spellID]
         if baselined and row.total > (last or 0) then
             grewAt = now
             growth[#growth + 1] = {
                 spellID = row.spellID,
                 creature = row.creature,
                 amount = row.total - (last or 0),
-                overkill = math.max(0, row.overkill - (overkills[row.key] or 0)),
+                overkill = math.max(0, row.overkill - (overkills[row.creature][row.spellID] or 0)),
                 at = now,
             }
             BD:DebugPrint("meter +", row.spellID, row.creature ~= "" and row.creature or "you", row.total - (last or 0))
         end
-        totals[row.key], overkills[row.key] = row.total, row.overkill
+        byCreature[row.spellID], overkills[row.creature][row.spellID] = row.total, row.overkill
     end
     baselined = true
     return true
@@ -154,6 +165,12 @@ local function Resolve(hit, row, now)
     end
     BD:DebugPrint("meter confirmed", hit.amount, isAuto and "auto" or row.spellID,
         math.floor((now - hit.at) * 1000) .. "ms")
+    -- On other enemies (AoE, cleave) your hits show only as before: when a cast of yours was
+    -- aimed there or splash is on. Otherwise AoE would put a number on every enemy for every tick.
+    if not hit.onTarget and not (BD.db and BD.db.personalSplash) then
+        Replay(hit)
+        return
+    end
     Replay(hit, row.spellID, isAuto)
 end
 
@@ -175,7 +192,7 @@ local function Match(now)
                 break
             end
         end
-        if not found1 then
+        if not found1 and #held <= BD.METER_COMBINE_HELD then
             for a = 1, #held - 1 do
                 for b = a + 1, #held do
                     if math.abs(held[a].amount + held[b].amount - row.amount) <= 2 then
@@ -188,7 +205,7 @@ local function Match(now)
                 end
             end
         end
-        if not found1 and #held <= 12 then
+        if not found1 and #held <= BD.METER_COMBINE_HELD then
             for a = 1, #held - 2 do
                 for b = a + 1, #held - 1 do
                     for c = b + 1, #held do
@@ -233,7 +250,7 @@ local function Expire(now)
     local hold = HoldTime()
     while held[1] and now - held[1].at >= hold do
         local hit = table.remove(held, 1)
-        if grewAt and now - grewAt <= BD.METER_QUIET then
+        if grewAt and now - grewAt <= BD.METER_QUIET and #growth == 0 then
             BD:DebugPrint("meter skip, not yours", hit.amount)
         else
             misses = misses + 1
@@ -290,6 +307,7 @@ function BD:HoldForMeter(unit, plate, amount, isCrit, schoolMask)
     end
     held[#held + 1] = {
         unit = unit, plate = plate, amount = amount, isCrit = isCrit, schoolMask = schoolMask, at = now,
+        onTarget = BD.GetNamePlateFrame("target") == plate,
     }
     Match(now)
     ScheduleTick()
@@ -312,7 +330,7 @@ meterFrame:SetScript("OnEvent", function(_, event)
     end
     -- Read on every update, so each read's growth covers only the hits since the last one.
     local now = GetTime()
-    if ReadMeter(now) then
+    if ReadMeter(now, true) then
         Match(now)
         Expire(now)
         ScheduleTick()

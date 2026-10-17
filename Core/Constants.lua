@@ -343,6 +343,9 @@ BD.METER_QUIET = 5
 -- failed read (restricted, values secret) it is not read again for METER_RETRY seconds.
 BD.METER_RECENT = 300
 BD.METER_RETRY = 2
+-- Shortest time between two meter reads, and most waiting hits searched for pairs and triples.
+BD.METER_MIN_READ = 0.05
+BD.METER_COMBINE_HELD = 8
 
 BD.STRICTNESS = {
     loose = {
