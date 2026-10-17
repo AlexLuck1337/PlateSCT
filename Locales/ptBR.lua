@@ -89,6 +89,14 @@ L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress 
     "As placas de nome inimigas estão desativadas. PlateSCT precisa delas para mostrar números.\nPressione V (padrão) ou ative-as em Interface → Jogo → Nomes."
 L["Who to show"] = "O que mostrar"
 
+-- Shrink small hits
+L["Shrink small hits"] = "Encolher golpes pequenos"
+L["Show hits well below your recent average smaller instead of hiding them."] =
+    "Mostra menores os golpes bem abaixo da sua média recente em vez de ocultá-los."
+L["Small hit below"] = "Golpe pequeno abaixo de"
+L["%s of average"] = "%s da média"
+
+
 -- Crits only
 L["Crits only"] = "Apenas críticos"
 L["Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."] =

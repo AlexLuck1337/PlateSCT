@@ -41,12 +41,9 @@ local function IsClassicStyleFrame(frame)
     return frame.usesClassicShove and frame.animMode == "classicPow" and frame.classicReady
 end
 
-local function PushDamageSample(amount)
-    if not amount or not BD.CanAccessValue(amount) or amount <= 0 then
-        return
-    end
+-- Average of the most recent readable hits; 0 once they have all aged out.
+local function RecentDamageAverage()
     local now = GetTime()
-    damageSamples[#damageSamples + 1] = { amount = amount, time = now }
     for index = #damageSamples, 1, -1 do
         if (now - damageSamples[index].time) > ROLLING_AVERAGE_MAX_AGE then
             table.remove(damageSamples, index)
@@ -58,10 +55,20 @@ local function PushDamageSample(amount)
         total = total + damageSamples[index].amount
         count = count + 1
     end
-    if count > 0 then
-        rollingDamageAverage = total / count
-    end
+    rollingDamageAverage = count > 0 and total / count or 0
+    return rollingDamageAverage
 end
+
+local function PushDamageSample(amount)
+    if not amount or not BD.CanAccessValue(amount) or amount <= 0 then
+        return
+    end
+    damageSamples[#damageSamples + 1] = { amount = amount, time = GetTime() }
+    RecentDamageAverage()
+end
+
+BD.PushDamageSample = PushDamageSample
+BD.GetRecentDamageAverage = RecentDamageAverage
 
 function BD.ComputeClassicAmountScale(amount)
     if not amount or not BD.CanAccessValue(amount) or amount <= 0 then

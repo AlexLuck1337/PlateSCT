@@ -113,6 +113,14 @@ L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress 
     "Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."
 L["Who to show"] = "Who to show"
 
+-- Shrink small hits
+L["Shrink small hits"] = "Shrink small hits"
+L["Show hits well below your recent average smaller instead of hiding them."] =
+    "Show hits well below your recent average smaller instead of hiding them."
+L["Small hit below"] = "Small hit below"
+L["%s of average"] = "%s of average"
+
+
 -- Crits only
 L["Crits only"] = "Crits only"
 L["Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."] =

@@ -105,6 +105,14 @@ L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress 
     "적 이름표가 꺼져 있습니다. PlateSCT가 숫자를 표시하려면 이름표가 필요합니다.\nV 키(기본값)를 누르거나 인터페이스 → 게임 → 이름에서 켜세요."
 L["Who to show"] = "표시할 피해 출처"
 
+-- Shrink small hits
+L["Shrink small hits"] = "작은 적중 축소"
+L["Show hits well below your recent average smaller instead of hiding them."] =
+    "최근 평균보다 훨씬 낮은 적중을 숨기는 대신 작게 표시합니다."
+L["Small hit below"] = "작은 적중 기준"
+L["%s of average"] = "평균의 %s"
+
+
 -- Crits only
 L["Crits only"] = "치명타만"
 L["Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."] =

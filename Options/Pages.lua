@@ -145,6 +145,13 @@ local function BuildCombat(parent, root)
     end
     layout:Checkbox("critsOnly", L["Crits only"],
         L["Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."])
+    layout:Checkbox("shrinkSmallHits", L["Shrink small hits"],
+        L["Show hits well below your recent average smaller instead of hiding them."])
+    layout:When(function() return BD.db.shrinkSmallHits end, function()
+        layout:Slider("smallHitPercent", L["Small hit below"], 0.1, 0.9, 0.05, function(value)
+            return string.format(L["%s of average"], PercentValue(value))
+        end)
+    end)
 
     layout:Checkbox("combineHits", L["Combine rapid hits"],
         L["Add hits that land in quick succession on the same nameplate into one number instead of stacking many."])

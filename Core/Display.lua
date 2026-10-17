@@ -1017,6 +1017,17 @@ local function IsOffTargetPlate(self, plate)
     return targetPlate ~= nil and targetPlate ~= plate
 end
 
+-- Small hit: a readable normal damage hit below a share of the recent average.
+-- Must be checked before this hit joins the average.
+local function IsSmallHit(self, amount, kind, isHeal)
+    if not self.db.shrinkSmallHits or isHeal or kind ~= "hit" or not CombinableAmount(amount) then
+        return false
+    end
+    local average = BD.GetRecentDamageAverage()
+    local share = self.db.smallHitPercent or self.DEFAULTS.smallHitPercent
+    return average > 0 and amount < average * share
+end
+
 function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isHeal, spellIcon, hitKind, spellId)
     local plate = BD.GetNamePlateFrame(unit)
     if not plate then
@@ -1087,6 +1098,9 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
     if offTarget then
         fontSize = fontSize * (self.db.offTargetScale or self.DEFAULTS.offTargetScale)
     end
+    if IsSmallHit(self, amountForThreshold, kind, isHeal) then
+        fontSize = fontSize * BD.SMALL_HIT_SCALE
+    end
     local fontPath = BD.ResolveFontPath(self.db.fontFace)
     fontPath = BD.SafeSetFont(frame.text, fontPath, fontSize, preset.fontFlags)
     if preset.shadowOffset then
@@ -1153,6 +1167,9 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
 
     if frame.usesClassicShove then
         frame.amountScale = BD.ComputeClassicAmountScale(amountForThreshold)
+    elseif self.db.shrinkSmallHits and not isHeal then
+        -- Classic style feeds the average itself; other styles feed it for small-hit shrinking.
+        BD.PushDamageSample(amountForThreshold)
     end
 
     if combineKey then

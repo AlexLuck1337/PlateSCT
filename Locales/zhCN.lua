@@ -99,6 +99,14 @@ L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress 
     "敌方姓名板已关闭。PlateSCT 需要姓名板才能显示数字。\n按 V（默认按键），或在“界面 → 游戏 → 名称”中启用。"
 L["Who to show"] = "显示来源"
 
+-- Shrink small hits
+L["Shrink small hits"] = "缩小小额命中"
+L["Show hits well below your recent average smaller instead of hiding them."] =
+    "将明显低于你近期平均值的命中缩小显示，而不是隐藏。"
+L["Small hit below"] = "小额命中阈值"
+L["%s of average"] = "平均值的 %s"
+
+
 -- Crits only
 L["Crits only"] = "仅显示暴击"
 L["Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."] =

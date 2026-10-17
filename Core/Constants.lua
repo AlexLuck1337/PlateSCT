@@ -4,6 +4,8 @@ BD.DEFAULTS = {
     enabled = true,
     minDamage = 0,
     critsOnly = false,
+    shrinkSmallHits = false,
+    smallHitPercent = 0.5, -- share of the recent average below which a hit is small
     abbreviate = false,
     thousandSeparator = "none", -- "none" | "comma" | "dot"
     showSpellIcon = false,
@@ -114,6 +116,9 @@ BD.OFF_TARGET_MODES = {
     { id = "dim", labelKey = "Dim" },
     { id = "hide", labelKey = "Hide" },
 }
+
+-- Size of a shrunk small hit, relative to a normal one.
+BD.SMALL_HIT_SCALE = 0.7
 
 -- Scale pulse when a hit merges into a live number.
 BD.COMBINE_PULSE_DURATION = 0.15

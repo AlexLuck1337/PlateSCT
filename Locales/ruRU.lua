@@ -89,6 +89,14 @@ L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress 
     "Индикаторы врагов выключены. PlateSCT нужны они, чтобы показывать числа.\nНажмите V (по умолчанию) или включите их в Интерфейс → Игра → Имена."
 L["Who to show"] = "Что показывать"
 
+-- Shrink small hits
+L["Shrink small hits"] = "Уменьшать слабые удары"
+L["Show hits well below your recent average smaller instead of hiding them."] =
+    "Показывать удары намного ниже вашего недавнего среднего уменьшенными, а не скрывать их."
+L["Small hit below"] = "Слабый удар ниже"
+L["%s of average"] = "%s от среднего"
+
+
 -- Crits only
 L["Crits only"] = "Только критические"
 L["Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."] =
