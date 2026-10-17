@@ -204,6 +204,12 @@ L["Bottom"] = "Bottom"
 L["Text style"] = "Text style"
 L["Abbreviate numbers"] = "Abbreviate numbers"
 
+-- What's new: labels and colors
+L["Labels and colors"] = "Labels and colors"
+L["Spell names next to numbers, a text outline choice, custom hit, crit, and miss colors, and a separate auto-attack motion."] =
+    "Spell names next to numbers, a text outline choice, custom hit, crit, and miss colors, and a separate auto-attack motion."
+
+
 -- Auto-attack motion
 L["Same as normal hits"] = "Same as normal hits"
 L["Auto-attacks"] = "Auto-attacks"

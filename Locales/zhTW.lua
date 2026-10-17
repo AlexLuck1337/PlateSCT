@@ -176,6 +176,12 @@ L["Bottom"] = "下方"
 L["Text style"] = "文字樣式"
 L["Abbreviate numbers"] = "縮寫數字"
 
+-- What's new: labels and colors
+L["Labels and colors"] = "標籤與顏色"
+L["Spell names next to numbers, a text outline choice, custom hit, crit, and miss colors, and a separate auto-attack motion."] =
+    "數字旁顯示法術名稱、可選文字描邊、自訂命中／致命一擊／未命中顏色，以及獨立的自動攻擊移動效果。"
+
+
 -- Auto-attack motion
 L["Same as normal hits"] = "與一般命中相同"
 L["Auto-attacks"] = "自動攻擊"
