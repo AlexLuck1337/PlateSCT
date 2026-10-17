@@ -550,11 +550,11 @@ local function ClassicPreviewSamples(self, sampleKind)
             local isCrit = sample.hitKind == "crit"
             ConfigureFrameCommon(self, frame, preset, isCrit, sample.hitKind, false, true)
             local text = PreviewSampleText(self, sample)
-            local width, height = MeasurePreviewText(text, fontPath, fontSize, preset.fontFlags)
+            local width, height = MeasurePreviewText(text, fontPath, fontSize, BD:GetFontFlags(preset))
             local labelW, labelH = 0, 0
             if isCrit and self:GetCritLabelSetting("classic") then
                 local critSize = math.max(8, math.floor(fontSize * 0.55 + 0.5))
-                labelW, labelH = MeasurePreviewText(L["CRITICAL"], fontPath, critSize, preset.fontFlags)
+                labelW, labelH = MeasurePreviewText(L["CRITICAL"], fontPath, critSize, BD:GetFontFlags(preset))
             end
             local icon = sample.hitKind ~= "miss" and
                 (self:ResolveOutgoingSpellIcon(nil, sample.spellID)
@@ -627,11 +627,11 @@ local function ImpactPreviewBounds(self, sampleKind)
     for _, sample in ipairs(PREVIEW_SAMPLES) do
         if sample.hitKind ~= "miss" and MatchesPreviewKind(sample, sampleKind) then
             local text = PreviewSampleText(self, sample)
-            local width, height = MeasurePreviewText(text, fontPath, fontSize, preset.fontFlags)
+            local width, height = MeasurePreviewText(text, fontPath, fontSize, BD:GetFontFlags(preset))
             local labelW, labelH = 0, 0
             if sample.hitKind == "crit" and self:GetCritLabelSetting("impact") then
                 labelW, labelH = MeasurePreviewText(L["CRITICAL"], fontPath,
-                    math.max(8, math.floor(fontSize * 0.55 + 0.5)), preset.fontFlags)
+                    math.max(8, math.floor(fontSize * 0.55 + 0.5)), BD:GetFontFlags(preset))
             end
             local iconSize = self.db.showSpellIcon and math.max(12, math.floor(fontSize * 1.1 + 0.5)) or nil
             local l, r, b, t = ImpactTextBounds(width, height, labelW, labelH, iconSize, self.db.iconPosition)
@@ -685,12 +685,12 @@ function BD:GetOptionsPreviewBounds(sampleKind, styleOverride)
             end
 
             local text = PreviewSampleText(self, sample)
-            local width, height = MeasurePreviewText(text, fontPath, fontSize, preset.fontFlags)
+            local width, height = MeasurePreviewText(text, fontPath, fontSize, BD:GetFontFlags(preset))
             local critLabelWidth = 0
             local iconYOffset = 0
             if isCrit and self:GetCritLabelSetting(numberStyle) then
                 local critSize = math.max(8, math.floor(fontSize * 0.55 + 0.5))
-                local labelWidth, labelHeight = MeasurePreviewText(L["CRITICAL"], fontPath, critSize, preset.fontFlags)
+                local labelWidth, labelHeight = MeasurePreviewText(L["CRITICAL"], fontPath, critSize, BD:GetFontFlags(preset))
                 critLabelWidth = labelWidth + CRIT_LABEL_GAP
                 width = width + critLabelWidth
                 iconYOffset = math.abs(height - labelHeight) * 0.5
@@ -785,7 +785,7 @@ local function SpawnMotionPreviewFrame(anchor, sample)
 
     local fontSize = (BD.db.fontSize or BD.DEFAULTS.fontSize) * preset.fontScale
     local fontPath = BD.ResolveFontPath(BD.db.fontFace)
-    fontPath = BD.SafeSetFont(frame.text, fontPath, fontSize, preset.fontFlags)
+    fontPath = BD.SafeSetFont(frame.text, fontPath, fontSize, BD:GetFontFlags(preset))
     if preset.shadowOffset then
         frame.text:SetShadowOffset(preset.shadowOffset[1], preset.shadowOffset[2])
         frame.text:SetShadowColor(0, 0, 0, 1)
@@ -823,7 +823,7 @@ local function SpawnMotionPreviewFrame(anchor, sample)
         g = g,
         b = b,
     }
-    ApplyTextLayout(frame, fontSize, fontPath, preset.fontFlags, preset, layoutOpts)
+    ApplyTextLayout(frame, fontSize, fontPath, BD:GetFontFlags(preset), preset, layoutOpts)
 
     frame.text:SetTextColor(r, g, b, 1)
     frame.baseAlpha = 1
@@ -840,7 +840,7 @@ local function SpawnMotionPreviewFrame(anchor, sample)
         frame.combineLayout = {
             fontSize = fontSize,
             fontPath = fontPath,
-            fontFlags = preset.fontFlags,
+            fontFlags = BD:GetFontFlags(preset),
             preset = preset,
             opts = layoutOpts,
         }
@@ -1065,7 +1065,7 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
 
     local fontSize = (self.db.fontSize or self.DEFAULTS.fontSize) * preset.fontScale
     local fontPath = BD.ResolveFontPath(self.db.fontFace)
-    fontPath = BD.SafeSetFont(frame.text, fontPath, fontSize, preset.fontFlags)
+    fontPath = BD.SafeSetFont(frame.text, fontPath, fontSize, BD:GetFontFlags(preset))
     if preset.shadowOffset then
         frame.text:SetShadowOffset(preset.shadowOffset[1], preset.shadowOffset[2])
         frame.text:SetShadowColor(0, 0, 0, 1)
@@ -1105,7 +1105,7 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
         g = g,
         b = b,
     }
-    ApplyTextLayout(frame, fontSize, fontPath, preset.fontFlags, preset, layoutOpts)
+    ApplyTextLayout(frame, fontSize, fontPath, BD:GetFontFlags(preset), preset, layoutOpts)
 
     frame.text:SetTextColor(r, g, b, 1)
 
@@ -1136,7 +1136,7 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
         frame.combineLayout = {
             fontSize = fontSize,
             fontPath = fontPath,
-            fontFlags = preset.fontFlags,
+            fontFlags = BD:GetFontFlags(preset),
             preset = preset,
             opts = layoutOpts,
         }
@@ -1220,7 +1220,7 @@ function BD:ShowIncoming(text, r, g, b, amountForThreshold, isCrit, hitKind)
 
     local fontSize = (self.db.fontSize or self.DEFAULTS.fontSize) * preset.fontScale
     local fontPath = BD.ResolveFontPath(self.db.fontFace)
-    fontPath = BD.SafeSetFont(frame.text, fontPath, fontSize, preset.fontFlags)
+    fontPath = BD.SafeSetFont(frame.text, fontPath, fontSize, BD:GetFontFlags(preset))
     if preset.shadowOffset then
         frame.text:SetShadowOffset(preset.shadowOffset[1], preset.shadowOffset[2])
         frame.text:SetShadowColor(0, 0, 0, 1)
@@ -1235,7 +1235,7 @@ function BD:ShowIncoming(text, r, g, b, amountForThreshold, isCrit, hitKind)
     local textB = b or color[3]
     local showCritLabel = frame.isCrit and self:GetCritLabelSetting(numberStyle) and true or false
 
-    ApplyTextLayout(frame, fontSize, fontPath, preset.fontFlags, preset, {
+    ApplyTextLayout(frame, fontSize, fontPath, BD:GetFontFlags(preset), preset, {
         showCritLabel = showCritLabel,
         r = textR,
         g = textG,

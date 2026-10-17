@@ -175,6 +175,16 @@ L["Top"] = "上方"
 L["Bottom"] = "下方"
 L["Text style"] = "文字樣式"
 L["Abbreviate numbers"] = "縮寫數字"
+
+-- Outline
+L["Outline"] = "描邊"
+L["Number style default"] = "數字樣式預設"
+L["None"] = "無"
+L["Thin"] = "細"
+L["Thick"] = "粗"
+L["Text outline. Number style default uses each style's own outline: thick for Classic, thin for Modern and Impact."] =
+    "文字描邊。「數字樣式預設」使用各樣式自帶的描邊：經典樣式為粗描邊，現代樣式和 Impact 為細描邊。"
+
 L["Display large numbers as 214k or 1.2M."] = "將大數字顯示為 214k 或 1.2M。"
 L["Display large numbers as 214k or 1.2M. Disables thousand separators."] = "將大數字顯示為 214k 或 1.2M。啟用後會關閉千位分隔符號。"
 L["Thousand separators"] = "千位分隔符號"

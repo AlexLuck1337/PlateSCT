@@ -128,6 +128,16 @@ L["Uses your last spell in Only my damage mode. Left of the number."] =
     "Usa il tuo ultimo incantesimo in modalità «Solo i miei danni». A sinistra del numero."
 L["Text style"] = "Stile del testo"
 L["Abbreviate numbers"] = "Abbrevia i numeri"
+
+-- Outline
+L["Outline"] = "Contorno"
+L["Number style default"] = "Predefinito dello stile"
+L["None"] = "Nessuno"
+L["Thin"] = "Sottile"
+L["Thick"] = "Spesso"
+L["Text outline. Number style default uses each style's own outline: thick for Classic, thin for Modern and Impact."] =
+    "Contorno del testo. Il predefinito dello stile usa il contorno di ogni stile: spesso per Classic, sottile per Moderno e Impact."
+
 L["Display large numbers as 214k or 1.2M."] = "Mostra i numeri grandi come 214k o 1.2M."
 L["Display large numbers as 214k or 1.2M. Disables thousand separators."] =
     "Mostra i numeri grandi come 214k o 1.2M. Disattiva i separatori delle migliaia."

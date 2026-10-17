@@ -403,7 +403,7 @@ local function ShowFontPreview(menu, entry)
     end
     local preset = BD:GetStylePreset()
     local size = (BD.db.fontSize or BD.DEFAULTS.fontSize) * preset.fontScale
-    BD.SafeSetFont(preview.number, BD.ResolveFontPath(entry.optionId), size, preset.fontFlags)
+    BD.SafeSetFont(preview.number, BD.ResolveFontPath(entry.optionId), size, BD:GetFontFlags(preset))
     local shadow = preset.shadowOffset
     preview.number:SetShadowOffset(shadow and shadow[1] or 0, shadow and shadow[2] or 0)
     preview.number:SetShadowColor(0, 0, 0, 1)

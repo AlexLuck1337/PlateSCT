@@ -128,6 +128,16 @@ L["Uses your last spell in Only my damage mode. Left of the number."] =
     "Использует ваше последнее заклинание в режиме «Только мой урон». Слева от числа."
 L["Text style"] = "Стиль текста"
 L["Abbreviate numbers"] = "Сокращать числа"
+
+-- Outline
+L["Outline"] = "Обводка"
+L["Number style default"] = "По стилю чисел"
+L["None"] = "Нет"
+L["Thin"] = "Тонкая"
+L["Thick"] = "Толстая"
+L["Text outline. Number style default uses each style's own outline: thick for Classic, thin for Modern and Impact."] =
+    "Обводка текста. Вариант стиля по умолчанию использует обводку каждого стиля: толстую для Classic, тонкую для Современного и Impact."
+
 L["Display large numbers as 214k or 1.2M."] = "Показывает большие числа как 214k или 1.2M."
 L["Display large numbers as 214k or 1.2M. Disables thousand separators."] =
     "Показывает большие числа как 214k или 1.2M. Отключает разделители тысяч."

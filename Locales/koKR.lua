@@ -182,6 +182,16 @@ L["Top"] = "위"
 L["Bottom"] = "아래"
 L["Text style"] = "글자 스타일"
 L["Abbreviate numbers"] = "숫자 축약"
+
+-- Outline
+L["Outline"] = "외곽선"
+L["Number style default"] = "숫자 스타일 기본값"
+L["None"] = "없음"
+L["Thin"] = "얇게"
+L["Thick"] = "두껍게"
+L["Text outline. Number style default uses each style's own outline: thick for Classic, thin for Modern and Impact."] =
+    "글자 외곽선입니다. 숫자 스타일 기본값은 각 스타일의 외곽선을 사용합니다. 클래식 스타일은 두껍게, 모던 스타일과 Impact는 얇게 표시됩니다."
+
 L["Display large numbers as 214k or 1.2M."] = "큰 숫자를 214k 또는 1.2M으로 표시합니다."
 L["Display large numbers as 214k or 1.2M. Disables thousand separators."] = "큰 숫자를 214k 또는 1.2M으로 표시합니다. 사용하면 천 단위 구분 기호는 꺼집니다."
 L["Thousand separators"] = "천 단위 구분 기호"

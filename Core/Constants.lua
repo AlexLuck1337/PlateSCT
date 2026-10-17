@@ -12,6 +12,7 @@ BD.DEFAULTS = {
     floatDistance = 20,
     scrollSpeed = 1.0,
     fontFace = "game",
+    fontOutline = "style", -- "style" | "none" | "thin" | "thick"
     hideBlizzardFCT = true,
     onlyMyDamage = true,
     allNameplates = false,
@@ -112,6 +113,13 @@ BD.COMBINE_PULSE_SCALE = 0.2
 BD.COMBINE_MODES = {
     { id = "spell", labelKey = "Same spell" },
     { id = "target", labelKey = "All hits" },
+}
+
+BD.OUTLINE_OPTIONS = {
+    { id = "style", labelKey = "Number style default" },
+    { id = "none", labelKey = "None" },
+    { id = "thin", labelKey = "Thin" },
+    { id = "thick", labelKey = "Thick" },
 }
 
 BD.THOUSAND_SEPARATORS = {
