@@ -99,7 +99,7 @@ local function ShowPersonalHeal(unit, amount, isCrit, schoolMask)
         return false
     end
 
-    local spellID, usedAuto = BD:MatchOutgoingHit(unit, schoolMask)
+    local spellID, usedAuto = BD:MatchOutgoingHit(unit, schoolMask, true)
     -- Heals must match a cast; auto-attack fallback is damage-only.
     if not spellID or usedAuto then
         BD:DebugPrint("personal heal skip, no outgoing match")
@@ -143,7 +143,10 @@ function BD:HandleUnitCombat(unit, action, flagText, amount, schoolMask)
     if not self.db.enabled then
         return
     end
-    if not BD.SafeUnitBoolean(InCombatLockdown) then
+    -- The pull's first hits can arrive before InCombatLockdown is true: accept them when the
+    -- server already flags you in combat or one of your casts just went out.
+    if not BD.SafeUnitBoolean(InCombatLockdown) and not BD.SafeUnitBoolean(UnitAffectingCombat, "player")
+        and not self:HasRecentOutgoingCast() then
         return
     end
 

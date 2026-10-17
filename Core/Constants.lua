@@ -309,10 +309,13 @@ BD.CLASS_SCHOOL_MASKS = {
 }
 
 BD.AUTO_ATTACK_SPELL_ID = 6603
+BD.AUTO_SHOT_SPELL_ID = 75
 BD.GENERIC_PET_ICON = "Interface\\Icons\\Ability_Hunter_BeastTaming"
 BD.POOL_SIZE = 24
 BD.METER_PROBE_MAX_SPELLS = 6
 BD.PENDING_CAP = 8
+-- Seconds after one of your casts in which its hit is shown even before the client reports combat.
+BD.PULL_GRACE = 2.0
 
 BD.STRICTNESS = {
     loose = {
