@@ -215,6 +215,12 @@ local function PushPending(spellID, source, destToken, kind)
     entry.linger = strict.linger or 0
     entry.hits = 0
     entry.helpfulOnly = IsHelpfulOnly(spellID)
+    -- A heal cast while an enemy is targeted went to a friend (party frame, mouseover): its
+    -- first heal on any friendly plate is it, and that plate becomes its destination.
+    entry.anyFriend = nil
+    if entry.helpfulOnly and destToken and BD.SafeUnitBoolean(UnitCanAttack, "player", destToken) then
+        entry.destToken, entry.anyFriend = nil, true
+    end
     pending[#pending + 1] = entry
     BD:DebugPrint("pending+", entry.kind, spellID, entry.destToken or "no-dest", entry.window)
 end
@@ -320,7 +326,12 @@ local function RankCandidate(entry, unit, now, strict, school, isHeal)
     else
         return false
     end
-    if not CanUsePendingOnUnit(entry, unit, strict) then
+    -- A buff or heal never explains damage.
+    if not isHeal and entry.helpfulOnly then
+        return false
+    end
+    local friendHeal = isHeal and entry.anyFriend and stage <= 2
+    if not friendHeal and not CanUsePendingOnUnit(entry, unit, strict) then
         return false
     end
     local spellID = entry.spellID
@@ -446,6 +457,9 @@ local function TryMatchPending(unit, now, strict)
     end
     best.hits = (best.hits or 0) + 1
     best.lastHitAt = now
+    if best.anyFriend then
+        best.destToken, best.anyFriend = unit, nil
+    end
     if best.rankStage <= 2 and (best.hitsLeft or 0) > 0 then
         best.hitsLeft = best.hitsLeft - 1
         if best.hitsLeft <= 0 and not ((best.linger or 0) > (best.window or 0)) then
@@ -782,7 +796,8 @@ function BD:MatchOutgoingHit(unit, schoolMask, isHeal)
     if hitOffBeat then
         return nil, false
     end
-    if autoCandidate and CanUseAutoAttackFallback(now, strict) then
+    -- Only while you auto-attack: a caster's or healer's target takes physical hits from others.
+    if hitMaybeWhite and CanUseAutoAttackFallback(now, strict) then
         previousAutoFallbackTime, lastAutoAttackFallbackTime = lastAutoAttackFallbackTime, now
         return BD.AUTO_ATTACK_SPELL_ID, true
     end
