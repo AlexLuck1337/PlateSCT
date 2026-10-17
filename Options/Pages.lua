@@ -491,6 +491,8 @@ local function BuildDiagnostics(layout)
 end
 
 local function BuildWhatsNew(layout)
+    layout:Heading(L["Less clutter"])
+    layout:Note(L["Dim or hide numbers on enemies you are not targeting, show crits only, shrink small hits, and ignore chosen spells. Find them on the Combat page."])
     layout:Heading(L["Combine hits"])
     layout:Note(L["Rapid hits on the same nameplate can merge into one growing number with a hit count. Turn it on under Combat → Combine hits."])
     layout:Heading(L["Impact number style"])

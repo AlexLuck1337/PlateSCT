@@ -89,6 +89,12 @@ L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress 
     "Feindliche Namensplaketten sind deaktiviert. PlateSCT braucht sie, um Zahlen anzuzeigen.\nDrückt V (Standard) oder aktiviert sie unter Interface → Spiel → Namen."
 L["Who to show"] = "Wen anzeigen"
 
+-- What's new: less clutter
+L["Less clutter"] = "Weniger Durcheinander"
+L["Dim or hide numbers on enemies you are not targeting, show crits only, shrink small hits, and ignore chosen spells. Find them on the Combat page."] =
+    "Zahlen auf nicht anvisierten Gegnern abdunkeln oder ausblenden, nur kritische Treffer zeigen, kleine Treffer verkleinern und gewählte Zauber ignorieren. Zu finden auf der Seite Kampf."
+
+
 -- Ignored spells
 L["Ignored spells"] = "Ignorierte Zauber"
 L["Ignore these spells"] = "Diese Zauber ignorieren"

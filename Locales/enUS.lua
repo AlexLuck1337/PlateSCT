@@ -113,6 +113,12 @@ L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress 
     "Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."
 L["Who to show"] = "Who to show"
 
+-- What's new: less clutter
+L["Less clutter"] = "Less clutter"
+L["Dim or hide numbers on enemies you are not targeting, show crits only, shrink small hits, and ignore chosen spells. Find them on the Combat page."] =
+    "Dim or hide numbers on enemies you are not targeting, show crits only, shrink small hits, and ignore chosen spells. Find them on the Combat page."
+
+
 -- Ignored spells
 L["Ignored spells"] = "Ignored spells"
 L["Ignore these spells"] = "Ignore these spells"

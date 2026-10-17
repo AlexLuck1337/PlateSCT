@@ -105,6 +105,12 @@ L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress 
     "적 이름표가 꺼져 있습니다. PlateSCT가 숫자를 표시하려면 이름표가 필요합니다.\nV 키(기본값)를 누르거나 인터페이스 → 게임 → 이름에서 켜세요."
 L["Who to show"] = "표시할 피해 출처"
 
+-- What's new: less clutter
+L["Less clutter"] = "더 깔끔한 화면"
+L["Dim or hide numbers on enemies you are not targeting, show crits only, shrink small hits, and ignore chosen spells. Find them on the Combat page."] =
+    "대상이 아닌 적의 숫자를 흐리게 하거나 숨기고, 치명타만 표시하고, 작은 적중을 축소하고, 선택한 주문을 무시할 수 있습니다. 전투 페이지에서 설정하세요."
+
+
 -- Ignored spells
 L["Ignored spells"] = "무시할 주문"
 L["Ignore these spells"] = "이 주문 무시"

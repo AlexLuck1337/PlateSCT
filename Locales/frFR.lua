@@ -89,6 +89,12 @@ L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress 
     "Les barres de nom ennemies sont désactivées. PlateSCT en a besoin pour afficher les nombres.\nAppuyez sur V (par défaut) ou activez-les dans Interface → Jeu → Noms."
 L["Who to show"] = "Qui afficher"
 
+-- What's new: less clutter
+L["Less clutter"] = "Moins d'encombrement"
+L["Dim or hide numbers on enemies you are not targeting, show crits only, shrink small hits, and ignore chosen spells. Find them on the Combat page."] =
+    "Atténuez ou masquez les nombres sur les ennemis non ciblés, affichez uniquement les critiques, réduisez les petits coups et ignorez des sorts choisis. Sur la page Combat."
+
+
 -- Ignored spells
 L["Ignored spells"] = "Sorts ignorés"
 L["Ignore these spells"] = "Ignorer ces sorts"

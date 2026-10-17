@@ -99,6 +99,12 @@ L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress 
     "敵方名條已關閉。PlateSCT 需要名條才能顯示數字。\n按 V（預設按鍵），或在「介面 → 遊戲 → 名稱」中啟用。"
 L["Who to show"] = "顯示來源"
 
+-- What's new: less clutter
+L["Less clutter"] = "更少雜亂"
+L["Dim or hide numbers on enemies you are not targeting, show crits only, shrink small hits, and ignore chosen spells. Find them on the Combat page."] =
+    "淡化或隱藏非目標敵人身上的數字、僅顯示致命一擊、縮小小額命中並忽略指定法術。見「戰鬥」頁面。"
+
+
 -- Ignored spells
 L["Ignored spells"] = "忽略的法術"
 L["Ignore these spells"] = "忽略這些法術"

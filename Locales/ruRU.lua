@@ -89,6 +89,12 @@ L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress 
     "Индикаторы врагов выключены. PlateSCT нужны они, чтобы показывать числа.\nНажмите V (по умолчанию) или включите их в Интерфейс → Игра → Имена."
 L["Who to show"] = "Что показывать"
 
+-- What's new: less clutter
+L["Less clutter"] = "Меньше лишнего"
+L["Dim or hide numbers on enemies you are not targeting, show crits only, shrink small hits, and ignore chosen spells. Find them on the Combat page."] =
+    "Приглушайте или скрывайте числа на врагах, которые не являются целью, показывайте только криты, уменьшайте слабые удары и игнорируйте выбранные заклинания. На странице «Бой»."
+
+
 -- Ignored spells
 L["Ignored spells"] = "Игнорируемые заклинания"
 L["Ignore these spells"] = "Игнорировать заклинания"
