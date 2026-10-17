@@ -12,6 +12,16 @@ local previousAutoFallbackTime = 0 -- the one before it, for the off hand when d
 local learnedDelay = {}
 local learnedSchool = {}
 local learnedSchoolMiss = {}
+-- Casts of a spell in a row that got no hit at all (Death Grip, taunts, interrupts): from
+-- NO_DAMAGE_AFTER on, the spell ranks like a buff until one of its hits is certain.
+local learnedNoHit = {}
+
+local function NoteFinishedCast(entry)
+    local spellID = entry.spellID
+    if (entry.hits or 0) == 0 and type(spellID) == "number" and not BD.IsSecret(spellID) then
+        learnedNoHit[spellID] = (learnedNoHit[spellID] or 0) + 1
+    end
+end
 local LEARN_RATE = 0.3
 
 local function AcquirePending()
@@ -148,6 +158,7 @@ local function ExpireStale(now)
             end
             write = write + 1
         else
+            NoteFinishedCast(entry)
             ReleasePending(entry)
         end
     end
@@ -312,7 +323,9 @@ local function RankCandidate(entry, unit, now, strict, school, isHeal)
     local spellID = entry.spellID
     local known = Learnable(spellID) and learnedSchool[spellID]
     entry.rankMismatch = (school and known and known ~= school) and 1 or 0
-    entry.rankBuff = (not isHeal and entry.helpfulOnly) and 1 or 0
+    local noDamage = entry.helpfulOnly
+        or (Learnable(spellID) and (learnedNoHit[spellID] or 0) >= BD.NO_DAMAGE_AFTER)
+    entry.rankBuff = (not isHeal and noDamage) and 1 or 0
     entry.rankStage = stage
     entry.rankPet = entry.source == "pet" and 1 or 0
     entry.rankOther = DestMatches(entry, unit) and 0 or 1
@@ -382,9 +395,9 @@ local function Learn(entry, age, school, waiting, maybeWhite)
 end
 
 -- The hit being matched, set by MatchOutgoingHit: its readable school, whether it is a heal,
--- whether it may be a white hit (you auto-attack, and it is physical on your target), and
--- whether the auto-attack fallback can take it now.
-local hitSchool, hitIsHeal, hitMaybeWhite, hitPreferAuto
+-- whether it may be a white hit (you auto-attack, and it is physical on your target), whether
+-- the auto-attack fallback can take it now, and whether your swing timer says it is not a swing.
+local hitSchool, hitIsHeal, hitMaybeWhite, hitPreferAuto, hitOffBeat
 
 -- Whether a likely white hit goes to the auto-attack fallback instead of this cast: one only
 -- lingering, of another school, a buff or a pet's cast; or one that already hit and is not
@@ -423,7 +436,11 @@ local function TryMatchPending(unit, now, strict)
 
     local spellID = best.spellID
     local age = now - (best.t0 or 0)
-    Learn(best, math.min(age, best.window or age), school, waiting, hitMaybeWhite and school == 1)
+    local uncertain = hitMaybeWhite and not hitOffBeat
+    Learn(best, math.min(age, best.window or age), school, waiting, uncertain and school == 1)
+    if not uncertain and Learnable(spellID) then
+        learnedNoHit[spellID] = nil
+    end
     best.hits = (best.hits or 0) + 1
     best.lastHitAt = now
     if best.rankStage <= 2 and (best.hitsLeft or 0) > 0 then
@@ -454,6 +471,148 @@ function BD:HasRecentOutgoingCast()
         end
     end
     return IsAutoAttacking()
+end
+
+-- Swing timer. While you auto-attack, your swings land on a beat of your attack speed, one beat
+-- per hand, and your pet's melee on a beat of its own speed. Two likely white hits one swing
+-- apart confirm a beat. Then a physical hit on your beat is your swing even right after a cast,
+-- one on the pet's beat is its melee, and with all your hands confirmed one off every beat is
+-- not your swing: a cast's hit, or a guardian's or another player's.
+local SOURCE_PET = 3
+local swingBeat = {}        -- source (1 main hand, 2 off hand, 3 pet) -> time of its last swing
+local swingSpeed = {}       -- source -> current attack speed (reused)
+local swingCandidates = {}  -- times of recent likely white hits no beat explains yet
+
+local function ReadSpeed(unit)
+    local ok, main, off = pcall(function()
+        local m, o = UnitAttackSpeed(unit)
+        if type(m) ~= "number" or m <= 0 then
+            return nil
+        end
+        if type(o) ~= "number" or o <= 0 then
+            o = nil
+        end
+        return m, o
+    end)
+    if ok then
+        return main, off
+    end
+    return nil
+end
+
+-- Fills swingSpeed; false when your own attack speed cannot be read.
+local function ReadSwingSpeeds()
+    local main, off = ReadSpeed("player")
+    swingSpeed[1], swingSpeed[2], swingSpeed[SOURCE_PET] = main, off, nil
+    if not main then
+        return false
+    end
+    if BD.SafeUnitBoolean(UnitExists, "pet") then
+        local pet = ReadSpeed("pet")
+        -- A pet swinging at your own speed cannot be told apart by its rhythm.
+        local apart = BD.SWING_TOLERANCE * 2
+        if pet and math.abs(pet - main) > apart and (not off or math.abs(pet - off) > apart) then
+            swingSpeed[SOURCE_PET] = pet
+        end
+    end
+    return true
+end
+
+-- Distance in seconds from the nearest beat after `at` (misses skip beats), or nil once
+-- SWING_MAX_BEATS beats passed without a swing.
+local function BeatOffset(at, speed, now)
+    local since = now - at
+    if since > speed * BD.SWING_MAX_BEATS + BD.SWING_TOLERANCE then
+        return nil
+    end
+    local beats = math.max(1, math.floor(since / speed + 0.5))
+    return math.abs(since - beats * speed)
+end
+
+local function ResetSwingTimer()
+    wipe(swingBeat)
+    wipe(swingCandidates)
+end
+
+-- A beat that missed its last swing (or none yet) is open: a wrong one, set by a coincidence of
+-- other hits, is replaced by the next two real swings.
+local function BeatFresh(source, now)
+    local at, speed = swingBeat[source], swingSpeed[source]
+    return at ~= nil and speed ~= nil and now - at <= speed + BD.SWING_TOLERANCE
+end
+
+-- Whether a cast of yours or your pet's is still waiting for its first hit: a hit then may be
+-- that cast's, so it never helps find a beat (abilities on the global cooldown land at steady
+-- intervals that could pass for a swing speed).
+local function CastWaiting(now)
+    for index = 1, #pending do
+        local entry = pending[index]
+        if (entry.hits or 0) == 0 and now - (entry.t0 or 0) <= (entry.window or 0) then
+            return true
+        end
+    end
+    return false
+end
+
+-- For a likely white hit: the source whose beat it is on (or that it just confirmed), and
+-- whether all your hands have a confirmed beat.
+local function ReadSwing(now)
+    if not ReadSwingSpeeds() then
+        ResetSwingTimer()
+        return nil, false
+    end
+    local onSource, bestOffset
+    for source = 1, SOURCE_PET do
+        local at, speed = swingBeat[source], swingSpeed[source]
+        if at then
+            local offset = speed and BeatOffset(at, speed, now)
+            if not offset then
+                swingBeat[source] = nil
+            elseif offset <= BD.SWING_TOLERANCE and (not bestOffset or offset < bestOffset) then
+                onSource, bestOffset = source, offset
+            end
+        end
+    end
+    if onSource then
+        swingBeat[onSource] = now
+        return onSource, true
+    end
+
+    if CastWaiting(now) then
+        return nil, BeatFresh(1, now) and (not swingSpeed[2] or BeatFresh(2, now))
+    end
+
+    -- Not on a beat: does it confirm an open beat with an earlier likely white hit? Yours first.
+    local keepFor = math.max(swingSpeed[1], swingSpeed[2] or 0, swingSpeed[SOURCE_PET] or 0)
+        + BD.SWING_TOLERANCE
+    local write = 1
+    for read = 1, #swingCandidates do
+        local at = swingCandidates[read]
+        if now - at <= keepFor then
+            swingCandidates[write] = at
+            write = write + 1
+        end
+    end
+    for index = write, #swingCandidates do
+        swingCandidates[index] = nil
+    end
+    for source = 1, SOURCE_PET do
+        local speed = swingSpeed[source]
+        if speed and not BeatFresh(source, now) then
+            for index = #swingCandidates, 1, -1 do
+                if math.abs((now - swingCandidates[index]) - speed) <= BD.SWING_TOLERANCE then
+                    swingBeat[source] = now
+                    table.remove(swingCandidates, index)
+                    return source, false
+                end
+            end
+        end
+    end
+    if #swingCandidates >= 8 then
+        table.remove(swingCandidates, 1)
+    end
+    swingCandidates[#swingCandidates + 1] = now
+    return nil, BeatFresh(1, now) and (not swingSpeed[2] or BeatFresh(2, now))
 end
 
 -- Shortest plausible time between two swings of one hand, and whether you dual wield. Falls
@@ -496,12 +655,30 @@ function BD:MatchOutgoingHit(unit, schoolMask, isHeal)
         and (BD.UnitsMatch(unit, "target") or unit == "target")
     hitSchool, hitIsHeal = KnownSchool(schoolMask), isHeal
     hitMaybeWhite = autoCandidate and IsAutoAttacking()
-    hitPreferAuto = hitMaybeWhite and CanUseAutoAttackFallback(now, strict)
+    hitOffBeat = false
+    if autoCandidate and not hitMaybeWhite then
+        ResetSwingTimer()
+    elseif hitMaybeWhite and strict.autoFallback then
+        local source, allConfirmed = ReadSwing(now)
+        if source == SOURCE_PET then
+            -- Your pet's melee: not shown as yours.
+            return nil, false
+        elseif source then
+            previousAutoFallbackTime, lastAutoAttackFallbackTime = lastAutoAttackFallbackTime, now
+            return BD.AUTO_ATTACK_SPELL_ID, true
+        end
+        hitOffBeat = allConfirmed
+    end
+    hitPreferAuto = hitMaybeWhite and not hitOffBeat and CanUseAutoAttackFallback(now, strict)
     local spellID = TryMatchPending(unit, now, strict)
     if spellID then
         return spellID, false
     end
 
+    -- Off your swing beat and no cast explains it: a pet's or another player's hit.
+    if hitOffBeat then
+        return nil, false
+    end
     if autoCandidate and CanUseAutoAttackFallback(now, strict) then
         previousAutoFallbackTime, lastAutoAttackFallbackTime = lastAutoAttackFallbackTime, now
         return BD.AUTO_ATTACK_SPELL_ID, true
@@ -533,6 +710,8 @@ end
 
 function BD:ClearAttributionState()
     previousAutoFallbackTime = 0
+    wipe(learnedNoHit)
+    ResetSwingTimer()
     wipe(learnedDelay)
     wipe(learnedSchool)
     wipe(learnedSchoolMiss)

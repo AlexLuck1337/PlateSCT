@@ -321,6 +321,12 @@ BD.PULL_GRACE = 2.0
 BD.WHITE_BURST = 0.25
 -- Share of your current swing time that must pass before another auto-attack label on one hand.
 BD.SWING_GAP_SHARE = 0.6
+-- Swing timer: how far from a beat a swing may land (seconds), and how many beats may pass
+-- without one (your misses) before the beat is forgotten.
+BD.SWING_TOLERANCE = 0.15
+BD.SWING_MAX_BEATS = 3
+-- Casts in a row without any hit before a spell counts as dealing no damage.
+BD.NO_DAMAGE_AFTER = 2
 
 BD.STRICTNESS = {
     loose = {
