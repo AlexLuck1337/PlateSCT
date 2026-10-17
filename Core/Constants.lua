@@ -55,6 +55,7 @@ BD.DEFAULTS = {
     animHit = "platesct",
     animCrit = "platesct",
     animMiss = "platesct",
+    animAuto = "same", -- "same" follows animHit
     showCritLabel = false,
     showImpactCritLabel = true,
     showOptionsPreview = true,
@@ -101,6 +102,15 @@ BD.BUILTIN_FONTS = {
 
 BD.ANIM_STYLES = {
     { id = "platesct", labelKey = "Vertical Up", recommended = true },
+    { id = "fountain", labelKey = "Fountain" },
+    { id = "rainfall", labelKey = "Rainfall" },
+    { id = "verticalDown", labelKey = "Vertical Down" },
+}
+
+-- Auto-attack dropdown: follow normal hits, or pick its own motion.
+BD.ANIM_STYLES_AUTO = {
+    { id = "same", labelKey = "Same as normal hits", recommended = true },
+    { id = "platesct", labelKey = "Vertical Up" },
     { id = "fountain", labelKey = "Fountain" },
     { id = "rainfall", labelKey = "Rainfall" },
     { id = "verticalDown", labelKey = "Vertical Down" },

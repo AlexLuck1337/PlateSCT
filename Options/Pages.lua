@@ -305,6 +305,9 @@ local function BuildAnimation(parent, root)
             L["Motion used for critical hits. Classic Slap uses the Classic grow-and-settle pow."], ModernNumberStyle)
         layout:Choice("animMiss", L["Miss / Parry / Dodge"], BD.ANIM_STYLES,
             L["Motion used for miss, parry, dodge, and similar outcomes."], ModernNumberStyle)
+        layout:Choice("animAuto", L["Auto-attacks"], BD.ANIM_STYLES_AUTO,
+            L["Motion used for your normal auto-attack hits, so melee swings can move differently from spells. Auto-attack crits use the Critical hits motion."],
+            ModernNumberStyle)
     end)
     layout:When(ImpactNumberStyle, function()
         layout:Heading(L["Impact style position"])

@@ -245,6 +245,13 @@ L["Bottom"] = "Bottom"
 L["Text style"] = "Text style"
 L["Abbreviate numbers"] = "Abbreviate numbers"
 
+-- Auto-attack motion
+L["Same as normal hits"] = "Same as normal hits"
+L["Auto-attacks"] = "Auto-attacks"
+L["Motion used for your normal auto-attack hits, so melee swings can move differently from spells. Auto-attack crits use the Critical hits motion."] =
+    "Motion used for your normal auto-attack hits, so melee swings can move differently from spells. Auto-attack crits use the Critical hits motion."
+
+
 -- Spell label
 L["Label"] = "Label"
 L["Name"] = "Name"

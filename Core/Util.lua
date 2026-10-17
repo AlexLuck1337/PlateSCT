@@ -750,7 +750,8 @@ function BD:ShouldUseSchoolColors()
     return self:GetStylePreset().useSchoolColors and true or false
 end
 
-function BD:ResolveMotionStyle(hitKind, styleOverride)
+-- isAutoAttack: a normal auto-attack hit, which may use its own motion (animAuto).
+function BD:ResolveMotionStyle(hitKind, styleOverride, isAutoAttack)
     local numberStyle = styleOverride or self.db.numberStyle or "retail"
     if numberStyle == "impact" then
         return "impact"
@@ -763,6 +764,8 @@ function BD:ResolveMotionStyle(hitKind, styleOverride)
         key = "animCrit"
     elseif hitKind == "miss" then
         key = "animMiss"
+    elseif isAutoAttack and self.db.animAuto and self.db.animAuto ~= "same" then
+        key = "animAuto"
     end
     local style = self.db[key] or "platesct"
     if style == "fountain" or style == "rainfall" or style == "verticalDown" then

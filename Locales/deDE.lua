@@ -170,6 +170,13 @@ L["Uses your last spell in Only my damage mode. Left of the number."] =
 L["Text style"] = "Textstil"
 L["Abbreviate numbers"] = "Zahlen abkürzen"
 
+-- Auto-attack motion
+L["Same as normal hits"] = "Wie normale Treffer"
+L["Auto-attacks"] = "Automatische Angriffe"
+L["Motion used for your normal auto-attack hits, so melee swings can move differently from spells. Auto-attack crits use the Critical hits motion."] =
+    "Bewegung für normale Treffer eures automatischen Angriffs, damit sich Nahkampfschläge von Zaubern unterscheiden. Kritische automatische Angriffe nutzen die Bewegung für kritische Treffer."
+
+
 -- Spell label
 L["Label"] = "Beschriftung"
 L["Top"] = "Oben"

@@ -361,7 +361,7 @@ local function ApplyMotionSpawnParams(frame, motionStyle, floatDistance)
     end
 end
 
-local function ConfigureFrameCommon(self, frame, preset, isCrit, hitKind, isIncoming, measureOnly, numberStyle)
+local function ConfigureFrameCommon(self, frame, preset, isCrit, hitKind, isIncoming, measureOnly, numberStyle, isAutoAttack)
     frame.isCrit = isCrit and true or false
     frame.incoming = isIncoming and true or false
     frame.hitKind = hitKind or (isCrit and "crit" or "hit")
@@ -411,7 +411,7 @@ local function ConfigureFrameCommon(self, frame, preset, isCrit, hitKind, isInco
     frame.spawnJitter = (preset.spawnJitter or 10) * spacingScale
     frame.spawnCritY = preset.spawnCritY
 
-    local motionStyle = self:ResolveMotionStyle(frame.hitKind, frame.numberStyle)
+    local motionStyle = self:ResolveMotionStyle(frame.hitKind, frame.numberStyle, isAutoAttack)
 
     -- Classic Slap: Modern look, Classic grow-and-settle crit pow.
     if motionStyle == "classicSlap" and frame.isCrit then
@@ -782,7 +782,8 @@ function BD:GetOptionsPreviewBounds(sampleKind, styleOverride)
     for _, sample in ipairs(PREVIEW_SAMPLES) do
         if MatchesPreviewKind(sample, sampleKind) then
             local isCrit = sample.hitKind == "crit"
-            local motionStyle = self:ResolveMotionStyle(sample.hitKind, numberStyle)
+            local motionStyle = self:ResolveMotionStyle(sample.hitKind, numberStyle,
+                sample.spellID == BD.AUTO_ATTACK_SPELL_ID)
             local critPreset = motionStyle == "classicSlap" and self.STYLE_PRESETS.classic or preset
             local classicPow = isCrit and (preset.animMode == "classicPow" or motionStyle == "classicSlap")
             local holdsCrit = isCrit and (preset.critsHold or motionStyle == "classicSlap")
@@ -875,7 +876,8 @@ local function SpawnMotionPreviewFrame(anchor, sample)
 
     local preset, numberStyle = GetFrameStyle(BD, kind, false, false)
     local frame = BD.Pool.Acquire()
-    ConfigureFrameCommon(BD, frame, preset, isCrit, kind, false, nil, numberStyle)
+    ConfigureFrameCommon(BD, frame, preset, isCrit, kind, false, nil, numberStyle,
+        sample.spellID == BD.AUTO_ATTACK_SPELL_ID)
 
     frame.isPreview = true
     frame.anchor = anchor
@@ -1192,7 +1194,8 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
 
     local preset, numberStyle = GetFrameStyle(self, kind, false, isHeal)
     local frame = BD.Pool.Acquire()
-    ConfigureFrameCommon(self, frame, preset, isCrit, kind, false, nil, numberStyle)
+    ConfigureFrameCommon(self, frame, preset, isCrit, kind, false, nil, numberStyle,
+        spellId == BD.AUTO_ATTACK_SPELL_ID)
 
     frame.anchor = plate
     frame.anchorRelPoint = "TOP"
