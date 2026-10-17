@@ -33,7 +33,6 @@ L["The compact bottom preview includes Mixed, Hit, Crit, and Miss samples. All n
 L["PlateSCT is in Beta"] = "PlateSCT is in Beta"
 L["This addon is in Beta mode. Inaccuracies and errors may show up. Please report such issues on the addon's page."] =
     "This addon is in Beta mode. Inaccuracies and errors may show up. Please report such issues on the addon's page."
-L["Reset PlateSCT settings to defaults?"] = "Reset PlateSCT settings to defaults?"
 L["Addon page"] = "Addon page"
 L["Select the URL below, copy it, then paste it in your browser."] =
     "Select the URL below, copy it, then paste it in your browser."
@@ -401,7 +400,6 @@ L["Target an enemy, then spawn sample numbers on its nameplate."] =
     "Target an enemy, then spawn sample numbers on its nameplate."
 L["Test on Target"] = "Test on Target"
 L["Show sample damage numbers on your target."] = "Show sample damage numbers on your target."
-L["Maintenance"] = "Maintenance"
 L["Debug mode"] = "Debug mode"
 
 -- Personal splash
@@ -419,8 +417,6 @@ L["Print combat events to chat for troubleshooting."] = "Print combat events to 
 L["Dump meter now"] = "Dump meter now"
 L["Open a copyable snapshot of C_DamageMeter fields. Use this in combat while hitting a target."] =
     "Open a copyable snapshot of C_DamageMeter fields. Use this in combat while hitting a target."
-L["Reset Defaults"] = "Reset Defaults"
-L["Restore every PlateSCT setting to its default."] = "Restore every PlateSCT setting to its default."
 
 -- Language
 L["Language"] = "Language"
@@ -453,6 +449,37 @@ L["Current target"] = "Current target"
 L["Current target: all-source numbers on your target. Engaged nameplates: all-source numbers on engaged enemies."] = "Current target: all-source numbers on your target. Engaged nameplates: all-source numbers on engaged enemies."
 L["Damage meter probe is available. Capture a snapshot while hitting a target."] = "Damage meter probe is available. Capture a snapshot while hitting a target."
 L["Damage mode"] = "Damage mode"
+
+-- Profiles and welcome
+L["Default"] = "Default"
+L["Clean and minimal: numbers on your target in classic yellow. Every option at its default."] =
+    "Clean and minimal: numbers on your target in classic yellow. Every option at its default."
+L["Extended"] = "Extended"
+L["Spell icons and short names, school colors, abbreviated numbers, combined rapid hits, fainter cleave on other enemies, and livelier motion."] =
+    "Spell icons and short names, school colors, abbreviated numbers, combined rapid hits, fainter cleave on other enemies, and livelier motion."
+L["Apply the %s profile? This replaces all PlateSCT settings except the language."] =
+    "Apply the %s profile? This replaces all PlateSCT settings except the language."
+L["Profiles"] = "Profiles"
+L["Show welcome screen"] = "Show welcome screen"
+L["Open the first-install welcome and profile choice again."] = "Open the first-install welcome and profile choice again."
+L["A profile replaces all settings except the language. Default restores every setting; Extended adds spell icons and names, school colors, combined hits, and fainter cleave."] =
+    "A profile replaces all settings except the language. Default restores every setting; Extended adds spell icons and names, school colors, combined hits, and fainter cleave."
+L["Apply %s profile"] = "Apply %s profile"
+L["%s profile applied. Type /psct to customize it."] = "%s profile applied. Type /psct to customize it."
+L["Welcome to PlateSCT"] = "Welcome to PlateSCT"
+L["PlateSCT puts your damage numbers on enemy nameplates, so every hit shows up right where it landed."] =
+    "PlateSCT puts your damage numbers on enemy nameplates, so every hit shows up right where it landed."
+L["It keeps busy fights readable: rapid hits combine, small hits fade back, and crits stand out."] =
+    "It keeps busy fights readable: rapid hits combine, small hits fade back, and crits stand out."
+L["It works on Midnight and on Classic clients, within each game version's combat rules."] =
+    "It works on Midnight and on Classic clients, within each game version's combat rules."
+L["Note: Blizzard's new addon rules hide who dealt each hit, so some numbers can be credited to the wrong source or missed."] =
+    "Note: Blizzard's new addon rules hide who dealt each hit, so some numbers can be credited to the wrong source or missed."
+L["Choose a starting profile. You can change every setting later."] =
+    "Choose a starting profile. You can change every setting later."
+L["Open settings instead"] = "Open settings instead"
+L["Keep the Default profile and open the settings window."] = "Keep the Default profile and open the settings window."
+
 L["Damage threshold"] = "Damage threshold"
 L["Diagnostics"] = "Diagnostics"
 L["Enable Auto-switch by instance to edit the instance profiles."] = "Enable Auto-switch by instance to edit the instance profiles."

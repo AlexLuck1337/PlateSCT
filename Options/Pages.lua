@@ -475,6 +475,18 @@ local function BuildModern(parent, root, tabId)
 end
 
 local function BuildPreferences(layout, root)
+    layout:Heading(L["Profiles"])
+    layout:Action("showWelcome", L["Show welcome screen"], L["Open the first-install welcome and profile choice again."], function()
+        -- Welcome.lua is a newer file: the game loads it only after a full restart.
+        if BD.ShowWelcome then BD:ShowWelcome() end
+    end)
+    layout:Note(L["A profile replaces all settings except the language. Default restores every setting; Extended adds spell icons and names, school colors, combined hits, and fainter cleave."])
+    for _, profile in ipairs(BD.PROFILES) do
+        layout:Action("profile_" .. profile.id, string.format(L["Apply %s profile"], L[profile.labelKey]),
+            L[profile.descriptionKey], function()
+                root:ConfirmProfile(profile.id)
+            end)
+    end
     layout:Heading(L["Language"])
     local localeOptions = {}
     for _, option in ipairs(BD.LOCALE_OPTIONS) do
@@ -499,10 +511,6 @@ local function BuildPreferences(layout, root)
     layout:Note(L["The preview shows appearance only. It does not prove attribution or simulate damage filtering."])
     layout:Action("testTarget", L["Test on Target"], L["Show sample damage numbers on your target."], function()
         BD:ShowTestNumbers()
-    end)
-    layout:Heading(L["Maintenance"])
-    layout:Action("resetDefaults", L["Reset Defaults"], L["Restore every PlateSCT setting to its default."], function()
-        root:ConfirmReset()
     end)
 end
 

@@ -31,7 +31,6 @@ L["The compact bottom preview includes Mixed, Hit, Crit, and Miss samples. All n
 L["PlateSCT is in Beta"] = "PlateSCT è in beta"
 L["This addon is in Beta mode. Inaccuracies and errors may show up. Please report such issues on the addon's page."] =
     "Questo addon è in modalità beta. Possono comparire imprecisioni ed errori. Segnala tali problemi sulla pagina dell'addon."
-L["Reset PlateSCT settings to defaults?"] = "Ripristinare le impostazioni di PlateSCT ai valori predefiniti?"
 L["Addon page"] = "Pagina dell'addon"
 L["Select the URL below, copy it, then paste it in your browser."] =
     "Seleziona l'URL qui sotto, copiala e incollala nel browser."
@@ -299,7 +298,6 @@ L["Target an enemy, then spawn sample numbers on its nameplate."] =
     "Seleziona un nemico, poi genera numeri di esempio sulla sua barra del nome."
 L["Test on Target"] = "Prova sul bersaglio"
 L["Show sample damage numbers on your target."] = "Mostra numeri di danno di esempio sul bersaglio."
-L["Maintenance"] = "Manutenzione"
 L["Debug mode"] = "Modalità debug"
 
 -- Personal splash
@@ -318,9 +316,6 @@ L["Print combat events to chat for troubleshooting."] =
 L["Dump meter now"] = "Dump del misuratore"
 L["Open a copyable snapshot of C_DamageMeter fields. Use this in combat while hitting a target."] =
     "Apre uno snapshot copiabile dei campi C_DamageMeter. Usalo in combattimento mentre colpisci un bersaglio."
-L["Reset Defaults"] = "Ripristina"
-L["Restore every PlateSCT setting to its default."] =
-    "Ripristina tutte le impostazioni di PlateSCT ai valori predefiniti."
 
 -- Language
 L["Language"] = "Lingua"
@@ -343,6 +338,37 @@ L["Close"] = "Chiudi"
 L["Combat"] = "Combattimento"
 L["Current target"] = "Bersaglio attuale"
 L["Damage mode"] = "Modalità danni"
+
+-- Profiles and welcome
+L["Default"] = "Predefinito"
+L["Clean and minimal: numbers on your target in classic yellow. Every option at its default."] =
+    "Pulito e minimale: numeri sul tuo bersaglio in giallo classico. Tutte le opzioni predefinite."
+L["Extended"] = "Esteso"
+L["Spell icons and short names, school colors, abbreviated numbers, combined rapid hits, fainter cleave on other enemies, and livelier motion."] =
+    "Icone e nomi brevi degli incantesimi, colori per scuola, numeri abbreviati, colpi rapidi uniti, danni ad area più tenui sugli altri nemici e movimento più vivace."
+L["Apply the %s profile? This replaces all PlateSCT settings except the language."] =
+    "Applicare il profilo %s? Sostituisce tutte le impostazioni di PlateSCT tranne la lingua."
+L["Profiles"] = "Profili"
+L["Show welcome screen"] = "Mostra schermata di benvenuto"
+L["Open the first-install welcome and profile choice again."] = "Riapre il benvenuto e la scelta del profilo della prima installazione."
+L["A profile replaces all settings except the language. Default restores every setting; Extended adds spell icons and names, school colors, combined hits, and fainter cleave."] =
+    "Un profilo sostituisce tutte le impostazioni tranne la lingua. Predefinito ripristina tutto; Esteso aggiunge icone e nomi degli incantesimi, colori per scuola, colpi uniti e danni ad area più tenui."
+L["Apply %s profile"] = "Applica profilo %s"
+L["%s profile applied. Type /psct to customize it."] = "Profilo %s applicato. Digita /psct per personalizzarlo."
+L["Welcome to PlateSCT"] = "Benvenuto in PlateSCT"
+L["PlateSCT puts your damage numbers on enemy nameplates, so every hit shows up right where it landed."] =
+    "PlateSCT mostra i tuoi numeri di danno sulle barre del nome nemiche, così ogni colpo appare proprio dove è arrivato."
+L["It keeps busy fights readable: rapid hits combine, small hits fade back, and crits stand out."] =
+    "Mantiene leggibili i combattimenti concitati: i colpi rapidi si uniscono, quelli piccoli passano in secondo piano e i critici risaltano."
+L["It works on Midnight and on Classic clients, within each game version's combat rules."] =
+    "Funziona su Midnight e sui client Classic, nel rispetto delle regole di combattimento di ogni versione del gioco."
+L["Note: Blizzard's new addon rules hide who dealt each hit, so some numbers can be credited to the wrong source or missed."] =
+    "Nota: le nuove regole di Blizzard per gli addon nascondono chi ha inflitto ogni colpo, quindi alcuni numeri possono essere attribuiti alla fonte sbagliata o mancare."
+L["Choose a starting profile. You can change every setting later."] =
+    "Scegli un profilo iniziale. Potrai cambiare ogni impostazione in seguito."
+L["Open settings instead"] = "Apri invece le impostazioni"
+L["Keep the Default profile and open the settings window."] = "Mantieni il profilo Predefinito e apri la finestra delle impostazioni."
+
 L["Damage threshold"] = "Soglia danni"
 L["Diagnostics"] = "Diagnostica"
 L["Engaged nameplates"] = "Barre in combattimento"

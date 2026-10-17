@@ -33,7 +33,6 @@ L["The compact bottom preview includes Mixed, Hit, Crit, and Miss samples. All n
 L["PlateSCT is in Beta"] = "PlateSCT는 베타 버전입니다"
 L["This addon is in Beta mode. Inaccuracies and errors may show up. Please report such issues on the addon's page."] =
     "이 애드온은 베타 버전입니다. 표시가 부정확하거나 오류가 발생할 수 있습니다. 문제가 있으면 애드온 페이지에 알려 주세요."
-L["Reset PlateSCT settings to defaults?"] = "PlateSCT 설정을 기본값으로 초기화할까요?"
 L["Addon page"] = "애드온 페이지"
 L["Select the URL below, copy it, then paste it in your browser."] = "아래 주소를 선택하여 복사한 뒤 브라우저에 붙여 넣으세요."
 L["Click to open the addon page URL."] = "클릭하면 애드온 페이지 주소를 볼 수 있습니다."
@@ -367,7 +366,6 @@ L["Updates live as you change options."] = "옵션을 변경하면 즉시 갱신
 L["Target an enemy, then spawn sample numbers on its nameplate."] = "적을 대상으로 선택한 뒤 이름표에 예시 숫자를 표시합니다."
 L["Test on Target"] = "대상에서 테스트"
 L["Show sample damage numbers on your target."] = "현재 대상에 예시 피해 숫자를 표시합니다."
-L["Maintenance"] = "관리"
 L["Debug mode"] = "디버그 모드"
 
 -- Personal splash
@@ -384,8 +382,6 @@ L["Splash is best effort: another player's same-school hit in that split second 
 L["Print combat events to chat for troubleshooting."] = "문제 해결을 위해 전투 이벤트를 대화창에 출력합니다."
 L["Dump meter now"] = "측정기 정보 내보내기"
 L["Open a copyable snapshot of C_DamageMeter fields. Use this in combat while hitting a target."] = "복사할 수 있는 C_DamageMeter 필드의 스냅샷을 엽니다. 전투 중 대상을 공격하면서 사용하세요."
-L["Reset Defaults"] = "기본값으로 초기화"
-L["Restore every PlateSCT setting to its default."] = "모든 PlateSCT 설정을 기본값으로 되돌립니다."
 
 -- Language
 L["Language"] = "언어"
@@ -421,6 +417,37 @@ L["Current target: all-source numbers on your target. Engaged nameplates: all-so
     "현재 대상: 현재 대상이 받은 모든 출처의 피해를 표시합니다. 교전 중인 적의 이름표: 교전 중인 적이 받은 모든 출처의 피해를 표시합니다."
 L["Damage meter probe is available. Capture a snapshot while hitting a target."] = "피해량 측정기 점검을 사용할 수 있습니다. 대상을 공격하면서 스냅샷을 수집하세요."
 L["Damage mode"] = "피해 모드"
+
+-- Profiles and welcome
+L["Default"] = "기본"
+L["Clean and minimal: numbers on your target in classic yellow. Every option at its default."] =
+    "깔끔하고 간단하게: 대상에 클래식 노란색 숫자를 표시합니다. 모든 옵션이 기본값입니다."
+L["Extended"] = "확장"
+L["Spell icons and short names, school colors, abbreviated numbers, combined rapid hits, fainter cleave on other enemies, and livelier motion."] =
+    "주문 아이콘과 짧은 이름, 피해 계열 색상, 축약 숫자, 빠른 적중 합치기, 다른 적에게 더 옅게 표시되는 광역 피해, 더 생동감 있는 움직임."
+L["Apply the %s profile? This replaces all PlateSCT settings except the language."] =
+    "%s 프로필을 적용할까요? 언어를 제외한 모든 PlateSCT 설정이 바뀝니다."
+L["Profiles"] = "프로필"
+L["Show welcome screen"] = "환영 화면 보기"
+L["Open the first-install welcome and profile choice again."] = "처음 설치할 때의 환영 화면과 프로필 선택을 다시 엽니다."
+L["A profile replaces all settings except the language. Default restores every setting; Extended adds spell icons and names, school colors, combined hits, and fainter cleave."] =
+    "프로필은 언어를 제외한 모든 설정을 바꿉니다. 기본은 모든 설정을 되돌리고, 확장은 주문 아이콘과 이름, 피해 계열 색상, 적중 합치기, 더 옅은 광역 피해를 추가합니다."
+L["Apply %s profile"] = "%s 프로필 적용"
+L["%s profile applied. Type /psct to customize it."] = "%s 프로필을 적용했습니다. /psct를 입력해 사용자 지정하세요."
+L["Welcome to PlateSCT"] = "PlateSCT에 오신 것을 환영합니다"
+L["PlateSCT puts your damage numbers on enemy nameplates, so every hit shows up right where it landed."] =
+    "PlateSCT는 적의 이름표에 피해 숫자를 표시해, 모든 적중이 맞은 자리에 바로 나타나게 합니다."
+L["It keeps busy fights readable: rapid hits combine, small hits fade back, and crits stand out."] =
+    "치열한 전투도 읽기 쉽게 유지합니다. 빠른 적중은 합쳐지고, 작은 적중은 뒤로 물러나며, 치명타는 돋보입니다."
+L["It works on Midnight and on Classic clients, within each game version's combat rules."] =
+    "Midnight와 클래식 클라이언트에서 각 게임 버전의 전투 규칙 안에서 작동합니다."
+L["Note: Blizzard's new addon rules hide who dealt each hit, so some numbers can be credited to the wrong source or missed."] =
+    "참고: 블리자드의 새 애드온 규칙으로 각 적중을 누가 냈는지 숨겨져, 일부 숫자는 잘못된 출처로 표시되거나 누락될 수 있습니다."
+L["Choose a starting profile. You can change every setting later."] =
+    "시작 프로필을 고르세요. 모든 설정은 나중에 바꿀 수 있습니다."
+L["Open settings instead"] = "대신 설정 열기"
+L["Keep the Default profile and open the settings window."] = "기본 프로필을 유지하고 설정 창을 엽니다."
+
 L["Damage threshold"] = "피해 기준값"
 L["Diagnostics"] = "진단"
 L["Enable Auto-switch by instance to edit the instance profiles."] = "인스턴스 프로필을 수정하려면 '인스턴스별 자동 전환'을 켜세요."

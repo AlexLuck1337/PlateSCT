@@ -30,7 +30,6 @@ L["The compact bottom preview includes Mixed, Hit, Crit, and Miss samples. All n
 -- Titles / meta
 L["PlateSCT is in Beta"] = "PlateSCT 正处于测试阶段"
 L["This addon is in Beta mode. Inaccuracies and errors may show up. Please report such issues on the addon's page."] = "本插件仍处于测试阶段，可能出现显示不准确或报错的情况。请在插件页面反馈这些问题。"
-L["Reset PlateSCT settings to defaults?"] = "要将 PlateSCT 设置重置为默认值吗？"
 L["Addon page"] = "插件页面"
 L["Select the URL below, copy it, then paste it in your browser."] = "选中下方的网址并复制，然后粘贴到浏览器中。"
 L["Click to open the addon page URL."] = "点击查看插件页面网址。"
@@ -359,7 +358,6 @@ L["Updates live as you change options."] = "修改选项时，预览会实时更
 L["Target an enemy, then spawn sample numbers on its nameplate."] = "选中一个敌人，然后在其姓名板上生成示例数字。"
 L["Test on Target"] = "在目标上测试"
 L["Show sample damage numbers on your target."] = "在当前目标上显示示例伤害数字。"
-L["Maintenance"] = "维护"
 L["Debug mode"] = "调试模式"
 
 -- Personal splash
@@ -376,8 +374,6 @@ L["Splash is best effort: another player's same-school hit in that split second 
 L["Print combat events to chat for troubleshooting."] = "将战斗事件输出到聊天框，便于排查问题。"
 L["Dump meter now"] = "立即导出伤害统计"
 L["Open a copyable snapshot of C_DamageMeter fields. Use this in combat while hitting a target."] = "打开 C_DamageMeter 字段的可复制快照。请在战斗中攻击目标时使用。"
-L["Reset Defaults"] = "恢复默认设置"
-L["Restore every PlateSCT setting to its default."] = "将所有 PlateSCT 设置恢复为默认值。"
 
 -- Language
 L["Language"] = "语言"
@@ -411,6 +407,37 @@ L["Current target: all-source numbers on your target. Engaged nameplates: all-so
     "当前目标：显示当前目标受到的所有来源伤害。交战中的姓名板：显示交战敌人受到的所有来源伤害。"
 L["Damage meter probe is available. Capture a snapshot while hitting a target."] = "伤害统计探测可用。请在攻击目标时采集快照。"
 L["Damage mode"] = "伤害模式"
+
+-- Profiles and welcome
+L["Default"] = "默认"
+L["Clean and minimal: numbers on your target in classic yellow. Every option at its default."] =
+    "简洁朴素：在目标身上以经典黄色显示数字。所有选项保持默认。"
+L["Extended"] = "扩展"
+L["Spell icons and short names, school colors, abbreviated numbers, combined rapid hits, fainter cleave on other enemies, and livelier motion."] =
+    "法术图标与短名称、伤害类型颜色、缩写数字、合并快速命中、其他敌人身上更淡的溅射伤害，以及更生动的运动效果。"
+L["Apply the %s profile? This replaces all PlateSCT settings except the language."] =
+    "应用“%s”配置？这会替换除语言外的所有 PlateSCT 设置。"
+L["Profiles"] = "配置"
+L["Show welcome screen"] = "显示欢迎界面"
+L["Open the first-install welcome and profile choice again."] = "再次打开首次安装时的欢迎界面和配置选择。"
+L["A profile replaces all settings except the language. Default restores every setting; Extended adds spell icons and names, school colors, combined hits, and fainter cleave."] =
+    "配置会替换除语言外的所有设置。“默认”恢复所有设置；“扩展”增加法术图标与名称、伤害类型颜色、合并命中以及更淡的溅射伤害。"
+L["Apply %s profile"] = "应用“%s”配置"
+L["%s profile applied. Type /psct to customize it."] = "已应用“%s”配置。输入 /psct 进行自定义。"
+L["Welcome to PlateSCT"] = "欢迎使用 PlateSCT"
+L["PlateSCT puts your damage numbers on enemy nameplates, so every hit shows up right where it landed."] =
+    "PlateSCT 会把你的伤害数字显示在敌人的姓名板上，让每次命中都出现在它落下的位置。"
+L["It keeps busy fights readable: rapid hits combine, small hits fade back, and crits stand out."] =
+    "让激烈的战斗依然清晰：快速命中会合并，小额命中退居次要，暴击格外醒目。"
+L["It works on Midnight and on Classic clients, within each game version's combat rules."] =
+    "它适用于 Midnight 和经典客户端，并遵守各游戏版本的战斗规则。"
+L["Note: Blizzard's new addon rules hide who dealt each hit, so some numbers can be credited to the wrong source or missed."] =
+    "注意：暴雪新的插件规则隐藏了每次命中的来源，因此部分数字可能被归到错误的来源或被遗漏。"
+L["Choose a starting profile. You can change every setting later."] =
+    "选择一个初始配置。之后可以随时修改任何设置。"
+L["Open settings instead"] = "改为打开设置"
+L["Keep the Default profile and open the settings window."] = "保留默认配置并打开设置窗口。"
+
 L["Damage threshold"] = "伤害阈值"
 L["Diagnostics"] = "诊断"
 L["Enable Auto-switch by instance to edit the instance profiles."] = "启用“按副本自动切换”后，即可编辑副本配置。"

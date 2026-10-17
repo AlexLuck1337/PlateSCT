@@ -459,3 +459,38 @@ BD.STRICTNESS_ORDER = {
 if BD.API and BD.API.ApplyFlavorDefaults then
     BD.API.ApplyFlavorDefaults(BD.DEFAULTS)
 end
+
+-- Starting profiles. Applying one resets every setting, then applies these on top.
+BD.PROFILES = {
+    {
+        id = "default",
+        labelKey = "Default",
+        descriptionKey = "Clean and minimal: numbers on your target in classic yellow. Every option at its default.",
+        settings = {},
+    },
+    {
+        id = "extended",
+        labelKey = "Extended",
+        descriptionKey = "Spell icons and short names, school colors, abbreviated numbers, combined rapid hits, fainter cleave on other enemies, and livelier motion.",
+        settings = {
+            offTargetMode = "dim",
+            offTargetScale = 0.5,
+            offTargetAlpha = 0.5,
+            personalSplash = true, -- Modern Personal mode needs it to show cleave on other enemies
+            showSpellIcon = true,
+            spellLabel = "both",
+            spellNamePosition = "left",
+            spellNameScale = 0.5,
+            spellNameMaxLength = 15,
+            abbreviate = true,
+            combineHits = true,
+            useSchoolColors = true,
+            animHit = "fountain",
+            animMiss = "rainfall",
+            -- Offsets are saved per number style; raise all three so the look holds in any style.
+            retailOffsetY = 30,
+            classicOffsetY = 30,
+            impactOffsetY = 30,
+        },
+    },
+}

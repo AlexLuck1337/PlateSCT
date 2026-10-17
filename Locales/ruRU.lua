@@ -31,7 +31,6 @@ L["The compact bottom preview includes Mixed, Hit, Crit, and Miss samples. All n
 L["PlateSCT is in Beta"] = "PlateSCT в бета-версии"
 L["This addon is in Beta mode. Inaccuracies and errors may show up. Please report such issues on the addon's page."] =
     "Аддон в режиме бета. Возможны неточности и ошибки. Пожалуйста, сообщайте о них на странице аддона."
-L["Reset PlateSCT settings to defaults?"] = "Сбросить настройки PlateSCT по умолчанию?"
 L["Addon page"] = "Страница аддона"
 L["Select the URL below, copy it, then paste it in your browser."] =
     "Выделите URL ниже, скопируйте и вставьте в браузер."
@@ -299,7 +298,6 @@ L["Target an enemy, then spawn sample numbers on its nameplate."] =
     "Выберите врага и создайте примеры чисел на его индикаторе."
 L["Test on Target"] = "Тест на цели"
 L["Show sample damage numbers on your target."] = "Показывает примеры чисел урона на вашей цели."
-L["Maintenance"] = "Обслуживание"
 L["Debug mode"] = "Режим отладки"
 
 -- Personal splash
@@ -318,9 +316,6 @@ L["Print combat events to chat for troubleshooting."] =
 L["Dump meter now"] = "Дамп счётчика"
 L["Open a copyable snapshot of C_DamageMeter fields. Use this in combat while hitting a target."] =
     "Открывает копируемый снимок полей C_DamageMeter. Используйте в бою, пока бьёте цель."
-L["Reset Defaults"] = "Сбросить"
-L["Restore every PlateSCT setting to its default."] =
-    "Восстанавливает все настройки PlateSCT по умолчанию."
 
 -- Language
 L["Language"] = "Язык"
@@ -343,6 +338,37 @@ L["Close"] = "Закрыть"
 L["Combat"] = "Бой"
 L["Current target"] = "Текущая цель"
 L["Damage mode"] = "Режим урона"
+
+-- Profiles and welcome
+L["Default"] = "Стандартный"
+L["Clean and minimal: numbers on your target in classic yellow. Every option at its default."] =
+    "Чисто и минимально: числа на вашей цели в классическом жёлтом. Все параметры по умолчанию."
+L["Extended"] = "Расширенный"
+L["Spell icons and short names, school colors, abbreviated numbers, combined rapid hits, fainter cleave on other enemies, and livelier motion."] =
+    "Иконки и короткие названия заклинаний, цвета школ, сокращённые числа, объединённые быстрые удары, более бледный задевающий урон по другим врагам и более живое движение."
+L["Apply the %s profile? This replaces all PlateSCT settings except the language."] =
+    "Применить профиль «%s»? Это заменит все настройки PlateSCT, кроме языка."
+L["Profiles"] = "Профили"
+L["Show welcome screen"] = "Показать приветствие"
+L["Open the first-install welcome and profile choice again."] = "Снова открыть приветствие и выбор профиля, как при первой установке."
+L["A profile replaces all settings except the language. Default restores every setting; Extended adds spell icons and names, school colors, combined hits, and fainter cleave."] =
+    "Профиль заменяет все настройки, кроме языка. «Стандартный» восстанавливает всё; «Расширенный» добавляет иконки и названия заклинаний, цвета школ, объединённые удары и более бледный задевающий урон."
+L["Apply %s profile"] = "Применить профиль «%s»"
+L["%s profile applied. Type /psct to customize it."] = "Профиль «%s» применён. Введите /psct, чтобы настроить его."
+L["Welcome to PlateSCT"] = "Добро пожаловать в PlateSCT"
+L["PlateSCT puts your damage numbers on enemy nameplates, so every hit shows up right where it landed."] =
+    "PlateSCT показывает ваши числа урона на индикаторах врагов, чтобы каждый удар появлялся там, куда он попал."
+L["It keeps busy fights readable: rapid hits combine, small hits fade back, and crits stand out."] =
+    "Напряжённые бои остаются читаемыми: быстрые удары объединяются, слабые отходят на второй план, а криты выделяются."
+L["It works on Midnight and on Classic clients, within each game version's combat rules."] =
+    "Работает в Midnight и на клиентах Classic в рамках боевых правил каждой версии игры."
+L["Note: Blizzard's new addon rules hide who dealt each hit, so some numbers can be credited to the wrong source or missed."] =
+    "Примечание: новые правила Blizzard для аддонов скрывают, кто нанёс каждый удар, поэтому некоторые числа могут быть приписаны не тому источнику или пропущены."
+L["Choose a starting profile. You can change every setting later."] =
+    "Выберите начальный профиль. Любой параметр можно изменить позже."
+L["Open settings instead"] = "Открыть настройки"
+L["Keep the Default profile and open the settings window."] = "Оставить стандартный профиль и открыть окно настроек."
+
 L["Damage threshold"] = "Порог урона"
 L["Diagnostics"] = "Диагностика"
 L["Engaged nameplates"] = "Индикаторы в бою"
