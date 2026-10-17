@@ -235,6 +235,26 @@ L["Supports k/m suffixes, e.g. 20k or 2m. Damage below this value will not be di
 L["In raids and Mythic+ some amounts are secret, so the threshold hides those hits visually instead of skipping them."] =
     "在團隊副本和傳奇鑰石地城中，部分傷害數值受限，因此門檻篩選會在畫面上隱藏這些命中，而非跳過處理。"
 
+-- Combine hits
+L["Combine hits"] = "合併命中"
+L["Combine rapid hits"] = "合併快速命中"
+L["Add hits that land in quick succession on the same nameplate into one number instead of stacking many."] =
+    "將短時間內連續落在同一名條上的命中合併為一個數字，而不是堆疊多個數字。"
+L["Combine"] = "合併方式"
+L["Same spell"] = "同一法術"
+L["All hits"] = "全部命中"
+L["Same spell keeps each spell's number separate. All hits merges every hit on the target; its icon shows the spell that did the most damage."] =
+    "「同一法術」會讓每個法術的數字分開顯示。「全部命中」會合併目標身上的所有命中，圖示顯示造成最多傷害的法術。"
+L["Combine window"] = "合併時間範圍"
+L["%.2fs"] = "%.2f秒"
+L["Show hit count"] = "顯示命中次數"
+L["Show how many hits were combined, e.g. 37,200 (3). With spell icons on, the count sits on the icon."] =
+    "顯示合併了多少次命中，例如 37,200 (3)。開啟法術圖示時，次數會顯示在圖示上。"
+L["%s (%d)"] = "%s (%d)"
+L["Crits, normal hits, and heals combine separately."] = "致命一擊、一般命中和治療會分別合併。"
+L["Crits, normal hits, and heals combine separately. Secret amounts cannot be added, so those hits still show individually."] =
+    "致命一擊、一般命中和治療會分別合併。部分數值受限，無法相加，因此這些命中仍會個別顯示。"
+
 -- Tools
 L["Preview"] = "預覽"
 L["Updates live as you change options."] = "修改選項時，預覽會即時更新。"

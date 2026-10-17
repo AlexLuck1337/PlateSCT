@@ -235,6 +235,26 @@ L["Supports k/m suffixes, e.g. 20k or 2m. Damage below this value will not be di
 L["In raids and Mythic+ some amounts are secret, so the threshold hides those hits visually instead of skipping them."] =
     "在团队副本和史诗钥石地下城中，部分伤害数值受限，因此阈值过滤会从视觉上隐藏这些命中，而不是跳过处理。"
 
+-- Combine hits
+L["Combine hits"] = "合并命中"
+L["Combine rapid hits"] = "合并快速命中"
+L["Add hits that land in quick succession on the same nameplate into one number instead of stacking many."] =
+    "将短时间内连续落在同一姓名板上的命中合并为一个数字，而不是堆叠多个数字。"
+L["Combine"] = "合并方式"
+L["Same spell"] = "同一法术"
+L["All hits"] = "全部命中"
+L["Same spell keeps each spell's number separate. All hits merges every hit on the target; its icon shows the spell that did the most damage."] =
+    "“同一法术”会让每个法术的数字分开显示。“全部命中”会合并目标身上的所有命中，图标显示造成伤害最多的法术。"
+L["Combine window"] = "合并时间窗口"
+L["%.2fs"] = "%.2f秒"
+L["Show hit count"] = "显示命中次数"
+L["Show how many hits were combined, e.g. 37,200 (3). With spell icons on, the count sits on the icon."] =
+    "显示合并了多少次命中，例如 37,200 (3)。开启法术图标时，次数显示在图标上。"
+L["%s (%d)"] = "%s (%d)"
+L["Crits, normal hits, and heals combine separately."] = "暴击、普通命中和治疗会分别合并。"
+L["Crits, normal hits, and heals combine separately. Secret amounts cannot be added, so those hits still show individually."] =
+    "暴击、普通命中和治疗会分别合并。部分数值受限，无法相加，因此这些命中仍会单独显示。"
+
 -- Tools
 L["Preview"] = "预览"
 L["Updates live as you change options."] = "修改选项时，预览会实时更新。"

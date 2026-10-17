@@ -169,6 +169,26 @@ L["Supports k/m suffixes, e.g. 20k or 2m. Damage below this value will not be di
 L["In raids and Mythic+ some amounts are secret, so the threshold hides those hits visually instead of skipping them."] =
     "In incursioni e Mitica+ alcuni valori sono segreti, quindi la soglia nasconde quei colpi visivamente invece di saltarli."
 
+-- Combine hits
+L["Combine hits"] = "Unisci colpi"
+L["Combine rapid hits"] = "Unisci colpi rapidi"
+L["Add hits that land in quick succession on the same nameplate into one number instead of stacking many."] =
+    "Somma i colpi che arrivano in rapida successione sulla stessa barra del nome in un unico numero invece di impilarne molti."
+L["Combine"] = "Unisci"
+L["Same spell"] = "Stesso incantesimo"
+L["All hits"] = "Tutti i colpi"
+L["Same spell keeps each spell's number separate. All hits merges every hit on the target; its icon shows the spell that did the most damage."] =
+    "Stesso incantesimo tiene separato il numero di ogni incantesimo. Tutti i colpi unisce ogni colpo sul bersaglio; la sua icona mostra l'incantesimo che ha inflitto più danni."
+L["Combine window"] = "Finestra di unione"
+L["%.2fs"] = "%.2fs"
+L["Show hit count"] = "Mostra numero di colpi"
+L["Show how many hits were combined, e.g. 37,200 (3). With spell icons on, the count sits on the icon."] =
+    "Mostra quanti colpi sono stati uniti, ad es. 37.200 (3). Con le icone degli incantesimi attive, il numero appare sull'icona."
+L["%s (%d)"] = "%s (%d)"
+L["Crits, normal hits, and heals combine separately."] = "Critici, colpi normali e cure vengono uniti separatamente."
+L["Crits, normal hits, and heals combine separately. Secret amounts cannot be added, so those hits still show individually."] =
+    "Critici, colpi normali e cure vengono uniti separatamente. I valori segreti non possono essere sommati, quindi quei colpi vengono ancora mostrati singolarmente."
+
 L["Preview"] = "Anteprima"
 L["Updates live as you change options."] = "Si aggiorna in tempo reale quando cambi le opzioni."
 L["Target an enemy, then spawn sample numbers on its nameplate."] =

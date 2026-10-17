@@ -169,6 +169,26 @@ L["Supports k/m suffixes, e.g. 20k or 2m. Damage below this value will not be di
 L["In raids and Mythic+ some amounts are secret, so the threshold hides those hits visually instead of skipping them."] =
     "In Schlachtzügen und Mythisch+ sind manche Werte geheim, daher blendet die Schwelle diese Treffer optisch aus statt sie zu überspringen."
 
+-- Combine hits
+L["Combine hits"] = "Treffer zusammenfassen"
+L["Combine rapid hits"] = "Schnelle Treffer zusammenfassen"
+L["Add hits that land in quick succession on the same nameplate into one number instead of stacking many."] =
+    "Fasst Treffer, die kurz nacheinander auf derselben Namensplakette landen, zu einer Zahl zusammen, statt viele zu stapeln."
+L["Combine"] = "Zusammenfassen"
+L["Same spell"] = "Gleicher Zauber"
+L["All hits"] = "Alle Treffer"
+L["Same spell keeps each spell's number separate. All hits merges every hit on the target; its icon shows the spell that did the most damage."] =
+    "Gleicher Zauber hält die Zahl jedes Zaubers getrennt. Alle Treffer fasst jeden Treffer auf dem Ziel zusammen; das Symbol zeigt den Zauber mit dem meisten Schaden."
+L["Combine window"] = "Zeitfenster"
+L["%.2fs"] = "%.2fs"
+L["Show hit count"] = "Trefferanzahl anzeigen"
+L["Show how many hits were combined, e.g. 37,200 (3). With spell icons on, the count sits on the icon."] =
+    "Zeigt, wie viele Treffer zusammengefasst wurden, z. B. 37.200 (3). Mit Zauber-Symbolen steht die Anzahl auf dem Symbol."
+L["%s (%d)"] = "%s (%d)"
+L["Crits, normal hits, and heals combine separately."] = "Kritische Treffer, normale Treffer und Heilungen werden getrennt zusammengefasst."
+L["Crits, normal hits, and heals combine separately. Secret amounts cannot be added, so those hits still show individually."] =
+    "Kritische Treffer, normale Treffer und Heilungen werden getrennt zusammengefasst. Geheime Werte lassen sich nicht addieren, daher erscheinen diese Treffer weiterhin einzeln."
+
 L["Preview"] = "Vorschau"
 L["Updates live as you change options."] = "Aktualisiert sich live bei Optionsänderungen."
 L["Target an enemy, then spawn sample numbers on its nameplate."] =

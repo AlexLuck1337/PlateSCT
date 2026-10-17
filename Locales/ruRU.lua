@@ -169,6 +169,26 @@ L["Supports k/m suffixes, e.g. 20k or 2m. Damage below this value will not be di
 L["In raids and Mythic+ some amounts are secret, so the threshold hides those hits visually instead of skipping them."] =
     "В рейдах и Эпохальном+ некоторые значения секретны, поэтому порог скрывает эти удары визуально, а не пропускает их."
 
+-- Combine hits
+L["Combine hits"] = "Объединение ударов"
+L["Combine rapid hits"] = "Объединять быстрые удары"
+L["Add hits that land in quick succession on the same nameplate into one number instead of stacking many."] =
+    "Складывает удары, быстро попадающие по одному индикатору, в одно число вместо множества отдельных."
+L["Combine"] = "Объединять"
+L["Same spell"] = "Одно заклинание"
+L["All hits"] = "Все удары"
+L["Same spell keeps each spell's number separate. All hits merges every hit on the target; its icon shows the spell that did the most damage."] =
+    "«Одно заклинание» показывает число каждого заклинания отдельно. «Все удары» объединяет все удары по цели; иконка показывает заклинание, нанёсшее больше всего урона."
+L["Combine window"] = "Окно объединения"
+L["%.2fs"] = "%.2fс"
+L["Show hit count"] = "Показывать число ударов"
+L["Show how many hits were combined, e.g. 37,200 (3). With spell icons on, the count sits on the icon."] =
+    "Показывает, сколько ударов объединено, например 37 200 (3). С иконками заклинаний число отображается на иконке."
+L["%s (%d)"] = "%s (%d)"
+L["Crits, normal hits, and heals combine separately."] = "Критические удары, обычные удары и исцеление объединяются отдельно."
+L["Crits, normal hits, and heals combine separately. Secret amounts cannot be added, so those hits still show individually."] =
+    "Критические удары, обычные удары и исцеление объединяются отдельно. Секретные значения нельзя сложить, поэтому такие удары по-прежнему показываются по отдельности."
+
 L["Preview"] = "Просмотр"
 L["Updates live as you change options."] = "Обновляется сразу при изменении настроек."
 L["Target an enemy, then spawn sample numbers on its nameplate."] =

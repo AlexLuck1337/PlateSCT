@@ -277,6 +277,25 @@ L["Supports k/m suffixes, e.g. 20k or 2m. Damage below this value will not be di
 L["In raids and Mythic+ some amounts are secret, so the threshold hides those hits visually instead of skipping them."] =
     "In raids and Mythic+ some amounts are secret, so the threshold hides those hits visually instead of skipping them."
 
+-- Combine hits
+L["Combine hits"] = "Combine hits"
+L["Combine rapid hits"] = "Combine rapid hits"
+L["Add hits that land in quick succession on the same nameplate into one number instead of stacking many."] =
+    "Add hits that land in quick succession on the same nameplate into one number instead of stacking many."
+L["Combine"] = "Combine"
+L["Same spell"] = "Same spell"
+L["All hits"] = "All hits"
+L["Same spell keeps each spell's number separate. All hits merges every hit on the target; its icon shows the spell that did the most damage."] =
+    "Same spell keeps each spell's number separate. All hits merges every hit on the target; its icon shows the spell that did the most damage."
+L["Combine window"] = "Combine window"
+L["%.2fs"] = "%.2fs"
+L["Show hit count"] = "Show hit count"
+L["Show how many hits were combined, e.g. 37,200 (3). With spell icons on, the count sits on the icon."] = "Show how many hits were combined, e.g. 37,200 (3). With spell icons on, the count sits on the icon."
+L["%s (%d)"] = "%s (%d)"
+L["Crits, normal hits, and heals combine separately."] = "Crits, normal hits, and heals combine separately."
+L["Crits, normal hits, and heals combine separately. Secret amounts cannot be added, so those hits still show individually."] =
+    "Crits, normal hits, and heals combine separately. Secret amounts cannot be added, so those hits still show individually."
+
 -- Tools
 L["Preview"] = "Preview"
 L["Updates live as you change options."] = "Updates live as you change options."

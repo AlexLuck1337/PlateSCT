@@ -125,6 +125,21 @@ local function BuildCombat(parent, root)
     if IsModernAPI() then
         layout:Note(L["In raids and Mythic+ some amounts are secret, so the threshold hides those hits visually instead of skipping them."])
     end
+
+    layout:Heading(L["Combine hits"])
+    layout:Checkbox("combineHits", L["Combine rapid hits"],
+        L["Add hits that land in quick succession on the same nameplate into one number instead of stacking many."])
+    layout:When(function() return BD.db.combineHits end, function()
+        layout:Slider("combineWindow", L["Combine window"], 0.1, 1, 0.05,
+            function(value) return string.format(L["%.2fs"], value) end)
+        layout:Choice("combineMode", L["Combine"], BD.COMBINE_MODES,
+            L["Same spell keeps each spell's number separate. All hits merges every hit on the target; its icon shows the spell that did the most damage."])
+        layout:Checkbox("combineShowCount", L["Show hit count"],
+            L["Show how many hits were combined, e.g. 37,200 (3). With spell icons on, the count sits on the icon."])
+        layout:Note(IsModernAPI()
+            and L["Crits, normal hits, and heals combine separately. Secret amounts cannot be added, so those hits still show individually."]
+            or L["Crits, normal hits, and heals combine separately."])
+    end)
     layout:Finish()
 end
 
