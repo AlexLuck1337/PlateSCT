@@ -414,3 +414,6 @@ L["Your WoW API"] = "Your WoW API"
 -- What's new: combine hits
 L["Rapid hits on the same nameplate can merge into one growing number with a hit count. Turn it on under Combat → Combine hits."] =
     "Rapid hits on the same nameplate can merge into one growing number with a hit count. Turn it on under Combat → Combine hits."
+
+-- Reduce clutter
+L["Reduce clutter"] = "Reduce clutter"

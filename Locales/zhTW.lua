@@ -384,3 +384,6 @@ L["This translation was generated with AI. If you find inconsistent terminology 
 -- What's new: combine hits
 L["Rapid hits on the same nameplate can merge into one growing number with a hit count. Turn it on under Combat → Combine hits."] =
     "同一名條上的快速命中可合併為一個持續增長的數字，並顯示命中次數。在「戰鬥」→「合併命中」中開啟。"
+
+-- Reduce clutter
+L["Reduce clutter"] = "減少雜亂"

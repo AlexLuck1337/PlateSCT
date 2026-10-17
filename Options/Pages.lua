@@ -116,7 +116,8 @@ local function BuildCombat(parent, root)
     layout:Slider("incomingOffsetY", L["Incoming Y"], -200, 200, 2, PixelValue,
         incomingEnabled, nil, incomingReason)
 
-    layout:Heading(L["Minimum damage threshold"])
+    -- Everything that limits how many numbers appear lives under one heading.
+    layout:Heading(L["Reduce clutter"])
     layout:Input("minDamage", L["Minimum damage threshold"],
         L["Supports k/m suffixes, e.g. 20k or 2m. Damage below this value will not be displayed."], function()
             BD:RebuildThresholdCurve()
@@ -126,7 +127,6 @@ local function BuildCombat(parent, root)
         layout:Note(L["In raids and Mythic+ some amounts are secret, so the threshold hides those hits visually instead of skipping them."])
     end
 
-    layout:Heading(L["Combine hits"])
     layout:Checkbox("combineHits", L["Combine rapid hits"],
         L["Add hits that land in quick succession on the same nameplate into one number instead of stacking many."])
     layout:When(function() return BD.db.combineHits end, function()

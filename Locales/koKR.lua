@@ -398,3 +398,6 @@ L["This translation was generated with AI. If you find inconsistent terminology 
 -- What's new: combine hits
 L["Rapid hits on the same nameplate can merge into one growing number with a hit count. Turn it on under Combat → Combine hits."] =
     "같은 이름표에 빠르게 들어온 적중을 하나의 증가하는 숫자와 적중 횟수로 합칠 수 있습니다. 전투 → 적중 합치기에서 켜세요."
+
+-- Reduce clutter
+L["Reduce clutter"] = "화면 정리"

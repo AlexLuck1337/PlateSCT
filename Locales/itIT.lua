@@ -309,3 +309,6 @@ L["Use gentle fades and row reveals in this settings window. Combat animation is
 -- What's new: combine hits
 L["Rapid hits on the same nameplate can merge into one growing number with a hit count. Turn it on under Combat → Combine hits."] =
     "I colpi rapidi sulla stessa barra del nome possono unirsi in un unico numero crescente con il conteggio dei colpi. Attivalo in Combattimento → Unisci colpi."
+
+-- Reduce clutter
+L["Reduce clutter"] = "Riduci il disordine"
