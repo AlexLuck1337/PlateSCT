@@ -157,6 +157,15 @@ local function BuildAppearance(parent, root)
         L["Text outline. Number style default uses each style's own outline: thick for Classic, thin for Modern and Impact."])
     layout:Checkbox("useSchoolColors", L["Color by damage school"],
         L["Tint numbers by school (fire orange, frost blue, and so on). Off keeps the default yellow."])
+    local customColorsAvailable = function() return not BD:ShouldUseSchoolColors() end
+    layout:Checkbox("useCustomColors", L["Custom colors"],
+        L["Pick your own colors for normal hits, crits, and miss text instead of the default yellow."],
+        customColorsAvailable, nil, L["Turn off Color by damage school to pick custom colors."])
+    layout:When(function() return BD.db.useCustomColors and customColorsAvailable() end, function()
+        layout:Color("hitColor", L["Normal hits"], L["Color of normal damage numbers."])
+        layout:Color("critColor", L["Critical hits"], L["Color of critical hit numbers."])
+        layout:Color("missColor", L["Miss text"], L["Color of Miss, Dodge, Immune, and similar text."])
+    end)
     layout:Checkbox({
         id = "showCritLabel",
         get = function() return BD:GetCritLabelSetting() end,

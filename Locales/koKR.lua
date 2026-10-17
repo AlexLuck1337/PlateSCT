@@ -183,6 +183,17 @@ L["Bottom"] = "아래"
 L["Text style"] = "글자 스타일"
 L["Abbreviate numbers"] = "숫자 축약"
 
+-- Custom colors
+L["Custom colors"] = "사용자 지정 색상"
+L["Pick your own colors for normal hits, crits, and miss text instead of the default yellow."] =
+    "기본 노란색 대신 일반 적중, 치명타, 빗나감 문구의 색상을 직접 고릅니다."
+L["Turn off Color by damage school to pick custom colors."] = "사용자 지정 색상을 고르려면 피해 계열별 색상을 끄세요."
+L["Color of normal damage numbers."] = "일반 피해 숫자의 색상입니다."
+L["Color of critical hit numbers."] = "치명타 숫자의 색상입니다."
+L["Miss text"] = "빗나감 문구"
+L["Color of Miss, Dodge, Immune, and similar text."] = "빗나감, 회피, 면역 등 문구의 색상입니다."
+
+
 -- Outline
 L["Outline"] = "외곽선"
 L["Number style default"] = "숫자 스타일 기본값"

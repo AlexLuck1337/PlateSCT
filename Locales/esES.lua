@@ -129,6 +129,19 @@ L["Uses your last spell in Only my damage mode. Left of the number."] =
 L["Text style"] = "Estilo de texto"
 L["Abbreviate numbers"] = "Abreviar números"
 
+-- Custom colors
+L["Normal hits"] = "Golpes normales"
+L["Custom colors"] = "Colores personalizados"
+L["Pick your own colors for normal hits, crits, and miss text instead of the default yellow."] =
+    "Elige tus propios colores para golpes normales, críticos y textos de fallo en lugar del amarillo predeterminado."
+L["Turn off Color by damage school to pick custom colors."] = "Desactiva Colorear por escuela de daño para elegir colores personalizados."
+L["Color of normal damage numbers."] = "Color de los números de daño normales."
+L["Critical hits"] = "Golpes críticos"
+L["Color of critical hit numbers."] = "Color de los números de golpes críticos."
+L["Miss text"] = "Texto de fallo"
+L["Color of Miss, Dodge, Immune, and similar text."] = "Color de Fallo, Esquiva, Inmune y textos similares."
+
+
 -- Outline
 L["Outline"] = "Contorno"
 L["Number style default"] = "Predeterminado del estilo"
