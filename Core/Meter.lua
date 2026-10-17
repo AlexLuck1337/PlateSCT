@@ -44,15 +44,18 @@ end
 
 -- Reads your spells' totals and records how much each grew since the last read. False when the
 -- meter cannot be read now (missing, or its values are secret).
--- force: a meter update event, always read; per-hit reads are throttled.
-local function ReadMeter(now, force)
+-- Each read builds a table of all your spells, so reads are throttled; a meter update that
+-- comes too soon after a read is read on the next tick (readSoon), so no growth is lost.
+local readSoon = false
+
+local function ReadMeter(now)
     if now < unreadableUntil then
         return false
     end
-    if not force and readAt and now - readAt < BD.METER_MIN_READ then
+    if readAt and now - readAt < BD.METER_MIN_READ then
         return lastReadOk
     end
-    readAt, lastReadOk = now, false
+    readAt, lastReadOk, readSoon = now, false, false
     local guid = UnitGUID("player")
     if type(guid) ~= "string" or BD.IsSecret(guid) then
         return false
@@ -270,7 +273,7 @@ end
 
 local Tick
 local function ScheduleTick()
-    if not tickScheduled and (#held > 0 or #growth > 0) then
+    if not tickScheduled and (#held > 0 or #growth > 0 or readSoon) then
         tickScheduled = true
         C_Timer.After(BD.METER_POLL, Tick)
     end
@@ -279,7 +282,7 @@ end
 Tick = function()
     tickScheduled = false
     local now = GetTime()
-    if #held > 0 then
+    if #held > 0 or readSoon then
         ReadMeter(now)
     end
     Match(now)
@@ -328,9 +331,14 @@ meterFrame:SetScript("OnEvent", function(_, event)
         Rebaseline()
         return
     end
-    -- Read on every update, so each read's growth covers only the hits since the last one.
+    -- Read on updates, so each read's growth covers only the hits since the last one.
     local now = GetTime()
-    if ReadMeter(now, true) then
+    if readAt and now - readAt < BD.METER_MIN_READ then
+        readSoon = true
+        ScheduleTick()
+        return
+    end
+    if ReadMeter(now) then
         Match(now)
         Expire(now)
         ScheduleTick()
