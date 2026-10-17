@@ -192,6 +192,8 @@ local function BuildAppearance(parent, root)
     layout:Note(L["Hover over a font to preview 12345."])
     layout:Note(L["Only fonts inside the WoW folder can load. SharedMedia fonts appear when another addon provides them."])
     layout:Slider("fontSize", L["Font size"], 10, 48, 1, tostring)
+    layout:Choice("fontOutline", L["Outline"], BD.OUTLINE_OPTIONS,
+        L["Text outline. Number style default uses each style's own outline: thick for Classic, thin for Modern and Impact."])
     layout:Checkbox("useSchoolColors", L["Color by damage school"],
         L["Tint numbers by school (fire orange, frost blue, and so on). Off keeps the default yellow."])
     layout:Checkbox({

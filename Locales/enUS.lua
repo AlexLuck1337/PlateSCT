@@ -244,6 +244,16 @@ L["Top"] = "Top"
 L["Bottom"] = "Bottom"
 L["Text style"] = "Text style"
 L["Abbreviate numbers"] = "Abbreviate numbers"
+
+-- Outline
+L["Outline"] = "Outline"
+L["Number style default"] = "Number style default"
+L["None"] = "None"
+L["Thin"] = "Thin"
+L["Thick"] = "Thick"
+L["Text outline. Number style default uses each style's own outline: thick for Classic, thin for Modern and Impact."] =
+    "Text outline. Number style default uses each style's own outline: thick for Classic, thin for Modern and Impact."
+
 L["Display large numbers as 214k or 1.2M."] = "Display large numbers as 214k or 1.2M."
 L["Display large numbers as 214k or 1.2M. Disables thousand separators."] =
     "Display large numbers as 214k or 1.2M. Disables thousand separators."

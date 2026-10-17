@@ -10,6 +10,18 @@ function BD:GetStylePreset(styleOverride)
     return self.STYLE_PRESETS[style], style
 end
 
+local OUTLINE_FLAGS = { none = "", thin = "OUTLINE", thick = "THICKOUTLINE" }
+
+-- Font flags for a style preset: the player's outline choice, or the style's own outline.
+function BD:GetFontFlags(preset)
+    local choice = self.db and self.db.fontOutline
+    local flags = OUTLINE_FLAGS[choice]
+    if flags then
+        return flags
+    end
+    return preset and preset.fontFlags or "OUTLINE"
+end
+
 function BD:GetNumberStyleOffsets(styleOverride)
     local _, style = self:GetStylePreset(styleOverride)
     local xKey, yKey = style .. "OffsetX", style .. "OffsetY"
