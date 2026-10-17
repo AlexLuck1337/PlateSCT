@@ -204,6 +204,28 @@ L["Bottom"] = "Bottom"
 L["Text style"] = "Text style"
 L["Abbreviate numbers"] = "Abbreviate numbers"
 
+-- Spell label
+L["Label"] = "Label"
+L["Name"] = "Name"
+L["Icon"] = "Icon"
+L["Icon and name"] = "Icon and name"
+L["Spell label"] = "Spell label"
+L["Show spell label"] = "Show spell label"
+L["Show which spell dealt each hit. Uses the matched cast or auto-attack."] =
+    "Show which spell dealt each hit. Uses the matched cast or auto-attack."
+L["Show which spell dealt each hit. Uses the spell from the combat log."] =
+    "Show which spell dealt each hit. Uses the spell from the combat log."
+L["Show the spell's icon, its name, or both."] = "Show the spell's icon, its name, or both."
+L["Enable Show spell label to choose the label."] = "Enable Show spell label to choose the label."
+L["Name position"] = "Name position"
+L["Where the spell name sits relative to the number."] = "Where the spell name sits relative to the number."
+L["Name size"] = "Name size"
+L["Shorten long names"] = "Shorten long names"
+L["After %d characters"] = "After %d characters"
+L["The Name label has no icon to place."] = "The Name label has no icon to place."
+L["Enable Show spell label to choose its position."] = "Enable Show spell label to choose its position."
+
+
 -- Custom colors
 L["Custom colors"] = "Custom colors"
 L["Pick your own colors for normal hits, crits, and miss text instead of the default yellow."] =
@@ -238,6 +260,7 @@ L["Font"] = "Font"
 L["Font size"] = "Font size"
 L["Scroll offset"] = "Scroll offset"
 L["Scroll speed"] = "Scroll speed"
+L["%d%%"] = "%d%%"
 L["Display duration"] = "Display duration"
 L["Game default"] = "Game default"
 L["Friz Quadrata"] = "Friz Quadrata"

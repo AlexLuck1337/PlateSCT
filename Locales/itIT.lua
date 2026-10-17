@@ -129,6 +129,32 @@ L["Uses your last spell in Only my damage mode. Left of the number."] =
 L["Text style"] = "Stile del testo"
 L["Abbreviate numbers"] = "Abbrevia i numeri"
 
+-- Spell label
+L["Label"] = "Etichetta"
+L["Top"] = "Sopra"
+L["Bottom"] = "Sotto"
+L["Name"] = "Nome"
+L["Left"] = "Sinistra"
+L["Icon"] = "Icona"
+L["Right"] = "Destra"
+L["Icon and name"] = "Icona e nome"
+L["Spell label"] = "Etichetta dell'incantesimo"
+L["Show spell label"] = "Mostra etichetta dell'incantesimo"
+L["Show which spell dealt each hit. Uses the matched cast or auto-attack."] =
+    "Mostra quale incantesimo ha inflitto ogni colpo. Usa il lancio associato o l'attacco automatico."
+L["Show which spell dealt each hit. Uses the spell from the combat log."] =
+    "Mostra quale incantesimo ha inflitto ogni colpo. Usa l'incantesimo dal registro di combattimento."
+L["Show the spell's icon, its name, or both."] = "Mostra l'icona dell'incantesimo, il suo nome o entrambi."
+L["Enable Show spell label to choose the label."] = "Attiva Mostra etichetta dell'incantesimo per scegliere l'etichetta."
+L["Name position"] = "Posizione del nome"
+L["Where the spell name sits relative to the number."] = "Dove si trova il nome dell'incantesimo rispetto al numero."
+L["Name size"] = "Dimensione del nome"
+L["Shorten long names"] = "Accorcia i nomi lunghi"
+L["After %d characters"] = "Dopo %d caratteri"
+L["The Name label has no icon to place."] = "L'etichetta Nome non ha un'icona da posizionare."
+L["Enable Show spell label to choose its position."] = "Attiva Mostra etichetta dell'incantesimo per sceglierne la posizione."
+
+
 -- Custom colors
 L["Normal hits"] = "Colpi normali"
 L["Custom colors"] = "Colori personalizzati"
@@ -165,6 +191,7 @@ L["Font"] = "Carattere"
 L["Font size"] = "Dimensione carattere"
 L["Scroll offset"] = "Scostamento scorrimento"
 L["Scroll speed"] = "Velocità scorrimento"
+L["%d%%"] = "%d%%"
 L["Display duration"] = "Durata visualizzazione"
 L["Game default"] = "Predefinito del gioco"
 L["Friz Quadrata"] = "Friz Quadrata"

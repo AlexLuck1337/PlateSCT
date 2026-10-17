@@ -183,6 +183,28 @@ L["Bottom"] = "아래"
 L["Text style"] = "글자 스타일"
 L["Abbreviate numbers"] = "숫자 축약"
 
+-- Spell label
+L["Label"] = "표시 방식"
+L["Name"] = "이름"
+L["Icon"] = "아이콘"
+L["Icon and name"] = "아이콘과 이름"
+L["Spell label"] = "주문 표시"
+L["Show spell label"] = "주문 표시 사용"
+L["Show which spell dealt each hit. Uses the matched cast or auto-attack."] =
+    "각 적중을 어떤 주문이 냈는지 표시합니다. 연결된 시전이나 자동 공격을 사용합니다."
+L["Show which spell dealt each hit. Uses the spell from the combat log."] =
+    "각 적중을 어떤 주문이 냈는지 표시합니다. 전투 기록의 주문을 사용합니다."
+L["Show the spell's icon, its name, or both."] = "주문 아이콘, 주문 이름 또는 둘 다를 표시합니다."
+L["Enable Show spell label to choose the label."] = "표시 방식을 고르려면 주문 표시 사용을 켜세요."
+L["Name position"] = "이름 위치"
+L["Where the spell name sits relative to the number."] = "숫자를 기준으로 한 주문 이름의 위치입니다."
+L["Name size"] = "이름 크기"
+L["Shorten long names"] = "긴 이름 줄이기"
+L["After %d characters"] = "%d자 이후"
+L["The Name label has no icon to place."] = "이름 표시에는 배치할 아이콘이 없습니다."
+L["Enable Show spell label to choose its position."] = "위치를 고르려면 주문 표시 사용을 켜세요."
+
+
 -- Custom colors
 L["Custom colors"] = "사용자 지정 색상"
 L["Pick your own colors for normal hits, crits, and miss text instead of the default yellow."] =
@@ -216,6 +238,7 @@ L["Font"] = "글꼴"
 L["Font size"] = "글꼴 크기"
 L["Scroll offset"] = "스크롤 거리"
 L["Scroll speed"] = "스크롤 속도"
+L["%d%%"] = "%d%%"
 L["Display duration"] = "표시 시간"
 L["Game default"] = "게임 기본값"
 L["Friz Quadrata"] = "Friz Quadrata"

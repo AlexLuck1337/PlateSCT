@@ -129,6 +129,32 @@ L["Uses your last spell in Only my damage mode. Left of the number."] =
 L["Text style"] = "Estilo de texto"
 L["Abbreviate numbers"] = "Abreviar números"
 
+-- Spell label
+L["Label"] = "Etiqueta"
+L["Top"] = "Arriba"
+L["Bottom"] = "Abajo"
+L["Name"] = "Nombre"
+L["Left"] = "Izquierda"
+L["Icon"] = "Icono"
+L["Right"] = "Derecha"
+L["Icon and name"] = "Icono y nombre"
+L["Spell label"] = "Etiqueta del hechizo"
+L["Show spell label"] = "Mostrar etiqueta del hechizo"
+L["Show which spell dealt each hit. Uses the matched cast or auto-attack."] =
+    "Muestra qué hechizo causó cada golpe. Usa el lanzamiento asociado o el ataque automático."
+L["Show which spell dealt each hit. Uses the spell from the combat log."] =
+    "Muestra qué hechizo causó cada golpe. Usa el hechizo del registro de combate."
+L["Show the spell's icon, its name, or both."] = "Muestra el icono del hechizo, su nombre o ambos."
+L["Enable Show spell label to choose the label."] = "Activa Mostrar etiqueta del hechizo para elegir la etiqueta."
+L["Name position"] = "Posición del nombre"
+L["Where the spell name sits relative to the number."] = "Dónde se coloca el nombre del hechizo respecto al número."
+L["Name size"] = "Tamaño del nombre"
+L["Shorten long names"] = "Acortar nombres largos"
+L["After %d characters"] = "Tras %d caracteres"
+L["The Name label has no icon to place."] = "La etiqueta Nombre no tiene icono que colocar."
+L["Enable Show spell label to choose its position."] = "Activa Mostrar etiqueta del hechizo para elegir su posición."
+
+
 -- Custom colors
 L["Normal hits"] = "Golpes normales"
 L["Custom colors"] = "Colores personalizados"
@@ -165,6 +191,7 @@ L["Font"] = "Fuente"
 L["Font size"] = "Tamaño de fuente"
 L["Scroll offset"] = "Desplazamiento vertical"
 L["Scroll speed"] = "Velocidad de desplazamiento"
+L["%d%%"] = "%d %%"
 L["Display duration"] = "Duración de visualización"
 L["Game default"] = "Predeterminada del juego"
 L["Friz Quadrata"] = "Friz Quadrata"

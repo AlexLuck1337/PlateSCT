@@ -176,6 +176,28 @@ L["Bottom"] = "下方"
 L["Text style"] = "文字样式"
 L["Abbreviate numbers"] = "缩写数字"
 
+-- Spell label
+L["Label"] = "标签"
+L["Name"] = "名称"
+L["Icon"] = "图标"
+L["Icon and name"] = "图标和名称"
+L["Spell label"] = "法术标签"
+L["Show spell label"] = "显示法术标签"
+L["Show which spell dealt each hit. Uses the matched cast or auto-attack."] =
+    "显示每次命中来自哪个法术。使用匹配到的施法或自动攻击。"
+L["Show which spell dealt each hit. Uses the spell from the combat log."] =
+    "显示每次命中来自哪个法术。使用战斗日志中的法术。"
+L["Show the spell's icon, its name, or both."] = "显示法术图标、法术名称，或两者都显示。"
+L["Enable Show spell label to choose the label."] = "开启“显示法术标签”后才能选择标签。"
+L["Name position"] = "名称位置"
+L["Where the spell name sits relative to the number."] = "法术名称相对于数字的位置。"
+L["Name size"] = "名称大小"
+L["Shorten long names"] = "缩短长名称"
+L["After %d characters"] = "超过 %d 个字符"
+L["The Name label has no icon to place."] = "“名称”标签没有可放置的图标。"
+L["Enable Show spell label to choose its position."] = "开启“显示法术标签”后才能选择位置。"
+
+
 -- Custom colors
 L["Custom colors"] = "自定义颜色"
 L["Pick your own colors for normal hits, crits, and miss text instead of the default yellow."] =
@@ -209,6 +231,7 @@ L["Font"] = "字体"
 L["Font size"] = "字号"
 L["Scroll offset"] = "滚动距离"
 L["Scroll speed"] = "滚动速度"
+L["%d%%"] = "%d%%"
 L["Display duration"] = "显示时长"
 L["Game default"] = "游戏默认"
 L["Friz Quadrata"] = "Friz Quadrata"
