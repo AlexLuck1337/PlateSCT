@@ -380,3 +380,7 @@ L["Your WoW API"] = "目前 WoW API"
 -- Translation feedback
 L["This translation was generated with AI. If you find inconsistent terminology or incorrect wording, please report it through GitHub Issues. Thank you for your help! Translation contributors will be credited."] =
     "此翻譯由 AI 產生。如果發現術語不一致或用詞不正確，請透過 GitHub Issues 回報。感謝你的協助！翻譯貢獻者將獲得署名致謝。"
+
+-- What's new: combine hits
+L["Rapid hits on the same nameplate can merge into one growing number with a hit count. Turn it on under Combat → Combine hits."] =
+    "同一名條上的快速命中可合併為一個持續增長的數字，並顯示命中次數。在「戰鬥」→「合併命中」中開啟。"

@@ -305,3 +305,7 @@ L["This client does not expose the damage meter API. A snapshot can still report
 L["Turn off Auto-switch by instance to choose manual strictness."] = "Desative a troca automática por instância para escolher a rigidez manualmente."
 L["Unreadable amounts cannot trigger threshold sounds. Unreadable damage schools are always allowed by the school filter."] = "Valores ilegíveis não ativam sons por limite. Escolas ilegíveis sempre passam pelo filtro."
 L["Use gentle fades and row reveals in this settings window. Combat animation is unaffected."] = "Usa transições suaves e animações de linhas nas configurações. A animação de combate não muda."
+
+-- What's new: combine hits
+L["Rapid hits on the same nameplate can merge into one growing number with a hit count. Turn it on under Combat → Combine hits."] =
+    "Golpes rápidos na mesma placa de nome podem se combinar em um único número crescente com a contagem de golpes. Ative em Combate → Combinar golpes."

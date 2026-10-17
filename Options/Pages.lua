@@ -456,6 +456,8 @@ local function BuildDiagnostics(layout)
 end
 
 local function BuildWhatsNew(layout)
+    layout:Heading(L["Combine hits"])
+    layout:Note(L["Rapid hits on the same nameplate can merge into one growing number with a hit count. Turn it on under Combat → Combine hits."])
     layout:Heading(L["Impact number style"])
     layout:Note(L["Impact slams outgoing damage beside or above the nameplate, then floats up. New hits layer in front; crits amplify and CRITICAL flashes above when enabled."])
     layout:Note(L["Impact uses Modern for incoming damage, healing, and miss text, preserving saved Modern motions."])

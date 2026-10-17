@@ -305,3 +305,7 @@ L["This client does not expose the damage meter API. A snapshot can still report
 L["Turn off Auto-switch by instance to choose manual strictness."] = "Отключите автоматическое переключение по подземелью для ручного выбора строгости."
 L["Unreadable amounts cannot trigger threshold sounds. Unreadable damage schools are always allowed by the school filter."] = "Недоступные значения не вызывают звуки по порогу. Урон с недоступной школой всегда проходит фильтр."
 L["Use gentle fades and row reveals in this settings window. Combat animation is unaffected."] = "Плавное появление окна и строк настроек. Анимация боевых чисел не меняется."
+
+-- What's new: combine hits
+L["Rapid hits on the same nameplate can merge into one growing number with a hit count. Turn it on under Combat → Combine hits."] =
+    "Быстрые удары по одному индикатору можно объединять в одно растущее число со счётчиком ударов. Включите в разделе «Бой» → «Объединение ударов»."

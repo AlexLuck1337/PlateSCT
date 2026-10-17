@@ -410,3 +410,7 @@ L["Unreadable amounts cannot trigger threshold sounds. Unreadable damage schools
 L["Unsupported client - combat text unavailable"] = "Unsupported client - combat text unavailable"
 L["Use gentle fades and row reveals in this settings window. Combat animation is unaffected."] = "Use gentle fades and row reveals in this settings window. Combat animation is unaffected."
 L["Your WoW API"] = "Your WoW API"
+
+-- What's new: combine hits
+L["Rapid hits on the same nameplate can merge into one growing number with a hit count. Turn it on under Combat → Combine hits."] =
+    "Rapid hits on the same nameplate can merge into one growing number with a hit count. Turn it on under Combat → Combine hits."
