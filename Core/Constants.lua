@@ -22,6 +22,7 @@ BD.DEFAULTS = {
     combineWindow = 0.5,
     combineMode = "spell", -- "spell" | "target"
     combineShowCount = true,
+    combinePulse = true, -- pop the number again each time a hit merges in
     incomingOffsetX = 0,
     incomingOffsetY = -100,
     debug = false,

@@ -387,3 +387,8 @@ L["Rapid hits on the same nameplate can merge into one growing number with a hit
 
 -- Reduce clutter
 L["Reduce clutter"] = "減少雜亂"
+
+-- Combine hits: merge pop
+L["Pop on each merge"] = "每次合併時彈跳"
+L["Briefly enlarge the number every time another hit merges into it. Turn off for a calmer display."] =
+    "每當有新的命中合併進來時短暫放大數字。關閉可獲得更平靜的顯示。"

@@ -432,7 +432,9 @@ local function ApplyCombine(self, frame, amount, icon)
     if frame.usesClassicShove then
         BD.Pool.RelayoutClassic(frame.anchor)
     end
-    frame.combinePulseAt = frame.elapsed
+    if self.db.combinePulse then
+        frame.combinePulseAt = frame.elapsed
+    end
 end
 
 local function TryCombine(self, plate, key, amount, icon)
@@ -474,7 +476,7 @@ local function PreviewCombineActive(self, sample)
 end
 
 local function PreviewPulseScale(self, sample)
-    return PreviewCombineActive(self, sample) and (1 + BD.COMBINE_PULSE_SCALE) or 1
+    return PreviewCombineActive(self, sample) and self.db.combinePulse and (1 + BD.COMBINE_PULSE_SCALE) or 1
 end
 
 -- Text the sample ends on, so preview bounds fit the combined number.

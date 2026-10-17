@@ -312,3 +312,8 @@ L["Rapid hits on the same nameplate can merge into one growing number with a hit
 
 -- Reduce clutter
 L["Reduce clutter"] = "Reduzir a poluição visual"
+
+-- Combine hits: merge pop
+L["Pop on each merge"] = "Pulsar a cada combinação"
+L["Briefly enlarge the number every time another hit merges into it. Turn off for a calmer display."] =
+    "Aumenta brevemente o número sempre que outro golpe é somado a ele. Desative para uma exibição mais calma."

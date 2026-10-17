@@ -136,6 +136,8 @@ local function BuildCombat(parent, root)
             L["Same spell keeps each spell's number separate. All hits merges every hit on the target; its icon shows the spell that did the most damage."])
         layout:Checkbox("combineShowCount", L["Show hit count"],
             L["Show how many hits were combined, e.g. 37,200 (3). With spell icons on, the count sits on the icon."])
+        layout:Checkbox("combinePulse", L["Pop on each merge"],
+            L["Briefly enlarge the number every time another hit merges into it. Turn off for a calmer display."])
         layout:Note(IsModernAPI()
             and L["Crits, normal hits, and heals combine separately. Secret amounts cannot be added, so those hits still show individually."]
             or L["Crits, normal hits, and heals combine separately."])

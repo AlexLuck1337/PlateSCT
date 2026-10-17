@@ -401,3 +401,8 @@ L["Rapid hits on the same nameplate can merge into one growing number with a hit
 
 -- Reduce clutter
 L["Reduce clutter"] = "화면 정리"
+
+-- Combine hits: merge pop
+L["Pop on each merge"] = "합칠 때마다 튀어나오기"
+L["Briefly enlarge the number every time another hit merges into it. Turn off for a calmer display."] =
+    "다른 적중이 합쳐질 때마다 숫자를 잠깐 키웁니다. 더 차분하게 보려면 끄세요."
