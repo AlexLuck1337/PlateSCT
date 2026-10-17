@@ -797,13 +797,17 @@ local function SpawnMotionPreviewFrame(anchor, sample)
     local resolvedIcon
     if isMiss then
         frame.text:SetText(sample.text or "MISS")
-        r, g, b = 1, 0.85, 0.2
+        if BD:ShouldUseSchoolColors() then
+            r, g, b = 1, 0.85, 0.2
+        else
+            r, g, b = BD:GetNumberColor("miss", preset)
+        end
     else
         frame.text:SetText(BD.FormatAmount(sample.amount, BD.db.abbreviate))
         if BD:ShouldUseSchoolColors() then
             r, g, b = BD.GetSchoolColor(sample.school)
         else
-            r, g, b = preset.defaultColor[1], preset.defaultColor[2], preset.defaultColor[3]
+            r, g, b = BD:GetNumberColor(kind, preset)
         end
         resolvedIcon = BD:ResolveOutgoingSpellIcon(nil, sample.spellID)
         if not resolvedIcon then
@@ -1133,7 +1137,7 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
             r, g, b = BD.GetSchoolColor(nil)
         end
     else
-        r, g, b = preset.defaultColor[1], preset.defaultColor[2], preset.defaultColor[3]
+        r, g, b = self:GetNumberColor(kind, preset)
     end
 
     local layoutOpts = {

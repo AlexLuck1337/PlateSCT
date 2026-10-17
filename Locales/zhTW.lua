@@ -217,6 +217,17 @@ L["Bottom"] = "下方"
 L["Text style"] = "文字樣式"
 L["Abbreviate numbers"] = "縮寫數字"
 
+-- Custom colors
+L["Custom colors"] = "自訂顏色"
+L["Pick your own colors for normal hits, crits, and miss text instead of the default yellow."] =
+    "為一般命中、致命一擊和未命中文字選擇自己的顏色，取代預設黃色。"
+L["Turn off Color by damage school to pick custom colors."] = "關閉「依傷害類型著色」後才能選擇自訂顏色。"
+L["Color of normal damage numbers."] = "一般傷害數字的顏色。"
+L["Color of critical hit numbers."] = "致命一擊數字的顏色。"
+L["Miss text"] = "未命中文字"
+L["Color of Miss, Dodge, Immune, and similar text."] = "未命中、閃躲、免疫等文字的顏色。"
+
+
 -- Outline
 L["Outline"] = "描邊"
 L["Number style default"] = "數字樣式預設"

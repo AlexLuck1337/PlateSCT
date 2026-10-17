@@ -10,6 +10,33 @@ function BD:GetStylePreset(styleOverride)
     return self.STYLE_PRESETS[style], style
 end
 
+-- Colors are saved as "RRGGBB" hex strings: scalars reset cleanly with the other defaults.
+function BD.HexToRGB(hex)
+    hex = tostring(hex or ""):gsub("^#", "")
+    local r, g, b = hex:match("^(%x%x)(%x%x)(%x%x)$")
+    if not r then
+        return 1, 1, 1
+    end
+    return tonumber(r, 16) / 255, tonumber(g, 16) / 255, tonumber(b, 16) / 255
+end
+
+function BD.RGBToHex(r, g, b)
+    local function channel(value)
+        return math.max(0, math.min(255, math.floor((tonumber(value) or 0) * 255 + 0.5)))
+    end
+    return string.format("%02X%02X%02X", channel(r), channel(g), channel(b))
+end
+
+-- Number color for outgoing damage text when school colors are off.
+function BD:GetNumberColor(kind, preset)
+    if self.db and self.db.useCustomColors then
+        local key = kind == "crit" and "critColor" or kind == "miss" and "missColor" or "hitColor"
+        return BD.HexToRGB(self.db[key] or self.DEFAULTS[key])
+    end
+    local color = preset.defaultColor
+    return color[1], color[2], color[3]
+end
+
 local OUTLINE_FLAGS = { none = "", thin = "OUTLINE", thick = "THICKOUTLINE" }
 
 -- Font flags for a style preset: the player's outline choice, or the style's own outline.

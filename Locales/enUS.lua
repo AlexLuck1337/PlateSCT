@@ -245,6 +245,17 @@ L["Bottom"] = "Bottom"
 L["Text style"] = "Text style"
 L["Abbreviate numbers"] = "Abbreviate numbers"
 
+-- Custom colors
+L["Custom colors"] = "Custom colors"
+L["Pick your own colors for normal hits, crits, and miss text instead of the default yellow."] =
+    "Pick your own colors for normal hits, crits, and miss text instead of the default yellow."
+L["Turn off Color by damage school to pick custom colors."] = "Turn off Color by damage school to pick custom colors."
+L["Color of normal damage numbers."] = "Color of normal damage numbers."
+L["Color of critical hit numbers."] = "Color of critical hit numbers."
+L["Miss text"] = "Miss text"
+L["Color of Miss, Dodge, Immune, and similar text."] = "Color of Miss, Dodge, Immune, and similar text."
+
+
 -- Outline
 L["Outline"] = "Outline"
 L["Number style default"] = "Number style default"

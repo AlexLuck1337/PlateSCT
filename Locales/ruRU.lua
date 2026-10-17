@@ -170,6 +170,19 @@ L["Uses your last spell in Only my damage mode. Left of the number."] =
 L["Text style"] = "Стиль текста"
 L["Abbreviate numbers"] = "Сокращать числа"
 
+-- Custom colors
+L["Normal hits"] = "Обычные удары"
+L["Custom colors"] = "Свои цвета"
+L["Pick your own colors for normal hits, crits, and miss text instead of the default yellow."] =
+    "Выберите свои цвета для обычных ударов, критов и текстов промахов вместо стандартного жёлтого."
+L["Turn off Color by damage school to pick custom colors."] = "Отключите «Цвет по школе урона», чтобы выбрать свои цвета."
+L["Color of normal damage numbers."] = "Цвет обычных чисел урона."
+L["Critical hits"] = "Критические удары"
+L["Color of critical hit numbers."] = "Цвет чисел критических ударов."
+L["Miss text"] = "Текст промаха"
+L["Color of Miss, Dodge, Immune, and similar text."] = "Цвет текстов «Промах», «Уклонение», «Невосприимчив» и подобных."
+
+
 -- Outline
 L["Outline"] = "Обводка"
 L["Number style default"] = "По стилю чисел"
