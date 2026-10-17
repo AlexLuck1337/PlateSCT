@@ -70,12 +70,18 @@ end
 BD.PushDamageSample = PushDamageSample
 BD.GetRecentDamageAverage = RecentDamageAverage
 
-function BD.ComputeClassicAmountScale(amount)
+-- isPreview: settings-preview samples are scaled against real damage but never join the average.
+function BD.ComputeClassicAmountScale(amount, isPreview)
     if not amount or not BD.CanAccessValue(amount) or amount <= 0 then
         return 1
     end
-    PushDamageSample(amount)
-    local average = rollingDamageAverage
+    local average
+    if isPreview then
+        average = RecentDamageAverage()
+    else
+        PushDamageSample(amount)
+        average = rollingDamageAverage
+    end
     if not average or average <= 0 then
         return 1
     end

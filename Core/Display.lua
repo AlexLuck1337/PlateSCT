@@ -828,7 +828,7 @@ local function SpawnMotionPreviewFrame(anchor, sample)
     frame.text:SetTextColor(r, g, b, 1)
     frame.baseAlpha = 1
     if frame.usesClassicShove then
-        frame.amountScale = BD.ComputeClassicAmountScale(sample.amount)
+        frame.amountScale = BD.ComputeClassicAmountScale(sample.amount, true)
     end
 
     if PreviewCombineActive(BD, sample) then
