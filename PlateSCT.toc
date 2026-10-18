@@ -42,6 +42,7 @@ Core/Combat.lua
 Core/CombatClassic.lua
 Core/Probe.lua
 Core/Events.lua
+Core/SettingsTransfer.lua
 Options/Widgets.lua
 Options/Pages.lua
 Options/Options.lua

@@ -11,9 +11,18 @@ function BD:ResetToDefaults()
             self.db[key] = value
         end
     end
+    self:RefreshSettings()
+end
+
+-- Reapply preferences after a complete, validated update; never rerun login migrations.
+function BD:RefreshSettings()
     self:ApplyLocale()
     self:RebuildThresholdCurve()
-    self:ApplyBlizzardFCTSetting()
+    if self.db.hideBlizzardFCT then
+        self:ApplyBlizzardFCTSetting()
+    else
+        self:RestoreBlizzardFCTSetting()
+    end
     if BD.API.IsModern() and self.RefreshScenario then
         self:RefreshScenario()
     end
