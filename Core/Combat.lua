@@ -60,6 +60,11 @@ local function ShowPersonalDamage(unit, amount, isCrit, schoolMask)
     if BD.HoldForMeter and BD:HoldForMeter(unit, plate, amount, isCrit, schoolMask) then
         return false
     end
+    if BD.db.debug then
+        -- What attribution can read about this hit: secret values cannot be compared.
+        BD:DebugPrint("personal hit", unit, "school", BD.IsSecret(schoolMask) and "secret" or tostring(schoolMask),
+            "amount", BD.IsSecret(amount) and "secret" or "readable")
+    end
 
     local spellID, usedAuto = BD:MatchOutgoingHit(unit, schoolMask)
     if not spellID then
