@@ -87,7 +87,7 @@ L["Show the PlateSCT icon on the minimap. Click it to open settings."] =
 L["Click to open settings."] = "Нажмите, чтобы открыть настройки."
 L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."] =
     "Индикаторы врагов выключены. PlateSCT нужны они, чтобы показывать числа.\nНажмите V (по умолчанию) или включите их в Интерфейс → Игра → Имена."
-L["Who to show"] = "Что показывать"
+L["Display settings"] = "Настройки отображения"
 L["Only my damage"] = "Только мой урон"
 L["Show hits on your current target when you recently cast or auto-attacked. Midnight cannot prove who dealt the hit in a group."] =
     "Показывает удары по текущей цели, если вы недавно произнесли заклинание или автоатаковали. Midnight не может доказать, кто нанёс удар в группе."
@@ -311,3 +311,9 @@ L["Invalid setting: %s."] = "Неверная настройка: %s."
 L["Settings schema is incomplete. Update PlateSCT."] = "Схема настроек неполная. Обновите PlateSCT."
 L["Settings sharing is unavailable on this client."] = "Обмен настройками недоступен в этом клиенте."
 L["Settings import failed; previous settings were restored."] = "Импорт не удался; предыдущие настройки восстановлены."
+
+-- Independent fonts and critical damage filter
+L["Outgoing font"] = "Шрифт наносимого урона"
+L["Incoming font"] = "Шрифт получаемого урона"
+L["Show only critical damage"] = "Показывать только критический урон"
+L["Hide non-critical outgoing and incoming damage. Healing and miss text are unaffected."] = "Скрывает некритический наносимый и получаемый урон. Исцеление и текст промахов не затрагиваются."

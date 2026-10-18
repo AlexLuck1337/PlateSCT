@@ -119,6 +119,12 @@ local function ApplyLayoutMigrations()
         end
         BD.db.layoutRevision = 13
     end
+    if (BD.db.layoutRevision or 1) < 14 then
+        -- Preserve the shared font appearance before making incoming independent.
+        BD.db.incomingFontFace = BD.db.fontFace
+        BD.db.incomingFontSize = BD.db.fontSize
+        BD.db.layoutRevision = 14
+    end
     if BD.API.IsModern() and BD.db.onlyMyDamage then
         BD.db.allNameplates = false
     end

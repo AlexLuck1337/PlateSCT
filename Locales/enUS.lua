@@ -111,7 +111,7 @@ L["Show the PlateSCT icon on the minimap. Click it to open settings."] =
 L["Click to open settings."] = "Click to open settings."
 L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."] =
     "Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."
-L["Who to show"] = "Who to show"
+L["Display settings"] = "Display settings"
 L["Only my damage"] = "Only my damage"
 L["Show hits when a recent cast or auto-attack matches the nameplate. Midnight cannot prove who dealt the hit in a group."] =
     "Show hits when a recent cast or auto-attack matches the nameplate. Midnight cannot prove who dealt the hit in a group."
@@ -417,3 +417,9 @@ L["Invalid setting: %s."] = "Invalid setting: %s."
 L["Settings schema is incomplete. Update PlateSCT."] = "Settings schema is incomplete. Update PlateSCT."
 L["Settings sharing is unavailable on this client."] = "Settings sharing is unavailable on this client."
 L["Settings import failed; previous settings were restored."] = "Settings import failed; previous settings were restored."
+
+-- Independent fonts and critical damage filter
+L["Outgoing font"] = "Outgoing font"
+L["Incoming font"] = "Incoming font"
+L["Show only critical damage"] = "Show only critical damage"
+L["Hide non-critical outgoing and incoming damage. Healing and miss text are unaffected."] = "Hide non-critical outgoing and incoming damage. Healing and miss text are unaffected."

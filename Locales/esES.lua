@@ -87,7 +87,7 @@ L["Show the PlateSCT icon on the minimap. Click it to open settings."] =
 L["Click to open settings."] = "Haz clic para abrir la configuración."
 L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."] =
     "Las placas de nombre enemigas están desactivadas. PlateSCT las necesita para mostrar números.\nPulsa V (predeterminado) o actívalas en Interfaz → Juego → Nombres."
-L["Who to show"] = "Qué mostrar"
+L["Display settings"] = "Ajustes de visualización"
 L["Only my damage"] = "Solo mi daño"
 L["Show hits on your current target when you recently cast or auto-attacked. Midnight cannot prove who dealt the hit in a group."] =
     "Muestra golpes en tu objetivo actual cuando has lanzado o atacado automáticamente hace poco. Midnight no puede demostrar quién asestó el golpe en grupo."
@@ -311,3 +311,9 @@ L["Invalid setting: %s."] = "Ajuste no válido: %s."
 L["Settings schema is incomplete. Update PlateSCT."] = "El esquema de ajustes está incompleto. Actualiza PlateSCT."
 L["Settings sharing is unavailable on this client."] = "No se pueden compartir ajustes en este cliente."
 L["Settings import failed; previous settings were restored."] = "La importación ha fallado; se han restaurado los ajustes anteriores."
+
+-- Independent fonts and critical damage filter
+L["Outgoing font"] = "Fuente del daño infligido"
+L["Incoming font"] = "Fuente del daño recibido"
+L["Show only critical damage"] = "Mostrar solo daño crítico"
+L["Hide non-critical outgoing and incoming damage. Healing and miss text are unaffected."] = "Oculta el daño infligido y recibido no crítico. No afecta a la sanación ni al texto de fallos."

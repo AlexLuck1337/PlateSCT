@@ -103,7 +103,7 @@ L["Show the PlateSCT icon on the minimap. Click it to open settings."] = "미니
 L["Click to open settings."] = "클릭하면 설정을 엽니다."
 L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."] =
     "적 이름표가 꺼져 있습니다. PlateSCT가 숫자를 표시하려면 이름표가 필요합니다.\nV 키(기본값)를 누르거나 인터페이스 → 게임 → 이름에서 켜세요."
-L["Who to show"] = "표시할 피해 출처"
+L["Display settings"] = "표시 설정"
 L["Only my damage"] = "내가 준 피해만 표시"
 L["Show hits when a recent cast or auto-attack matches the nameplate. Midnight cannot prove who dealt the hit in a group."] =
     "최근 시전이나 자동 공격이 해당 이름표와 일치하면 피해를 표시합니다. Midnight에서는 파티 내 피해를 누가 주었는지 확인할 수 없습니다."
@@ -400,3 +400,9 @@ L["Invalid setting: %s."] = "잘못된 설정: %s."
 L["Settings schema is incomplete. Update PlateSCT."] = "설정 구조가 불완전합니다. PlateSCT를 업데이트하세요."
 L["Settings sharing is unavailable on this client."] = "이 클라이언트에서는 설정 공유를 사용할 수 없습니다."
 L["Settings import failed; previous settings were restored."] = "설정을 가져오지 못했습니다. 이전 설정으로 복원했습니다."
+
+-- Independent fonts and critical damage filter
+L["Outgoing font"] = "입힌 피해 글꼴"
+L["Incoming font"] = "받은 피해 글꼴"
+L["Show only critical damage"] = "치명타 피해만 표시"
+L["Hide non-critical outgoing and incoming damage. Healing and miss text are unaffected."] = "치명타가 아닌 입힌 피해와 받은 피해를 숨깁니다. 치유 및 빗나감 텍스트에는 영향을 주지 않습니다."

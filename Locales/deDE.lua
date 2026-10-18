@@ -87,7 +87,7 @@ L["Show the PlateSCT icon on the minimap. Click it to open settings."] =
 L["Click to open settings."] = "Klicken, um die Einstellungen zu öffnen."
 L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."] =
     "Feindliche Namensplaketten sind deaktiviert. PlateSCT braucht sie, um Zahlen anzuzeigen.\nDrückt V (Standard) oder aktiviert sie unter Interface → Spiel → Namen."
-L["Who to show"] = "Wen anzeigen"
+L["Display settings"] = "Anzeigeeinstellungen"
 L["Only my damage"] = "Nur mein Schaden"
 L["Show hits on your current target when you recently cast or auto-attacked. Midnight cannot prove who dealt the hit in a group."] =
     "Zeigt Treffer auf eurem aktuellen Ziel, wenn ihr kürzlich gezaubert oder auto-angegriffen habt. Midnight kann in einer Gruppe nicht beweisen, wer den Treffer verursacht hat."
@@ -311,3 +311,9 @@ L["Invalid setting: %s."] = "Ungültige Einstellung: %s."
 L["Settings schema is incomplete. Update PlateSCT."] = "Das Einstellungsschema ist unvollständig. Aktualisiere PlateSCT."
 L["Settings sharing is unavailable on this client."] = "Das Teilen von Einstellungen ist auf diesem Client nicht verfügbar."
 L["Settings import failed; previous settings were restored."] = "Der Import ist fehlgeschlagen; die bisherigen Einstellungen wurden wiederhergestellt."
+
+-- Independent fonts and critical damage filter
+L["Outgoing font"] = "Schrift für verursachten Schaden"
+L["Incoming font"] = "Schrift für erlittenen Schaden"
+L["Show only critical damage"] = "Nur kritischen Schaden anzeigen"
+L["Hide non-critical outgoing and incoming damage. Healing and miss text are unaffected."] = "Blendet nichtkritischen verursachten und erlittenen Schaden aus. Heilung und Fehltext bleiben unverändert."

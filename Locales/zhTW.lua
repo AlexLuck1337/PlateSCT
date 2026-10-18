@@ -97,7 +97,7 @@ L["Show the PlateSCT icon on the minimap. Click it to open settings."] = "在小
 L["Click to open settings."] = "點擊開啟設定。"
 L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."] =
     "敵方名條已關閉。PlateSCT 需要名條才能顯示數字。\n按 V（預設按鍵），或在「介面 → 遊戲 → 名稱」中啟用。"
-L["Who to show"] = "顯示來源"
+L["Display settings"] = "顯示設定"
 L["Only my damage"] = "僅顯示我的傷害"
 L["Show hits when a recent cast or auto-attack matches the nameplate. Midnight cannot prove who dealt the hit in a group."] =
     "近期施法或自動攻擊與名條符合時，顯示該次命中。Midnight 在隊伍中無法確認是誰造成了傷害。"
@@ -386,3 +386,9 @@ L["Invalid setting: %s."] = "無效設定：%s。"
 L["Settings schema is incomplete. Update PlateSCT."] = "設定結構不完整。請更新 PlateSCT。"
 L["Settings sharing is unavailable on this client."] = "此用戶端無法分享設定。"
 L["Settings import failed; previous settings were restored."] = "設定匯入失敗；已還原先前的設定。"
+
+-- Independent fonts and critical damage filter
+L["Outgoing font"] = "造成傷害字型"
+L["Incoming font"] = "受到傷害字型"
+L["Show only critical damage"] = "僅顯示致命一擊傷害"
+L["Hide non-critical outgoing and incoming damage. Healing and miss text are unaffected."] = "隱藏非致命一擊的造成傷害和受到傷害。不影響治療和未命中文字。"

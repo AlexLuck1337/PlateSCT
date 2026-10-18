@@ -50,6 +50,8 @@ local schema = {
     schoolFilterFire = Boolean(57, "modern"), schoolFilterNature = Boolean(58, "modern"),
     schoolFilterFrost = Boolean(59, "modern"), schoolFilterShadow = Boolean(60, "modern"),
     schoolFilterArcane = Boolean(61, "modern"),
+    incomingFontFace = Choice(62, BD.BUILTIN_FONTS), incomingFontSize = Number(63, 10, 48),
+    onlyCriticalDamage = Boolean(64),
 }
 
 -- Settings-window choices stay on this character. IDs stay reserved so older strings skip them.
@@ -91,7 +93,8 @@ local function ValidValue(key, value)
             and (not rule.maximum or value <= rule.maximum)
     elseif rule.kind == "string" then
         if #value > MAX_STRING or value:find("[%z\1-\31\127]") then return false end
-        if key == "fontFace" and value:sub(1, 4) == "lsm:" and #value > 4 then return true end
+        if (key == "fontFace" or key == "incomingFontFace") and value:sub(1, 4) == "lsm:"
+            and #value > 4 then return true end
         return rule.values[value] == true
     end
     return true
