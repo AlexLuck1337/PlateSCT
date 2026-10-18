@@ -337,6 +337,11 @@ local function RankCandidate(entry, unit, now, strict, school, isHeal)
     local spellID = entry.spellID
     local known = Learnable(spellID) and learnedSchool[spellID]
     entry.rankMismatch = (school and known and known ~= school) and 1 or 0
+    -- A lingering cast only explains ticks of its own school (DoT ticks share it); a hit of
+    -- another school is someone else's, an allied NPC's say, not this cast's.
+    if stage == 3 and entry.rankMismatch == 1 then
+        return false
+    end
     local noDamage = entry.helpfulOnly
         or (Learnable(spellID) and (learnedNoHit[spellID] or 0) >= BD.NO_DAMAGE_AFTER)
     entry.rankBuff = (not isHeal and noDamage) and 1 or 0
