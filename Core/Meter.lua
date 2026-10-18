@@ -64,7 +64,7 @@ local function ReadMeter(now)
     local meterType = (Enum and Enum.DamageMeterType and Enum.DamageMeterType.DamageDone) or 0
     local count = 0
     -- Reading a secret value is fine, comparing or adding one raises: the pcall catches both.
-    local ok = pcall(function()
+    local ok, reason = pcall(function()
         local source = C_DamageMeter.GetCombatSessionSourceFromType(sessionType, meterType, guid)
         local spells = source and source.combatSpells
         if type(spells) ~= "table" then
@@ -89,6 +89,8 @@ local function ReadMeter(now)
     end)
     if not ok then
         unreadableUntil = now + BD.METER_RETRY
+        BD:DebugPrint("meter unreadable:", type(reason) == "string" and reason:match("[^:]*$") or "error",
+            BD.SafeUnitBoolean(InCombatLockdown) and "(in combat)" or "(out of combat)")
         return false
     end
     readableAt, lastReadOk = now, true
