@@ -17,13 +17,19 @@ local function Choice(id, options, scope)
     for _, option in ipairs(options) do values[type(option) == "table" and option.id or option] = true end
     return { id = id, kind = "string", scope = scope or "shared", values = values }
 end
+-- Free text checked against a Lua pattern (spell lists, RRGGBB colors).
+local function Text(id, pattern) return { id = id, kind = "string", scope = "shared", pattern = pattern } end
 local strictness = { "loose", "balanced", "strict", "veryStrict" }
 -- Wire IDs are permanent: never renumber/reuse them or change their ownership.
 -- Add new preferences with unused IDs; unknown IDs are safely skipped by readers.
 local schema = {
     enabled = Boolean(1), minDamage = Number(2, 0), abbreviate = Boolean(3),
+    combineHits = Boolean(65), combineMode = Choice(66, BD.COMBINE_MODES), combinePulse = Boolean(67),
+    combineShowCount = Boolean(68), combineWindow = Number(69, 0.1, 1),
     thousandSeparator = Choice(4, BD.THOUSAND_SEPARATORS),
     showSpellIcon = Boolean(5), iconPosition = Choice(6, BD.ICON_POSITIONS),
+    ignoredSpells = Text(70, "^[^%c]*$"), offTargetAlpha = Number(71, 0.1, 1), offTargetMode = Choice(72, BD.OFF_TARGET_MODES),
+    offTargetScale = Number(73, 0.4, 1), shrinkSmallHits = Boolean(74), smallHitPercent = Number(75, 0.1, 0.9),
     fontSize = Number(7, 10, 48), duration = Number(8, 0.5, 4),
     floatDistance = Number(9, 10, 120), scrollSpeed = Number(10, 0.5, 3),
     fontFace = Choice(11, BD.BUILTIN_FONTS), hideBlizzardFCT = Boolean(12),
@@ -95,6 +101,7 @@ local function ValidValue(key, value)
         if #value > MAX_STRING or value:find("[%z\1-\31\127]") then return false end
         if (key == "fontFace" or key == "incomingFontFace") and value:sub(1, 4) == "lsm:"
             and #value > 4 then return true end
+        if rule.pattern then return value:find(rule.pattern) ~= nil end
         return rule.values[value] == true
     end
     return true
