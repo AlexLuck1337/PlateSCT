@@ -34,6 +34,7 @@ local schema = {
     floatDistance = Number(9, 10, 120), scrollSpeed = Number(10, 0.5, 3),
     fontFace = Choice(11, BD.BUILTIN_FONTS), hideBlizzardFCT = Boolean(12),
     onlyMyDamage = Boolean(13, "modern"), allNameplates = Boolean(14, "modern"),
+    personalSplash = Boolean(86),
     includePetDamage = Boolean(15), showHealing = Boolean(16), showIncoming = Boolean(17),
     incomingOffsetX = Number(18, -200, 200), incomingOffsetY = Number(19, -200, 200),
     debug = Boolean(20), numberStyle = Choice(21, { "retail", "classic", "impact" }),
