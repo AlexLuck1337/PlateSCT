@@ -88,7 +88,9 @@ local function BuildCombat(parent, root)
         end
     end
 
-    layout:Heading(L["Who to show"])
+    layout:Heading(L["Display settings"])
+    layout:Checkbox("onlyCriticalDamage", L["Show only critical damage"],
+        L["Hide non-critical outgoing and incoming damage. Healing and miss text are unaffected."])
     if IsModernAPI() then
         layout:Note(L["Choose whose damage to display under Modern API → Damage mode. Personal mode is experimental."])
     else
@@ -130,12 +132,17 @@ end
 
 local function BuildAppearance(parent, root)
     local layout = NewLayout(parent, root, "appearance")
-    layout:Heading(L["Text style"])
+    layout:Heading(L["Outgoing font"])
     layout:Choice("fontFace", L["Font"], BD.GetFontFaceOptions(),
         L["Game fonts, plus SharedMedia fonts when that library is loaded by another addon."])
     layout:Note(L["Hover over a font to preview 12345."])
     layout:Note(L["Only fonts inside the WoW folder can load. SharedMedia fonts appear when another addon provides them."])
     layout:Slider("fontSize", L["Font size"], 10, 48, 1, tostring)
+    layout:Heading(L["Incoming font"])
+    layout:Choice("incomingFontFace", L["Font"], BD.GetFontFaceOptions(),
+        L["Game fonts, plus SharedMedia fonts when that library is loaded by another addon."])
+    layout:Slider("incomingFontSize", L["Font size"], 10, 48, 1, tostring)
+    layout:Heading(L["Text style"])
     layout:Checkbox("useSchoolColors", L["Color by damage school"],
         L["Tint numbers by school (fire orange, frost blue, and so on). Off keeps the default yellow."])
     layout:Checkbox({
@@ -414,6 +421,12 @@ local function BuildPreferences(layout, root)
         BD:ShowTestNumbers()
     end)
     layout:Heading(L["Maintenance"])
+    layout:Action("exportSettings", L["Export Settings"], L["Copy all settings supported by this client."], function()
+        root:ShowSettingsTransfer(false)
+    end)
+    layout:Action("importSettings", L["Import Settings"], L["Preview and apply settings from a string."], function()
+        root:ShowSettingsTransfer(true)
+    end)
     layout:Action("resetDefaults", L["Reset Defaults"], L["Restore every PlateSCT setting to its default."], function()
         root:ConfirmReset()
     end)

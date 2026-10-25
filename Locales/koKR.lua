@@ -103,7 +103,7 @@ L["Show the PlateSCT icon on the minimap. Click it to open settings."] = "미니
 L["Click to open settings."] = "클릭하면 설정을 엽니다."
 L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."] =
     "적 이름표가 꺼져 있습니다. PlateSCT가 숫자를 표시하려면 이름표가 필요합니다.\nV 키(기본값)를 누르거나 인터페이스 → 게임 → 이름에서 켜세요."
-L["Who to show"] = "표시할 피해 출처"
+L["Display settings"] = "표시 설정"
 L["Only my damage"] = "내가 준 피해만 표시"
 L["Show hits when a recent cast or auto-attack matches the nameplate. Midnight cannot prove who dealt the hit in a group."] =
     "최근 시전이나 자동 공격이 해당 이름표와 일치하면 피해를 표시합니다. Midnight에서는 파티 내 피해를 누가 주었는지 확인할 수 없습니다."
@@ -380,3 +380,35 @@ L["Your WoW API"] = "내 WoW API"
 -- Translation feedback
 L["This translation was generated with AI. If you find inconsistent terminology or incorrect wording, please report it through GitHub Issues. Thank you for your help! Translation contributors will be credited."] =
     "이 번역은 AI로 생성되었습니다. 용어가 일관되지 않거나 표현이 부정확한 부분을 발견하면 GitHub Issues에 알려 주세요. 도와주셔서 감사합니다! 번역에 기여하신 분의 이름을 명시해 감사의 뜻을 전하겠습니다."
+
+-- Settings import / export
+L["Export Settings"] = "설정 내보내기"
+L["Import Settings"] = "설정 가져오기"
+L["Copy all settings supported by this client."] = "전투 설정을 복사합니다. 언어와 이 설정 창은 이 캐릭터에 남습니다."
+L["Preview and apply settings from a string."] = "문자열의 설정을 미리 확인하고 적용합니다."
+L["Validate string"] = "문자열 검사"
+L["Apply settings"] = "설정 적용"
+L["Source: %s (PlateSCT %s)"] = "출처: %s (PlateSCT %s)"
+L["Changes: %d shared, %d Modern API. Ignored: %d."] = "변경: 공통 %d개, Modern API %d개. 무시됨: %d개."
+L["Missing settings stay unchanged."] = "누락된 설정은 변경되지 않습니다."
+L["Your Modern API settings will stay unchanged."] = "현재 Modern API 설정은 변경되지 않습니다."
+L["Recommended damage schools will follow your current class."] = "추천 피해 속성은 현재 직업에 맞게 조정됩니다."
+L["Settings imported."] = "설정을 가져왔습니다."
+L["No settings changed."] = "변경된 설정이 없습니다."
+L["Paste a settings string, then validate it before applying."] = "설정 문자열을 붙여넣고 검사한 후 적용하세요."
+L["Press Ctrl+C to copy the settings string."] = "Ctrl+C를 눌러 설정 문자열을 복사하세요."
+L["Invalid settings string."] = "잘못된 설정 문자열입니다."
+L["Settings string exceeds the supported size limits."] = "설정 문자열이 지원되는 크기 제한을 초과합니다."
+L["Unsupported settings format. Update PlateSCT."] = "지원되지 않는 설정 형식입니다. PlateSCT를 업데이트하세요."
+L["Settings string is incomplete or damaged."] = "설정 문자열이 불완전하거나 손상되었습니다."
+L["Duplicate or misplaced setting: %s."] = "중복되거나 잘못 배치된 설정: %s."
+L["Invalid setting: %s."] = "잘못된 설정: %s."
+L["Settings schema is incomplete. Update PlateSCT."] = "설정 구조가 불완전합니다. PlateSCT를 업데이트하세요."
+L["Settings sharing is unavailable on this client."] = "이 클라이언트에서는 설정 공유를 사용할 수 없습니다."
+L["Settings import failed; previous settings were restored."] = "설정을 가져오지 못했습니다. 이전 설정으로 복원했습니다."
+
+-- Independent fonts and critical damage filter
+L["Outgoing font"] = "입힌 피해 글꼴"
+L["Incoming font"] = "받은 피해 글꼴"
+L["Show only critical damage"] = "치명타 피해만 표시"
+L["Hide non-critical outgoing and incoming damage. Healing and miss text are unaffected."] = "치명타가 아닌 입힌 피해와 받은 피해를 숨깁니다. 치유 및 빗나감 텍스트에는 영향을 주지 않습니다."

@@ -13,6 +13,9 @@ BD.DEFAULTS = {
     scrollSpeed = 1.0,
     spreadNumbers = true, -- push overlapping numbers apart, also across nameplates
     fontFace = "game",
+    incomingFontFace = "game",
+    incomingFontSize = 14,
+    onlyCriticalDamage = false,
     hideBlizzardFCT = true,
     onlyMyDamage = true,
     allNameplates = false,
@@ -41,7 +44,7 @@ BD.DEFAULTS = {
     showMinimapButton = true,
     minimapAngle = 200,
     locale = "auto",
-    layoutRevision = 13,
+    layoutRevision = 14,
     attributionAuto = true,
     attributionManual = "balanced",
     attributionOpenWorld = "loose",
@@ -384,3 +387,4 @@ BD.STRICTNESS_ORDER = {
 if BD.API and BD.API.ApplyFlavorDefaults then
     BD.API.ApplyFlavorDefaults(BD.DEFAULTS)
 end
+BD.DEFAULTS.incomingFontSize = BD.DEFAULTS.fontSize
