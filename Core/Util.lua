@@ -618,17 +618,18 @@ function BD:SchoolFilterMatchesClass()
     return self:GetSchoolFilterMask() == self:GetClassSchoolMask()
 end
 
-function BD:ApplySchoolFilterRecommended()
-    if not self.db then
+function BD:ApplySchoolFilterRecommended(settings)
+    settings = settings or self.db
+    if not settings then
         return
     end
     local classMask = self:GetClassSchoolMask()
     local schools = BD.DAMAGE_SCHOOLS
     for index = 1, #schools do
         local school = schools[index]
-        self.db[school.dbKey] = bit.band(classMask, school.bit) ~= 0
+        settings[school.dbKey] = bit.band(classMask, school.bit) ~= 0
     end
-    self.db.schoolFilterRecommended = true
+    settings.schoolFilterRecommended = true
 end
 
 --- Modern school filter. Fail-open when disabled, missing, or secret/inaccessible.

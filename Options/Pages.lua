@@ -104,7 +104,9 @@ local function BuildCombat(parent, root)
         end
     end
 
-    layout:Heading(L["Who to show"])
+    layout:Heading(L["Display settings"])
+    layout:Checkbox("onlyCriticalDamage", L["Show only critical damage"],
+        L["Hide non-critical outgoing and incoming damage. Healing and miss text are unaffected."])
     if IsModernAPI() then
         layout:Note(L["Choose whose damage to display under Modern API → Damage mode. Personal mode is experimental."])
     else
@@ -149,8 +151,6 @@ local function BuildCombat(parent, root)
     if IsModernAPI() then
         layout:Note(L["In raids and Mythic+ some amounts are secret, so the threshold hides those hits visually instead of skipping them."])
     end
-    layout:Checkbox("critsOnly", L["Crits only"],
-        L["Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."])
     layout:Checkbox("shrinkSmallHits", L["Shrink small hits"],
         L["Show hits well below your recent average smaller instead of hiding them."])
     layout:When(function() return BD.db.shrinkSmallHits end, function()
@@ -186,12 +186,17 @@ end
 
 local function BuildAppearance(parent, root)
     local layout = NewLayout(parent, root, "appearance")
-    layout:Heading(L["Text style"])
+    layout:Heading(L["Outgoing font"])
     layout:Choice("fontFace", L["Font"], BD.GetFontFaceOptions(),
         L["Game fonts, plus SharedMedia fonts when that library is loaded by another addon."])
     layout:Note(L["Hover over a font to preview 12345."])
     layout:Note(L["Only fonts inside the WoW folder can load. SharedMedia fonts appear when another addon provides them."])
     layout:Slider("fontSize", L["Font size"], 10, 48, 1, tostring)
+    layout:Heading(L["Incoming font"])
+    layout:Choice("incomingFontFace", L["Font"], BD.GetFontFaceOptions(),
+        L["Game fonts, plus SharedMedia fonts when that library is loaded by another addon."])
+    layout:Slider("incomingFontSize", L["Font size"], 10, 48, 1, tostring)
+    layout:Heading(L["Text style"])
     layout:Checkbox("useSchoolColors", L["Color by damage school"],
         L["Tint numbers by school (fire orange, frost blue, and so on). Off keeps the default yellow."])
     layout:Checkbox({
@@ -472,6 +477,12 @@ local function BuildPreferences(layout, root)
         BD:ShowTestNumbers()
     end)
     layout:Heading(L["Maintenance"])
+    layout:Action("exportSettings", L["Export Settings"], L["Copy all settings supported by this client."], function()
+        root:ShowSettingsTransfer(false)
+    end)
+    layout:Action("importSettings", L["Import Settings"], L["Preview and apply settings from a string."], function()
+        root:ShowSettingsTransfer(true)
+    end)
     layout:Action("resetDefaults", L["Reset Defaults"], L["Restore every PlateSCT setting to its default."], function()
         root:ConfirmReset()
     end)
@@ -502,7 +513,7 @@ end
 
 local function BuildWhatsNew(layout)
     layout:Heading(L["Less clutter"])
-    layout:Note(L["Dim or hide numbers on enemies you are not targeting, show crits only, shrink small hits, and ignore chosen spells. Find them on the Combat page."])
+    layout:Note(L["Dim or hide numbers on enemies you are not targeting, shrink small hits, and ignore chosen spells. Find them on the Combat page."])
     layout:Heading(L["Combine hits"])
     layout:Note(L["Rapid hits on the same nameplate can merge into one growing number with a hit count. Turn it on under Combat → Combine hits."])
     layout:Heading(L["Impact number style"])

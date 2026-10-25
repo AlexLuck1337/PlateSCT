@@ -103,12 +103,12 @@ L["Show the PlateSCT icon on the minimap. Click it to open settings."] = "미니
 L["Click to open settings."] = "클릭하면 설정을 엽니다."
 L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."] =
     "적 이름표가 꺼져 있습니다. PlateSCT가 숫자를 표시하려면 이름표가 필요합니다.\nV 키(기본값)를 누르거나 인터페이스 → 게임 → 이름에서 켜세요."
-L["Who to show"] = "표시할 피해 출처"
+L["Display settings"] = "표시 설정"
 
 -- What's new: less clutter
 L["Less clutter"] = "더 깔끔한 화면"
-L["Dim or hide numbers on enemies you are not targeting, show crits only, shrink small hits, and ignore chosen spells. Find them on the Combat page."] =
-    "대상이 아닌 적의 숫자를 흐리게 하거나 숨기고, 치명타만 표시하고, 작은 적중을 축소하고, 선택한 주문을 무시할 수 있습니다. 전투 페이지에서 설정하세요."
+L["Dim or hide numbers on enemies you are not targeting, shrink small hits, and ignore chosen spells. Find them on the Combat page."] =
+    "대상이 아닌 적의 숫자를 흐리게 하거나 숨기고, 작은 적중을 축소하고, 선택한 주문을 무시할 수 있습니다. 전투 페이지에서 설정하세요."
 
 
 -- Ignored spells
@@ -129,10 +129,6 @@ L["Small hit below"] = "작은 적중 기준"
 L["%s of average"] = "평균의 %s"
 
 
--- Crits only
-L["Crits only"] = "치명타만"
-L["Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."] =
-    "치명타만 표시합니다. 일반 적중과 치유는 숨겨지며, 면역 같은 빗나감 문구는 계속 표시됩니다."
 
 
 -- Off-target numbers
@@ -449,13 +445,42 @@ L["Your WoW API"] = "내 WoW API"
 L["This translation was generated with AI. If you find inconsistent terminology or incorrect wording, please report it through GitHub Issues. Thank you for your help! Translation contributors will be credited."] =
     "이 번역은 AI로 생성되었습니다. 용어가 일관되지 않거나 표현이 부정확한 부분을 발견하면 GitHub Issues에 알려 주세요. 도와주셔서 감사합니다! 번역에 기여하신 분의 이름을 명시해 감사의 뜻을 전하겠습니다."
 
+-- Settings import / export
+L["Export Settings"] = "설정 내보내기"
+L["Import Settings"] = "설정 가져오기"
+L["Copy all settings supported by this client."] = "전투 설정을 복사합니다. 언어와 이 설정 창은 이 캐릭터에 남습니다."
+L["Preview and apply settings from a string."] = "문자열의 설정을 미리 확인하고 적용합니다."
+L["Validate string"] = "문자열 검사"
+L["Apply settings"] = "설정 적용"
+L["Source: %s (PlateSCT %s)"] = "출처: %s (PlateSCT %s)"
+L["Changes: %d shared, %d Modern API. Ignored: %d."] = "변경: 공통 %d개, Modern API %d개. 무시됨: %d개."
+L["Missing settings stay unchanged."] = "누락된 설정은 변경되지 않습니다."
+L["Your Modern API settings will stay unchanged."] = "현재 Modern API 설정은 변경되지 않습니다."
+L["Recommended damage schools will follow your current class."] = "추천 피해 속성은 현재 직업에 맞게 조정됩니다."
+L["Settings imported."] = "설정을 가져왔습니다."
+L["No settings changed."] = "변경된 설정이 없습니다."
+L["Paste a settings string, then validate it before applying."] = "설정 문자열을 붙여넣고 검사한 후 적용하세요."
+L["Press Ctrl+C to copy the settings string."] = "Ctrl+C를 눌러 설정 문자열을 복사하세요."
+L["Invalid settings string."] = "잘못된 설정 문자열입니다."
+L["Settings string exceeds the supported size limits."] = "설정 문자열이 지원되는 크기 제한을 초과합니다."
+L["Unsupported settings format. Update PlateSCT."] = "지원되지 않는 설정 형식입니다. PlateSCT를 업데이트하세요."
+L["Settings string is incomplete or damaged."] = "설정 문자열이 불완전하거나 손상되었습니다."
+L["Duplicate or misplaced setting: %s."] = "중복되거나 잘못 배치된 설정: %s."
+L["Invalid setting: %s."] = "잘못된 설정: %s."
+L["Settings schema is incomplete. Update PlateSCT."] = "설정 구조가 불완전합니다. PlateSCT를 업데이트하세요."
+L["Settings sharing is unavailable on this client."] = "이 클라이언트에서는 설정 공유를 사용할 수 없습니다."
+L["Settings import failed; previous settings were restored."] = "설정을 가져오지 못했습니다. 이전 설정으로 복원했습니다."
+
+-- Independent fonts and critical damage filter
+L["Outgoing font"] = "입힌 피해 글꼴"
+L["Incoming font"] = "받은 피해 글꼴"
+L["Show only critical damage"] = "치명타 피해만 표시"
+L["Hide non-critical outgoing and incoming damage. Healing and miss text are unaffected."] = "치명타가 아닌 입힌 피해와 받은 피해를 숨깁니다. 치유 및 빗나감 텍스트에는 영향을 주지 않습니다."
 -- What's new: combine hits
 L["Rapid hits on the same nameplate can merge into one growing number with a hit count. Turn it on under Combat → Combine hits."] =
     "같은 이름표에 빠르게 들어온 적중을 하나의 증가하는 숫자와 적중 횟수로 합칠 수 있습니다. 전투 → 적중 합치기에서 켜세요."
-
 -- Reduce clutter
 L["Reduce clutter"] = "화면 정리"
-
 -- Combine hits: merge pop
 L["Pop on each merge"] = "합칠 때마다 튀어나오기"
 L["Briefly enlarge the number every time another hit merges into it. Turn off for a calmer display."] =

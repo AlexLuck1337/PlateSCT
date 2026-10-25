@@ -357,7 +357,7 @@ local function SetAvailable(control)
 end
 
 local function OptionsFor(control)
-    if control.binding == "fontFace" and BD.GetFontFaceOptions then
+    if (control.binding == "fontFace" or control.binding == "incomingFontFace") and BD.GetFontFaceOptions then
         control.options = BD.GetFontFaceOptions()
     end
     return type(control.options) == "function" and control.options() or control.options or {}
@@ -384,7 +384,8 @@ local function HideFontPreview(menu, owner)
 end
 
 local function ShowFontPreview(menu, entry)
-    if not menu.owner or menu.owner.binding ~= "fontFace" or not menu:IsShown() then return end
+    if not menu.owner or (menu.owner.binding ~= "fontFace" and menu.owner.binding ~= "incomingFontFace")
+        or not menu:IsShown() then return end
     if GameTooltip then GameTooltip:Hide() end
     local preview = menu.fontPreview
     if not preview then
@@ -401,8 +402,9 @@ local function ShowFontPreview(menu, entry)
         preview.number:SetWordWrap(false)
         menu.fontPreview = preview
     end
-    local preset = BD:GetStylePreset()
-    local size = (BD.db.fontSize or BD.DEFAULTS.fontSize) * preset.fontScale
+    local incoming = menu.owner.binding == "incomingFontFace"
+    local preset = BD:GetStylePreset(incoming and BD.db.numberStyle == "impact" and "retail" or nil)
+    local size = ((incoming and BD.db.incomingFontSize) or BD.db.fontSize or BD.DEFAULTS.fontSize) * preset.fontScale
     BD.SafeSetFont(preview.number, BD.ResolveFontPath(entry.optionId), size, preset.fontFlags)
     local shadow = preset.shadowOffset
     preview.number:SetShadowOffset(shadow and shadow[1] or 0, shadow and shadow[2] or 0)
