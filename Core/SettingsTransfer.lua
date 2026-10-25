@@ -30,6 +30,7 @@ local schema = {
     onlyMyDamage = Boolean(13, "modern"), allNameplates = Boolean(14, "modern"),
     includePetDamage = Boolean(15), showHealing = Boolean(16), showIncoming = Boolean(17),
     incomingOffsetX = Number(18, -200, 200), incomingOffsetY = Number(19, -200, 200),
+    killSound = Choice(87, BD.KILL_SOUNDS), killSoundChannel = Choice(88, BD.SOUND_CHANNELS), killSoundEnabled = Boolean(89),
     debug = Boolean(20), numberStyle = Choice(21, { "retail", "classic", "impact" }),
     retailOffsetX = Number(22, -200, 200), retailOffsetY = Number(23, -200, 200),
     classicOffsetX = Number(24, -200, 200), classicOffsetY = Number(25, -200, 200),

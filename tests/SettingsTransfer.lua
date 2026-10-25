@@ -98,6 +98,7 @@ local function configured(BD)
         thousandSeparator = "dot", iconPosition = "bottom", fontFace = "lsm:字体 Français;%=!~ +",
         incomingFontFace = "lsm:Incoming font",
         numberStyle = "impact", impactPosition = "top", animHit = "rainfall", animCrit = "classicSlap",
+        killSound = "readyCheck", killSoundChannel = "Ambience",
         animMiss = "fountain", locale = "frFR", critSoundChannel = "Music", hugeCritSoundChannel = "SFX",
     }
     for key, value in pairs(BD.DEFAULTS) do
