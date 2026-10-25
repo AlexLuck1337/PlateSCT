@@ -32,6 +32,7 @@ local schema = {
     incomingOffsetX = Number(18, -200, 200), incomingOffsetY = Number(19, -200, 200),
     debug = Boolean(20), numberStyle = Choice(21, { "retail", "classic", "impact" }),
     retailOffsetX = Number(22, -200, 200), retailOffsetY = Number(23, -200, 200),
+    spreadNumbers = Boolean(90),
     classicOffsetX = Number(24, -200, 200), classicOffsetY = Number(25, -200, 200),
     impactOffsetX = Number(26, -200, 200), impactOffsetY = Number(27, -200, 200),
     impactPosition = Choice(28, { "side", "top" }), useSchoolColors = Boolean(29),
