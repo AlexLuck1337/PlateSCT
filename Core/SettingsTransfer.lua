@@ -17,6 +17,8 @@ local function Choice(id, options, scope)
     for _, option in ipairs(options) do values[type(option) == "table" and option.id or option] = true end
     return { id = id, kind = "string", scope = scope or "shared", values = values }
 end
+-- Free text checked against a Lua pattern (spell lists, RRGGBB colors).
+local function Text(id, pattern) return { id = id, kind = "string", scope = "shared", pattern = pattern } end
 local strictness = { "loose", "balanced", "strict", "veryStrict" }
 -- Wire IDs are permanent: never renumber/reuse them or change their ownership.
 -- Add new preferences with unused IDs; unknown IDs are safely skipped by readers.
@@ -28,6 +30,10 @@ local schema = {
     showSpellIcon = Boolean(5), iconPosition = Choice(6, BD.ICON_POSITIONS),
     fontSize = Number(7, 10, 48), duration = Number(8, 0.5, 4),
     floatDistance = Number(9, 10, 120), scrollSpeed = Number(10, 0.5, 3),
+    animAuto = Choice(76, BD.ANIM_STYLES_AUTO), critColor = Text(77, "^%x%x%x%x%x%x$"), fontOutline = Choice(78, BD.OUTLINE_OPTIONS),
+    hitColor = Text(79, "^%x%x%x%x%x%x$"), missColor = Text(80, "^%x%x%x%x%x%x$"), spellLabel = Choice(81, BD.SPELL_LABEL_OPTIONS),
+    spellNameMaxLength = Number(82, 0, 30), spellNamePosition = Choice(83, BD.SPELL_NAME_POSITIONS),
+    spellNameScale = Number(84, 0.4, 1), useCustomColors = Boolean(85),
     fontFace = Choice(11, BD.BUILTIN_FONTS), hideBlizzardFCT = Boolean(12),
     onlyMyDamage = Boolean(13, "modern"), allNameplates = Boolean(14, "modern"),
     includePetDamage = Boolean(15), showHealing = Boolean(16), showIncoming = Boolean(17),
@@ -97,6 +103,7 @@ local function ValidValue(key, value)
         if #value > MAX_STRING or value:find("[%z\1-\31\127]") then return false end
         if (key == "fontFace" or key == "incomingFontFace") and value:sub(1, 4) == "lsm:"
             and #value > 4 then return true end
+        if rule.pattern then return value:find(rule.pattern) ~= nil end
         return rule.values[value] == true
     end
     return true
