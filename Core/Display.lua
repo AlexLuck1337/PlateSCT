@@ -399,7 +399,7 @@ local function ConfigureFrameCommon(self, frame, preset, isCrit, hitKind, isInco
     if defaultFontSize < 1 then
         defaultFontSize = 14
     end
-    local fontSize = self.db.fontSize or defaultFontSize
+    local fontSize = (isIncoming and self.db.incomingFontSize) or self.db.fontSize or defaultFontSize
     local spacingScale = fontSize / defaultFontSize
     frame.impactSpacingScale = frame.numberStyle == "impact" and fontSize / 14 or nil
     if frame.impactSpacingScale then
@@ -1135,6 +1135,9 @@ function BD:ReleaseMotionPreviews()
 end
 
 function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isHeal, spellIcon, hitKind, spellId)
+    if self.db.onlyCriticalDamage and not isHeal and hitKind ~= "miss" and not isCrit then
+        return
+    end
     local plate = BD.GetNamePlateFrame(unit)
     if not plate then
         self:DebugPrint("No nameplate for", unit)
@@ -1317,6 +1320,9 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
 end
 
 function BD:ShowIncoming(text, r, g, b, amountForThreshold, isCrit, hitKind)
+    if self.db.onlyCriticalDamage and hitKind ~= "miss" and not isCrit then
+        return
+    end
     local anchor, relPoint, unitToken = BD.GetIncomingAnchor()
     if not anchor then
         return
@@ -1352,8 +1358,8 @@ function BD:ShowIncoming(text, r, g, b, amountForThreshold, isCrit, hitKind)
     end
     local spawnY = oy + baseY
 
-    local fontSize = (self.db.fontSize or self.DEFAULTS.fontSize) * preset.fontScale
-    local fontPath = BD.ResolveFontPath(self.db.fontFace)
+    local fontSize = (self.db.incomingFontSize or self.db.fontSize or self.DEFAULTS.fontSize) * preset.fontScale
+    local fontPath = BD.ResolveFontPath(self.db.incomingFontFace or self.db.fontFace)
     fontPath = BD.SafeSetFont(frame.text, fontPath, fontSize, BD:GetFontFlags(preset))
     if preset.shadowOffset then
         frame.text:SetShadowOffset(preset.shadowOffset[1], preset.shadowOffset[2])

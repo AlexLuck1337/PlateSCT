@@ -87,7 +87,7 @@ L["Show the PlateSCT icon on the minimap. Click it to open settings."] =
 L["Click to open settings."] = "Klicken, um die Einstellungen zu öffnen."
 L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."] =
     "Feindliche Namensplaketten sind deaktiviert. PlateSCT braucht sie, um Zahlen anzuzeigen.\nDrückt V (Standard) oder aktiviert sie unter Interface → Spiel → Namen."
-L["Who to show"] = "Wen anzeigen"
+L["Display settings"] = "Anzeigeeinstellungen"
 L["Only my damage"] = "Nur mein Schaden"
 L["Show hits on your current target when you recently cast or auto-attacked. Midnight cannot prove who dealt the hit in a group."] =
     "Zeigt Treffer auf eurem aktuellen Ziel, wenn ihr kürzlich gezaubert oder auto-angegriffen habt. Midnight kann in einer Gruppe nicht beweisen, wer den Treffer verursacht hat."
@@ -369,13 +369,42 @@ L["Turn off Auto-switch by instance to choose manual strictness."] = "Deaktivier
 L["Unreadable amounts cannot trigger threshold sounds. Unreadable damage schools are always allowed by the school filter."] = "Nicht lesbare Werte lösen keine Schwellwerttöne aus. Nicht lesbare Schadensschulen werden vom Filter immer zugelassen."
 L["Use gentle fades and row reveals in this settings window. Combat animation is unaffected."] = "Verwendet sanftes Einblenden und Zeilenanimationen im Einstellungsfenster. Kampfanimationen bleiben unverändert."
 
+-- Settings import / export
+L["Export Settings"] = "Einstellungen exportieren"
+L["Import Settings"] = "Einstellungen importieren"
+L["Copy all settings supported by this client."] = "Kopiert die Kampftext-Einstellungen. Sprache und dieses Fenster bleiben bei diesem Charakter."
+L["Preview and apply settings from a string."] = "Einstellungen aus einer Zeichenfolge prüfen und anwenden."
+L["Validate string"] = "Zeichenfolge prüfen"
+L["Apply settings"] = "Anwenden"
+L["Source: %s (PlateSCT %s)"] = "Quelle: %s (PlateSCT %s)"
+L["Changes: %d shared, %d Modern API. Ignored: %d."] = "Änderungen: %d gemeinsam, %d moderne API. Übersprungen: %d."
+L["Missing settings stay unchanged."] = "Fehlende Einstellungen bleiben unverändert."
+L["Your Modern API settings will stay unchanged."] = "Deine Einstellungen der modernen API bleiben unverändert."
+L["Recommended damage schools will follow your current class."] = "Empfohlene Schadensschulen richten sich nach deiner aktuellen Klasse."
+L["Settings imported."] = "Einstellungen importiert."
+L["No settings changed."] = "Keine Einstellungen geändert."
+L["Paste a settings string, then validate it before applying."] = "Füge eine Einstellungszeichenfolge ein und prüfe sie vor dem Anwenden."
+L["Press Ctrl+C to copy the settings string."] = "Drücke Strg+C, um die Einstellungszeichenfolge zu kopieren."
+L["Invalid settings string."] = "Ungültige Einstellungszeichenfolge."
+L["Settings string exceeds the supported size limits."] = "Die Einstellungszeichenfolge überschreitet die unterstützten Größenlimits."
+L["Unsupported settings format. Update PlateSCT."] = "Nicht unterstütztes Einstellungsformat. Aktualisiere PlateSCT."
+L["Settings string is incomplete or damaged."] = "Die Einstellungszeichenfolge ist unvollständig oder beschädigt."
+L["Duplicate or misplaced setting: %s."] = "Doppelte oder falsch zugeordnete Einstellung: %s."
+L["Invalid setting: %s."] = "Ungültige Einstellung: %s."
+L["Settings schema is incomplete. Update PlateSCT."] = "Das Einstellungsschema ist unvollständig. Aktualisiere PlateSCT."
+L["Settings sharing is unavailable on this client."] = "Das Teilen von Einstellungen ist auf diesem Client nicht verfügbar."
+L["Settings import failed; previous settings were restored."] = "Der Import ist fehlgeschlagen; die bisherigen Einstellungen wurden wiederhergestellt."
+
+-- Independent fonts and critical damage filter
+L["Outgoing font"] = "Schrift für verursachten Schaden"
+L["Incoming font"] = "Schrift für erlittenen Schaden"
+L["Show only critical damage"] = "Nur kritischen Schaden anzeigen"
+L["Hide non-critical outgoing and incoming damage. Healing and miss text are unaffected."] = "Blendet nichtkritischen verursachten und erlittenen Schaden aus. Heilung und Fehltext bleiben unverändert."
 -- What's new: combine hits
 L["Rapid hits on the same nameplate can merge into one growing number with a hit count. Turn it on under Combat → Combine hits."] =
     "Schnelle Treffer auf derselben Namensplakette können zu einer wachsenden Zahl mit Trefferanzahl zusammengefasst werden. Aktiviert es unter Kampf → Treffer zusammenfassen."
-
 -- Reduce clutter
 L["Reduce clutter"] = "Weniger Durcheinander"
-
 -- Combine hits: merge pop
 L["Pop on each merge"] = "Bei jedem Zusammenfassen aufploppen"
 L["Briefly enlarge the number every time another hit merges into it. Turn off for a calmer display."] =

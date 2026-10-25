@@ -87,7 +87,7 @@ L["Show the PlateSCT icon on the minimap. Click it to open settings."] =
 L["Click to open settings."] = "Нажмите, чтобы открыть настройки."
 L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."] =
     "Индикаторы врагов выключены. PlateSCT нужны они, чтобы показывать числа.\nНажмите V (по умолчанию) или включите их в Интерфейс → Игра → Имена."
-L["Who to show"] = "Что показывать"
+L["Display settings"] = "Настройки отображения"
 L["Only my damage"] = "Только мой урон"
 L["Show hits on your current target when you recently cast or auto-attacked. Midnight cannot prove who dealt the hit in a group."] =
     "Показывает удары по текущей цели, если вы недавно произнесли заклинание или автоатаковали. Midnight не может доказать, кто нанёс удар в группе."
@@ -369,13 +369,42 @@ L["Turn off Auto-switch by instance to choose manual strictness."] = "Отклю
 L["Unreadable amounts cannot trigger threshold sounds. Unreadable damage schools are always allowed by the school filter."] = "Недоступные значения не вызывают звуки по порогу. Урон с недоступной школой всегда проходит фильтр."
 L["Use gentle fades and row reveals in this settings window. Combat animation is unaffected."] = "Плавное появление окна и строк настроек. Анимация боевых чисел не меняется."
 
+-- Settings import / export
+L["Export Settings"] = "Экспорт настроек"
+L["Import Settings"] = "Импорт настроек"
+L["Copy all settings supported by this client."] = "Копирует настройки текста боя. Язык и это окно остаются у этого персонажа."
+L["Preview and apply settings from a string."] = "Проверка и применение настроек из строки."
+L["Validate string"] = "Проверить строку"
+L["Apply settings"] = "Применить настройки"
+L["Source: %s (PlateSCT %s)"] = "Источник: %s (PlateSCT %s)"
+L["Changes: %d shared, %d Modern API. Ignored: %d."] = "Изменения: %d общих, %d для Modern API. Пропущено: %d."
+L["Missing settings stay unchanged."] = "Отсутствующие настройки не изменятся."
+L["Your Modern API settings will stay unchanged."] = "Ваши настройки Modern API не изменятся."
+L["Recommended damage schools will follow your current class."] = "Рекомендуемые школы урона будут соответствовать вашему текущему классу."
+L["Settings imported."] = "Настройки импортированы."
+L["No settings changed."] = "Настройки не изменились."
+L["Paste a settings string, then validate it before applying."] = "Вставьте строку настроек и проверьте её перед применением."
+L["Press Ctrl+C to copy the settings string."] = "Нажмите Ctrl+C, чтобы скопировать строку настроек."
+L["Invalid settings string."] = "Неверная строка настроек."
+L["Settings string exceeds the supported size limits."] = "Строка настроек превышает допустимый размер."
+L["Unsupported settings format. Update PlateSCT."] = "Неподдерживаемый формат настроек. Обновите PlateSCT."
+L["Settings string is incomplete or damaged."] = "Строка настроек неполная или повреждена."
+L["Duplicate or misplaced setting: %s."] = "Повторяющаяся или неверно размещённая настройка: %s."
+L["Invalid setting: %s."] = "Неверная настройка: %s."
+L["Settings schema is incomplete. Update PlateSCT."] = "Схема настроек неполная. Обновите PlateSCT."
+L["Settings sharing is unavailable on this client."] = "Обмен настройками недоступен в этом клиенте."
+L["Settings import failed; previous settings were restored."] = "Импорт не удался; предыдущие настройки восстановлены."
+
+-- Independent fonts and critical damage filter
+L["Outgoing font"] = "Шрифт наносимого урона"
+L["Incoming font"] = "Шрифт получаемого урона"
+L["Show only critical damage"] = "Показывать только критический урон"
+L["Hide non-critical outgoing and incoming damage. Healing and miss text are unaffected."] = "Скрывает некритический наносимый и получаемый урон. Исцеление и текст промахов не затрагиваются."
 -- What's new: combine hits
 L["Rapid hits on the same nameplate can merge into one growing number with a hit count. Turn it on under Combat → Combine hits."] =
     "Быстрые удары по одному индикатору можно объединять в одно растущее число со счётчиком ударов. Включите в разделе «Бой» → «Объединение ударов»."
-
 -- Reduce clutter
 L["Reduce clutter"] = "Меньше лишнего"
-
 -- Combine hits: merge pop
 L["Pop on each merge"] = "Всплеск при каждом объединении"
 L["Briefly enlarge the number every time another hit merges into it. Turn off for a calmer display."] =
