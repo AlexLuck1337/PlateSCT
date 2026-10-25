@@ -11,9 +11,18 @@ function BD:ResetToDefaults()
             self.db[key] = value
         end
     end
+    self:RefreshSettings()
+end
+
+-- Reapply preferences after a complete, validated update; never rerun login migrations.
+function BD:RefreshSettings()
     self:ApplyLocale()
     self:RebuildThresholdCurve()
-    self:ApplyBlizzardFCTSetting()
+    if self.db.hideBlizzardFCT then
+        self:ApplyBlizzardFCTSetting()
+    else
+        self:RestoreBlizzardFCTSetting()
+    end
     if BD.API.IsModern() and self.RefreshScenario then
         self:RefreshScenario()
     end
@@ -109,6 +118,12 @@ local function ApplyLayoutMigrations()
             BD.db.attributionRaid = BD.DEFAULTS.attributionRaid
         end
         BD.db.layoutRevision = 13
+    end
+    if (BD.db.layoutRevision or 1) < 14 then
+        -- Preserve the shared font appearance before making incoming independent.
+        BD.db.incomingFontFace = BD.db.fontFace
+        BD.db.incomingFontSize = BD.db.fontSize
+        BD.db.layoutRevision = 14
     end
     if BD.API.IsModern() and BD.db.onlyMyDamage then
         BD.db.allNameplates = false
