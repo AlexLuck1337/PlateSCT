@@ -110,12 +110,12 @@ L["Show the PlateSCT icon on the minimap. Click it to open settings."] =
 L["Click to open settings."] = "Click to open settings."
 L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."] =
     "Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."
-L["Who to show"] = "Who to show"
+L["Display settings"] = "Display settings"
 
 -- What's new: less clutter
 L["Less clutter"] = "Less clutter"
-L["Dim or hide numbers on enemies you are not targeting, show crits only, shrink small hits, and ignore chosen spells. Find them on the Combat page."] =
-    "Dim or hide numbers on enemies you are not targeting, show crits only, shrink small hits, and ignore chosen spells. Find them on the Combat page."
+L["Dim or hide numbers on enemies you are not targeting, shrink small hits, and ignore chosen spells. Find them on the Combat page."] =
+    "Dim or hide numbers on enemies you are not targeting, shrink small hits, and ignore chosen spells. Find them on the Combat page."
 
 
 -- Ignored spells
@@ -136,10 +136,6 @@ L["Small hit below"] = "Small hit below"
 L["%s of average"] = "%s of average"
 
 
--- Crits only
-L["Crits only"] = "Crits only"
-L["Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."] =
-    "Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."
 
 
 -- Off-target numbers
@@ -548,13 +544,42 @@ L["Unsupported client - combat text unavailable"] = "Unsupported client - combat
 L["Use gentle fades and row reveals in this settings window. Combat animation is unaffected."] = "Use gentle fades and row reveals in this settings window. Combat animation is unaffected."
 L["Your WoW API"] = "Your WoW API"
 
+-- Settings import / export
+L["Export Settings"] = "Export Settings"
+L["Import Settings"] = "Import Settings"
+L["Copy all settings supported by this client."] = "Copy combat settings. Language and this settings window stay on this character."
+L["Preview and apply settings from a string."] = "Preview and apply settings from a string."
+L["Validate string"] = "Validate string"
+L["Apply settings"] = "Apply settings"
+L["Source: %s (PlateSCT %s)"] = "Source: %s (PlateSCT %s)"
+L["Changes: %d shared, %d Modern API. Ignored: %d."] = "Changes: %d shared, %d Modern API. Ignored: %d."
+L["Missing settings stay unchanged."] = "Missing settings stay unchanged."
+L["Your Modern API settings will stay unchanged."] = "Your Modern API settings will stay unchanged."
+L["Recommended damage schools will follow your current class."] = "Recommended damage schools will follow your current class."
+L["Settings imported."] = "Settings imported."
+L["No settings changed."] = "No settings changed."
+L["Paste a settings string, then validate it before applying."] = "Paste a settings string, then validate it before applying."
+L["Press Ctrl+C to copy the settings string."] = "Press Ctrl+C to copy the settings string."
+L["Invalid settings string."] = "Invalid settings string."
+L["Settings string exceeds the supported size limits."] = "Settings string exceeds the supported size limits."
+L["Unsupported settings format. Update PlateSCT."] = "Unsupported settings format. Update PlateSCT."
+L["Settings string is incomplete or damaged."] = "Settings string is incomplete or damaged."
+L["Duplicate or misplaced setting: %s."] = "Duplicate or misplaced setting: %s."
+L["Invalid setting: %s."] = "Invalid setting: %s."
+L["Settings schema is incomplete. Update PlateSCT."] = "Settings schema is incomplete. Update PlateSCT."
+L["Settings sharing is unavailable on this client."] = "Settings sharing is unavailable on this client."
+L["Settings import failed; previous settings were restored."] = "Settings import failed; previous settings were restored."
+
+-- Independent fonts and critical damage filter
+L["Outgoing font"] = "Outgoing font"
+L["Incoming font"] = "Incoming font"
+L["Show only critical damage"] = "Show only critical damage"
+L["Hide non-critical outgoing and incoming damage. Healing and miss text are unaffected."] = "Hide non-critical outgoing and incoming damage. Healing and miss text are unaffected."
 -- What's new: combine hits
 L["Rapid hits on the same nameplate can merge into one growing number with a hit count. Turn it on under Combat → Combine hits."] =
     "Rapid hits on the same nameplate can merge into one growing number with a hit count. Turn it on under Combat → Combine hits."
-
 -- Reduce clutter
 L["Reduce clutter"] = "Reduce clutter"
-
 -- Combine hits: merge pop
 L["Pop on each merge"] = "Pop on each merge"
 L["Briefly enlarge the number every time another hit merges into it. Turn off for a calmer display."] =

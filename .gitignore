@@ -41,3 +41,9 @@ tools/
 .runtime/
 tests/
 !tests/styles_spec.lua
+
+# Retain transfer regression coverage; leave other local test artifacts ignored.
+!/tests/
+/tests/*
+!/tests/SettingsTransfer.lua
+!/tests/SettingsTransfer.md

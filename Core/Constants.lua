@@ -3,7 +3,6 @@ local _, BD = ...
 BD.DEFAULTS = {
     enabled = true,
     minDamage = 0,
-    critsOnly = false,
     shrinkSmallHits = false,
     smallHitPercent = 0.5, -- share of the recent average below which a hit is small
     ignoredSpells = "", -- comma-separated spell IDs or names
@@ -21,6 +20,9 @@ BD.DEFAULTS = {
     scrollSpeed = 1.0,
     fontFace = "game",
     fontOutline = "style", -- "style" | "none" | "thin" | "thick"
+    incomingFontFace = "game",
+    incomingFontSize = 14,
+    onlyCriticalDamage = false,
     hideBlizzardFCT = true,
     onlyMyDamage = true,
     personalSplash = false,
@@ -63,7 +65,7 @@ BD.DEFAULTS = {
     showMinimapButton = true,
     minimapAngle = 200,
     locale = "auto",
-    layoutRevision = 13,
+    layoutRevision = 14,
     attributionAuto = true,
     attributionManual = "balanced",
     attributionOpenWorld = "loose",
@@ -459,6 +461,7 @@ BD.STRICTNESS_ORDER = {
 if BD.API and BD.API.ApplyFlavorDefaults then
     BD.API.ApplyFlavorDefaults(BD.DEFAULTS)
 end
+BD.DEFAULTS.incomingFontSize = BD.DEFAULTS.fontSize
 
 -- Starting profiles. Applying one resets every setting, then applies these on top.
 BD.PROFILES = {

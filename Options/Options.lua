@@ -293,6 +293,196 @@ local function CreatePreview(root, content)
     return pane
 end
 
+local function CreateSettingsTransferDialog(root)
+    local dialog = CreateFrame("Frame", nil, root)
+    dialog:Hide(); dialog:SetAllPoints(root); dialog:EnableMouse(true)
+    dialog:SetFrameLevel(root:GetFrameLevel() + 100)
+    local shade = dialog:CreateTexture(nil, "BACKGROUND")
+    shade:SetAllPoints(); shade:SetColorTexture(0, 0, 0, 0.65)
+    local panel = CreateFrame("Frame", nil, dialog, "BackdropTemplate")
+    panel:SetSize(640, 480); panel:SetPoint("CENTER"); panel:EnableMouse(true)
+    W.Backdrop(panel, "window")
+    local title = W.Text(panel, "", 16, -16, 570, "GameFontNormalLarge", GOLD)
+    local instruction = W.Text(panel, "", 16, -48, 608)
+    local scroll = CreateFrame("ScrollFrame", nil, panel, "UIPanelScrollFrameTemplate")
+    scroll:SetPoint("TOPLEFT", 16, -90); scroll:SetSize(580, 180)
+    W.Backdrop(scroll, "control")
+    local input = W.EditBox(scroll, 580, 180)
+    input:SetMultiLine(true)
+    -- Stay inside a 16-bit letter cap. The wire format is a few thousand characters.
+    input:SetMaxLetters(math.min(BD.SETTINGS_STRING_MAX_BYTES, 32767))
+    input:SetTextInsets(8, 8, 8, 8); input:SetSpacing(3)
+    -- Multiline height follows the text, so this backdrop's bottom edge cuts the viewport.
+    if input.SetBackdrop then input:SetBackdrop(nil) end
+    scroll:SetScrollChild(input)
+    -- A tall multiline child otherwise keeps the mouse over the buttons below the viewport.
+    if scroll.SetClipsChildren then scroll:SetClipsChildren(true) end
+    local status = W.Text(panel, "", 16, -286, 608, "GameFontHighlightSmall")
+    local apply, validate
+    local holdingFocus = false
+    local function SettingsText()
+        return (input:GetText() or ""):gsub("%s+", "")
+    end
+    local function ReleaseInput()
+        holdingFocus = true
+        input:ClearFocus()
+        holdingFocus = false
+    end
+    -- Focus loss cancels OnClick after MouseDown. Run the action on MouseUp.
+    local function ClickDespiteFocus(button, action)
+        local function Chain(event, handler)
+            if button.GetScript then
+                local previous = button:GetScript(event)
+                button:SetScript(event, function(self, ...)
+                    if previous then previous(self, ...) end
+                    handler(self, ...)
+                end)
+            elseif button.SetScript then
+                button:SetScript(event, handler)
+            end
+        end
+        Chain("OnMouseUp", function(self)
+            if not self:IsEnabled() then return end
+            self.transferClick = true
+            action()
+        end)
+        if button.GetScript then
+            local previousClick = button:GetScript("OnClick")
+            button:SetScript("OnClick", function(self, ...)
+                if self.transferClick then self.transferClick = nil; return end
+                if previousClick then previousClick(self, ...) end
+            end)
+        end
+    end
+    local function PaintApply(enabled)
+        apply:SetEnabled(enabled and true or false)
+        if W.PaintAction then W.PaintAction(apply, "idle") end
+        local font = apply.GetFontString and apply:GetFontString()
+        if font and font.SetTextColor then
+            font:SetTextColor(unpack(enabled and GOLD or { 0.42, 0.42, 0.42 }))
+        end
+    end
+    local function Invalidate()
+        dialog.validatedText = nil
+        PaintApply(false)
+        status:SetText("")
+    end
+    local function ShowError(err)
+        Invalidate()
+        status:SetTextColor(1, 0.45, 0.3)
+        status:SetText(err or "")
+    end
+    local function ValidateInput()
+        local text = SettingsText()
+        local preview, err = BD:PreviewSettingsImport(text)
+        if not preview then ShowError(err); ReleaseInput(); return end
+        dialog.validatedText = text
+        local source = preview.source == "modern" and L["Modern API - Midnight & Forever"] or L["Classic API - Era/TBC/Wrath/MoP"]
+        local lines = {
+            string.format(L["Source: %s (PlateSCT %s)"], source, preview.addonVersion),
+            string.format(L["Changes: %d shared, %d Modern API. Ignored: %d."], preview.sharedCount, preview.modernCount, #preview.ignored),
+            L["Missing settings stay unchanged."],
+        }
+        if preview.preservesModern then lines[#lines + 1] = L["Your Modern API settings will stay unchanged."] end
+        if preview.recommendedSchools then lines[#lines + 1] = L["Recommended damage schools will follow your current class."] end
+        status:SetTextColor(0.88, 0.86, 0.80)
+        status:SetText(table.concat(lines, "\n"))
+        -- A disabled Button never receives hover, tooltip, or clicks.
+        PaintApply(true)
+        ReleaseInput()
+    end
+    -- Above the scrolling edit box, which otherwise keeps the click over Apply.
+    local footer = CreateFrame("Frame", nil, dialog)
+    if footer.SetFrameStrata then footer:SetFrameStrata("FULLSCREEN_DIALOG") end
+    footer:SetPoint("BOTTOMLEFT", panel, "BOTTOMLEFT")
+    footer:SetPoint("BOTTOMRIGHT", panel, "BOTTOMRIGHT")
+    footer:SetHeight(52)
+    validate = W.Button(footer, L["Validate string"], 184, 28, ValidateInput)
+    ClickDespiteFocus(validate, ValidateInput)
+    validate:SetPoint("BOTTOMLEFT", 16, 16)
+    local function ApplyInput()
+        if not dialog.validatedText or dialog.validatedText ~= SettingsText() then Invalidate(); return end
+        local result, err = BD:ImportSettings(dialog.validatedText)
+        if not result then
+            ShowError(err)
+            -- A failed refresh may have closed this dialog; keep the outcome visible.
+            if not dialog:IsShown() then print("PlateSCT: " .. err) end
+            return
+        end
+        dialog:Hide()
+        local message = #result.changes == 0 and L["No settings changed."] or L["Settings imported."]
+        print("PlateSCT: " .. message)
+    end
+    apply = W.Button(footer, L["Apply settings"], 184, 28, ApplyInput)
+    ClickDespiteFocus(apply, ApplyInput)
+    apply:SetPoint("BOTTOM", 0, 16); PaintApply(false)
+    local function CancelInput() dialog:Hide() end
+    local cancel = W.Button(footer, CANCEL, 184, 28, CancelInput)
+    ClickDespiteFocus(cancel, CancelInput)
+    cancel:SetPoint("BOTTOMRIGHT", -16, 16)
+    local buttonLevel = panel:GetFrameLevel() + 40
+    if footer.SetFrameLevel then footer:SetFrameLevel(buttonLevel) end
+    if validate.SetFrameLevel then validate:SetFrameLevel(buttonLevel + 2) end
+    if apply.SetFrameLevel then apply:SetFrameLevel(buttonLevel + 2) end
+    if cancel.SetFrameLevel then cancel:SetFrameLevel(buttonLevel + 2) end
+    local close = W.CloseButton(panel, function() dialog:Hide() end)
+    close:SetPoint("TOPRIGHT", -4, -4)
+    local validateSerial = 0
+    local function ScheduleValidate()
+        validateSerial = validateSerial + 1
+        local serial = validateSerial
+        local later = C_Timer and C_Timer.After
+        if not later then ValidateInput(); return end
+        later(1, function()
+            if serial ~= validateSerial or not dialog:IsShown() then return end
+            if SettingsText() == "" then return end
+            ValidateInput()
+        end)
+    end
+    input:SetScript("OnTextChanged", function(_, userInput)
+        scroll:UpdateScrollChildRect()
+        if holdingFocus or not userInput then return end
+        if dialog.validatedText and SettingsText() == dialog.validatedText then return end
+        Invalidate()
+        if SettingsText() == "" then validateSerial = validateSerial + 1; return end
+        ScheduleValidate()
+    end)
+    input:SetScript("OnCursorChanged", function(_, _, y, _, height)
+        scroll:UpdateScrollChildRect()
+        local top = -y
+        local offset = scroll:GetVerticalScroll()
+        if top < offset then scroll:SetVerticalScroll(math.max(0, top))
+        elseif top + height > offset + scroll:GetHeight() then
+            scroll:SetVerticalScroll(math.max(0, top + height - scroll:GetHeight()))
+        end
+    end)
+    scroll:SetScript("OnMouseDown", function() input:SetFocus() end)
+    input:SetScript("OnEscapePressed", function() dialog:Hide() end)
+    dialog:SetScript("OnHide", function()
+        validateSerial = validateSerial + 1
+        input:ClearFocus(); input:SetText(""); dialog.validatedText = nil
+        if root.transientMenu == dialog then root.transientMenu, root.pageScrollLocked = nil, false end
+    end)
+    function dialog:Open(importing)
+        root:DismissTransient()
+        root.searchBox:ClearFocus()
+        root.transientMenu, root.pageScrollLocked = self, true
+        title:SetText(importing and L["Import Settings"] or L["Export Settings"])
+        instruction:SetText(importing and L["Paste a settings string, then validate it before applying."]
+            or L["Press Ctrl+C to copy the settings string."])
+        validate:SetShown(importing); apply:SetShown(importing)
+        cancel:SetText(importing and CANCEL or L["Close"])
+        self:Show(); input:SetText(""); Invalidate()
+        if not importing then
+            local text, err = BD:ExportSettings()
+            if not text then ShowError(err); return end
+            input:SetText(text)
+        end
+        input:SetFocus(); input:HighlightText(); scroll:SetVerticalScroll(0)
+    end
+    return dialog
+end
+
 local function BuildConfigFrame()
     local frame = CreateFrame("Frame", "PlateSCTConfigFrame", UIParent, "BackdropTemplate")
     frame:Hide(); frame:SetSize(WINDOW_WIDTH, WINDOW_HEIGHT); frame:SetPoint("CENTER")
@@ -327,6 +517,10 @@ local function BuildConfigFrame()
     function frame:ConfirmProfile(id)
         local profile = BD.GetProfile(id)
         if profile then StaticPopup_Show("PLATESCT_PROFILE_CONFIRM", L[profile.labelKey], nil, id) end
+    end
+    function frame:ShowSettingsTransfer(importing)
+        if not self.transferDialog then self.transferDialog = CreateSettingsTransferDialog(self) end
+        self.transferDialog:Open(importing)
     end
     function frame:Refresh()
         if self.refreshing or self.disposed then return end

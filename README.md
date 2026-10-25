@@ -16,7 +16,7 @@ PlateSCT displays outgoing combat numbers on nameplates and supports incoming pl
 - Configurable fonts, outlines, custom colors, critical-hit presentation, and damage thresholds.
 - Animation options, including fountain and rainfall motion, with settings previews.
 - Optional hit combining: rapid hits on the same nameplate merge into one growing number with a hit count, grouped by spell or by target.
-- Clutter controls: dim or hide numbers on enemies you are not targeting, show crits only, shrink small hits, and ignore chosen spells.
+- Clutter controls: dim or hide numbers on enemies you are not targeting, shrink small hits, and ignore chosen spells.
 - Classic API client support for player and pet combat-log events, with spell icons taken from combat-log spell IDs.
 - Modern API client attribution and school-filter settings.
 - English, French, German, Spanish, Russian, Italian, Brazilian Portuguese, Simplified Chinese, Traditional Chinese, and Korean localization.
@@ -56,7 +56,7 @@ On first install a welcome screen offers two starting profiles. Apply either one
 
 The settings cover combat text, appearance, animations, critical-hit sounds, and Modern API client behavior.
 
-The **Combat** page groups everything that limits how many numbers appear: **Other nameplates** (Show, Dim, or Hide numbers on enemies you are not targeting), and under **Reduce clutter** the damage threshold, **Crits only**, **Shrink small hits**, and hit combining. **Ignored spells** takes spell names or IDs separated by commas; it needs the spell, which Classic API clients always know and Modern API clients know only in Personal mode.
+The **Combat** page groups everything that limits how many numbers appear: **Other nameplates** (Show, Dim, or Hide numbers on enemies you are not targeting), and under **Reduce clutter** the damage threshold, **Shrink small hits**, and hit combining. **Ignored spells** takes spell names or IDs separated by commas; it needs the spell, which Classic API clients always know and Modern API clients know only in Personal mode.
 
 On Modern API clients, Personal mode shows numbers only on your cast's target. **Show splash from my casts** (Modern API → Damage mode) also credits hits on other enemies that land within 0.4 seconds of your confirmed hit, share its damage school, and are on enemies you have threat on. It is best effort, since the game does not report who dealt a hit.
 

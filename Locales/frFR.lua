@@ -86,12 +86,12 @@ L["Show the PlateSCT icon on the minimap. Click it to open settings."] =
 L["Click to open settings."] = "Cliquez pour ouvrir les réglages."
 L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."] =
     "Les barres de nom ennemies sont désactivées. PlateSCT en a besoin pour afficher les nombres.\nAppuyez sur V (par défaut) ou activez-les dans Interface → Jeu → Noms."
-L["Who to show"] = "Qui afficher"
+L["Display settings"] = "Paramètres d’affichage"
 
 -- What's new: less clutter
 L["Less clutter"] = "Moins d'encombrement"
-L["Dim or hide numbers on enemies you are not targeting, show crits only, shrink small hits, and ignore chosen spells. Find them on the Combat page."] =
-    "Atténuez ou masquez les nombres sur les ennemis non ciblés, affichez uniquement les critiques, réduisez les petits coups et ignorez des sorts choisis. Sur la page Combat."
+L["Dim or hide numbers on enemies you are not targeting, shrink small hits, and ignore chosen spells. Find them on the Combat page."] =
+    "Atténuez ou masquez les nombres sur les ennemis non ciblés, réduisez les petits coups et ignorez des sorts choisis. Sur la page Combat."
 
 
 -- Ignored spells
@@ -112,10 +112,6 @@ L["Small hit below"] = "Petit coup sous"
 L["%s of average"] = "%s de la moyenne"
 
 
--- Crits only
-L["Crits only"] = "Critiques uniquement"
-L["Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."] =
-    "Affiche uniquement les coups critiques. Les coups normaux et les soins sont masqués ; les textes d'échec comme Insensible restent affichés."
 
 
 -- Off-target numbers
@@ -448,13 +444,42 @@ L["Turn off Auto-switch by instance to choose manual strictness."] = "Désactive
 L["Unreadable amounts cannot trigger threshold sounds. Unreadable damage schools are always allowed by the school filter."] = "Les montants illisibles ne déclenchent pas les sons à seuil. Les écoles illisibles sont toujours autorisées par le filtre."
 L["Use gentle fades and row reveals in this settings window. Combat animation is unaffected."] = "Anime discrètement cette fenêtre de réglages. L'animation des nombres en combat n'est pas modifiée."
 
+-- Settings import / export
+L["Export Settings"] = "Exporter les réglages"
+L["Import Settings"] = "Importer des réglages"
+L["Copy all settings supported by this client."] = "Copie les réglages de combat. La langue et cette fenêtre restent sur ce personnage."
+L["Preview and apply settings from a string."] = "Prévisualise et applique les réglages contenus dans une chaîne."
+L["Validate string"] = "Valider la chaîne"
+L["Apply settings"] = "Appliquer les réglages"
+L["Source: %s (PlateSCT %s)"] = "Source : %s (PlateSCT %s)"
+L["Changes: %d shared, %d Modern API. Ignored: %d."] = "Modifications : %d communes, %d API moderne. Ignorés : %d."
+L["Missing settings stay unchanged."] = "Les réglages absents restent inchangés."
+L["Your Modern API settings will stay unchanged."] = "Vos réglages de l’API moderne resteront inchangés."
+L["Recommended damage schools will follow your current class."] = "Les écoles de dégâts recommandées suivront votre classe actuelle."
+L["Settings imported."] = "Réglages importés."
+L["No settings changed."] = "Aucun réglage n'a changé."
+L["Paste a settings string, then validate it before applying."] = "Collez une chaîne de réglages, puis validez-la avant de l’appliquer."
+L["Press Ctrl+C to copy the settings string."] = "Appuyez sur Ctrl+C pour copier la chaîne de réglages."
+L["Invalid settings string."] = "Chaîne de réglages non valide."
+L["Settings string exceeds the supported size limits."] = "La chaîne de réglages dépasse les limites de taille prises en charge."
+L["Unsupported settings format. Update PlateSCT."] = "Format de réglages non pris en charge. Mettez PlateSCT à jour."
+L["Settings string is incomplete or damaged."] = "La chaîne de réglages est incomplète ou endommagée."
+L["Duplicate or misplaced setting: %s."] = "Réglage en double ou mal placé : %s."
+L["Invalid setting: %s."] = "Réglage non valide : %s."
+L["Settings schema is incomplete. Update PlateSCT."] = "Le schéma des réglages est incomplet. Mettez PlateSCT à jour."
+L["Settings sharing is unavailable on this client."] = "Le partage des réglages est indisponible sur ce client."
+L["Settings import failed; previous settings were restored."] = "L’importation a échoué ; les réglages précédents ont été restaurés."
+
+-- Independent fonts and critical damage filter
+L["Outgoing font"] = "Police des dégâts infligés"
+L["Incoming font"] = "Police des dégâts subis"
+L["Show only critical damage"] = "Afficher uniquement les dégâts critiques"
+L["Hide non-critical outgoing and incoming damage. Healing and miss text are unaffected."] = "Masque les dégâts infligés et subis non critiques. Les soins et les textes de raté ne sont pas affectés."
 -- What's new: combine hits
 L["Rapid hits on the same nameplate can merge into one growing number with a hit count. Turn it on under Combat → Combine hits."] =
     "Les coups rapides sur la même barre de nom peuvent se regrouper en un seul nombre croissant avec le nombre de coups. Activez-le dans Combat → Regrouper les coups."
-
 -- Reduce clutter
 L["Reduce clutter"] = "Réduire l'encombrement"
-
 -- Combine hits: merge pop
 L["Pop on each merge"] = "Effet de rebond à chaque regroupement"
 L["Briefly enlarge the number every time another hit merges into it. Turn off for a calmer display."] =
