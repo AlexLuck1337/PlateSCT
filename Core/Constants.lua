@@ -3,7 +3,6 @@ local _, BD = ...
 BD.DEFAULTS = {
     enabled = true,
     minDamage = 0,
-    critsOnly = false,
     shrinkSmallHits = false,
     smallHitPercent = 0.5, -- share of the recent average below which a hit is small
     ignoredSpells = "", -- comma-separated spell IDs or names

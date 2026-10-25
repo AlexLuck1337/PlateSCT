@@ -91,8 +91,8 @@ L["Display settings"] = "Paramètres d’affichage"
 
 -- What's new: less clutter
 L["Less clutter"] = "Moins d'encombrement"
-L["Dim or hide numbers on enemies you are not targeting, show crits only, shrink small hits, and ignore chosen spells. Find them on the Combat page."] =
-    "Atténuez ou masquez les nombres sur les ennemis non ciblés, affichez uniquement les critiques, réduisez les petits coups et ignorez des sorts choisis. Sur la page Combat."
+L["Dim or hide numbers on enemies you are not targeting, shrink small hits, and ignore chosen spells. Find them on the Combat page."] =
+    "Atténuez ou masquez les nombres sur les ennemis non ciblés, réduisez les petits coups et ignorez des sorts choisis. Sur la page Combat."
 
 
 -- Ignored spells
@@ -113,10 +113,6 @@ L["Small hit below"] = "Petit coup sous"
 L["%s of average"] = "%s de la moyenne"
 
 
--- Crits only
-L["Crits only"] = "Critiques uniquement"
-L["Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."] =
-    "Affiche uniquement les coups critiques. Les coups normaux et les soins sont masqués ; les textes d'échec comme Insensible restent affichés."
 
 
 -- Off-target numbers

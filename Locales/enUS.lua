@@ -115,8 +115,8 @@ L["Display settings"] = "Display settings"
 
 -- What's new: less clutter
 L["Less clutter"] = "Less clutter"
-L["Dim or hide numbers on enemies you are not targeting, show crits only, shrink small hits, and ignore chosen spells. Find them on the Combat page."] =
-    "Dim or hide numbers on enemies you are not targeting, show crits only, shrink small hits, and ignore chosen spells. Find them on the Combat page."
+L["Dim or hide numbers on enemies you are not targeting, shrink small hits, and ignore chosen spells. Find them on the Combat page."] =
+    "Dim or hide numbers on enemies you are not targeting, shrink small hits, and ignore chosen spells. Find them on the Combat page."
 
 
 -- Ignored spells
@@ -137,10 +137,6 @@ L["Small hit below"] = "Small hit below"
 L["%s of average"] = "%s of average"
 
 
--- Crits only
-L["Crits only"] = "Crits only"
-L["Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."] =
-    "Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."
 
 
 -- Off-target numbers

@@ -101,8 +101,8 @@ L["Display settings"] = "显示设置"
 
 -- What's new: less clutter
 L["Less clutter"] = "更少杂乱"
-L["Dim or hide numbers on enemies you are not targeting, show crits only, shrink small hits, and ignore chosen spells. Find them on the Combat page."] =
-    "淡化或隐藏非目标敌人身上的数字、仅显示暴击、缩小小额命中并忽略指定法术。见“战斗”页面。"
+L["Dim or hide numbers on enemies you are not targeting, shrink small hits, and ignore chosen spells. Find them on the Combat page."] =
+    "淡化或隐藏非目标敌人身上的数字、缩小小额命中并忽略指定法术。见“战斗”页面。"
 
 
 -- Ignored spells
@@ -123,10 +123,6 @@ L["Small hit below"] = "小额命中阈值"
 L["%s of average"] = "平均值的 %s"
 
 
--- Crits only
-L["Crits only"] = "仅显示暴击"
-L["Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."] =
-    "仅显示暴击。普通命中和治疗会被隐藏；“免疫”等未命中文字仍会显示。"
 
 
 -- Off-target numbers

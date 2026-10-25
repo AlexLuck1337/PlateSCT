@@ -107,8 +107,8 @@ L["Display settings"] = "표시 설정"
 
 -- What's new: less clutter
 L["Less clutter"] = "더 깔끔한 화면"
-L["Dim or hide numbers on enemies you are not targeting, show crits only, shrink small hits, and ignore chosen spells. Find them on the Combat page."] =
-    "대상이 아닌 적의 숫자를 흐리게 하거나 숨기고, 치명타만 표시하고, 작은 적중을 축소하고, 선택한 주문을 무시할 수 있습니다. 전투 페이지에서 설정하세요."
+L["Dim or hide numbers on enemies you are not targeting, shrink small hits, and ignore chosen spells. Find them on the Combat page."] =
+    "대상이 아닌 적의 숫자를 흐리게 하거나 숨기고, 작은 적중을 축소하고, 선택한 주문을 무시할 수 있습니다. 전투 페이지에서 설정하세요."
 
 
 -- Ignored spells
@@ -129,10 +129,6 @@ L["Small hit below"] = "작은 적중 기준"
 L["%s of average"] = "평균의 %s"
 
 
--- Crits only
-L["Crits only"] = "치명타만"
-L["Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."] =
-    "치명타만 표시합니다. 일반 적중과 치유는 숨겨지며, 면역 같은 빗나감 문구는 계속 표시됩니다."
 
 
 -- Off-target numbers

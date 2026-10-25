@@ -1047,10 +1047,6 @@ function BD:ShowOnNameplate(unit, text, r, g, b, amountForThreshold, isCrit, isH
         return
     end
 
-    -- Crits only keeps crits and miss text (Immune, Dodge, ...); normal hits and heals are dropped.
-    if self.db.critsOnly and kind == "hit" then
-        return
-    end
 
     local offTarget = IsOffTargetPlate(self, plate)
     if offTarget and self.db.offTargetMode == "hide" then

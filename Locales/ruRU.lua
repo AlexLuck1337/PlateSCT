@@ -91,8 +91,8 @@ L["Display settings"] = "Настройки отображения"
 
 -- What's new: less clutter
 L["Less clutter"] = "Меньше лишнего"
-L["Dim or hide numbers on enemies you are not targeting, show crits only, shrink small hits, and ignore chosen spells. Find them on the Combat page."] =
-    "Приглушайте или скрывайте числа на врагах, которые не являются целью, показывайте только криты, уменьшайте слабые удары и игнорируйте выбранные заклинания. На странице «Бой»."
+L["Dim or hide numbers on enemies you are not targeting, shrink small hits, and ignore chosen spells. Find them on the Combat page."] =
+    "Приглушайте или скрывайте числа на врагах, которые не являются целью, уменьшайте слабые удары и игнорируйте выбранные заклинания. На странице «Бой»."
 
 
 -- Ignored spells
@@ -113,10 +113,6 @@ L["Small hit below"] = "Слабый удар ниже"
 L["%s of average"] = "%s от среднего"
 
 
--- Crits only
-L["Crits only"] = "Только критические"
-L["Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."] =
-    "Показывать только критические удары. Обычные удары и исцеление скрываются; тексты промахов вроде «Невосприимчив» остаются."
 
 
 -- Off-target numbers

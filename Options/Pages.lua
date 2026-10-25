@@ -145,8 +145,6 @@ local function BuildCombat(parent, root)
     if IsModernAPI() then
         layout:Note(L["In raids and Mythic+ some amounts are secret, so the threshold hides those hits visually instead of skipping them."])
     end
-    layout:Checkbox("critsOnly", L["Crits only"],
-        L["Show only critical hits. Normal hits and heals are hidden; miss text such as Immune still shows."])
     layout:Checkbox("shrinkSmallHits", L["Shrink small hits"],
         L["Show hits well below your recent average smaller instead of hiding them."])
     layout:When(function() return BD.db.shrinkSmallHits end, function()
@@ -505,7 +503,7 @@ end
 
 local function BuildWhatsNew(layout)
     layout:Heading(L["Less clutter"])
-    layout:Note(L["Dim or hide numbers on enemies you are not targeting, show crits only, shrink small hits, and ignore chosen spells. Find them on the Combat page."])
+    layout:Note(L["Dim or hide numbers on enemies you are not targeting, shrink small hits, and ignore chosen spells. Find them on the Combat page."])
     layout:Heading(L["Combine hits"])
     layout:Note(L["Rapid hits on the same nameplate can merge into one growing number with a hit count. Turn it on under Combat → Combine hits."])
     layout:Heading(L["Impact number style"])
