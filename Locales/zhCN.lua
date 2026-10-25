@@ -97,7 +97,7 @@ L["Show the PlateSCT icon on the minimap. Click it to open settings."] = "在小
 L["Click to open settings."] = "点击打开设置。"
 L["Enemy nameplates are turned off. PlateSCT needs them to show numbers.\nPress V (default) or enable them under Interface → Game → Names."] =
     "敌方姓名板已关闭。PlateSCT 需要姓名板才能显示数字。\n按 V（默认按键），或在“界面 → 游戏 → 名称”中启用。"
-L["Who to show"] = "显示来源"
+L["Display settings"] = "显示设置"
 L["Only my damage"] = "仅显示我的伤害"
 L["Show hits when a recent cast or auto-attack matches the nameplate. Midnight cannot prove who dealt the hit in a group."] =
     "近期施法或自动攻击与姓名板匹配时，显示该次命中。Midnight 在队伍中无法确认是谁造成了伤害。"
@@ -364,3 +364,35 @@ L["Your WoW API"] = "当前 WoW API"
 -- Translation feedback
 L["This translation was generated with AI. If you find inconsistent terminology or incorrect wording, please report it through GitHub Issues. Thank you for your help! Translation contributors will be credited."] =
     "此翻译由 AI 生成。如果发现术语不一致或措辞不准确，请通过 GitHub Issues 反馈。感谢你的帮助！翻译贡献者将获得署名致谢。"
+
+-- Settings import / export
+L["Export Settings"] = "导出设置"
+L["Import Settings"] = "导入设置"
+L["Copy all settings supported by this client."] = "复制战斗设置。语言和此设置窗口保留在此角色上。"
+L["Preview and apply settings from a string."] = "预览并应用字符串中的设置。"
+L["Validate string"] = "验证字符串"
+L["Apply settings"] = "应用设置"
+L["Source: %s (PlateSCT %s)"] = "来源：%s（PlateSCT %s）"
+L["Changes: %d shared, %d Modern API. Ignored: %d."] = "更改：%d 项通用设置，%d 项现代 API 设置。已忽略：%d 项。"
+L["Missing settings stay unchanged."] = "字符串中缺少的设置保持不变。"
+L["Your Modern API settings will stay unchanged."] = "你的现代 API 设置将保持不变。"
+L["Recommended damage schools will follow your current class."] = "推荐的伤害法术系将根据你当前的职业调整。"
+L["Settings imported."] = "设置已导入。"
+L["No settings changed."] = "没有设置发生变化。"
+L["Paste a settings string, then validate it before applying."] = "粘贴设置字符串，验证后再应用。"
+L["Press Ctrl+C to copy the settings string."] = "按 Ctrl+C 复制设置字符串。"
+L["Invalid settings string."] = "无效的设置字符串。"
+L["Settings string exceeds the supported size limits."] = "设置字符串超过了支持的大小限制。"
+L["Unsupported settings format. Update PlateSCT."] = "不支持此设置格式。请更新 PlateSCT。"
+L["Settings string is incomplete or damaged."] = "设置字符串不完整或已损坏。"
+L["Duplicate or misplaced setting: %s."] = "设置重复或所在分区错误：%s。"
+L["Invalid setting: %s."] = "无效设置：%s。"
+L["Settings schema is incomplete. Update PlateSCT."] = "设置结构不完整。请更新 PlateSCT。"
+L["Settings sharing is unavailable on this client."] = "此客户端无法分享设置。"
+L["Settings import failed; previous settings were restored."] = "设置导入失败；已恢复之前的设置。"
+
+-- Independent fonts and critical damage filter
+L["Outgoing font"] = "造成伤害字体"
+L["Incoming font"] = "受到伤害字体"
+L["Show only critical damage"] = "仅显示暴击伤害"
+L["Hide non-critical outgoing and incoming damage. Healing and miss text are unaffected."] = "隐藏非暴击的造成伤害和受到伤害。不影响治疗和未命中文字。"
